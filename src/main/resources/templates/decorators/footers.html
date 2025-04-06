@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+  <footer class="main-footer" th:fragment="footer">
+    <!-- Services block-->
+    <div class="py-5 bg-light">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4 service-column">
+            <div class="d-flex align-items-center justify-content-center">
+              <svg class="service-icon me-2" viewBox="0 0 24 24">
+                <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+              </svg>
+              <div class="service-text">
+                <h6 class="text-uppercase mb-1">Free shipping & return</h6>
+                <p class="text-muted mb-0">Free Shipping over $300</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 service-column">
+            <div class="d-flex align-items-center justify-content-center">
+              <svg class="service-icon me-2" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+              </svg>
+              <div class="service-text">
+                <h6 class="text-uppercase mb-1">Money back guarantee</h6>
+                <p class="text-muted mb-0">30 Days Money Back</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 service-column">
+            <div class="d-flex align-items-center justify-content-center">
+              <svg class="service-icon me-2" viewBox="0 0 24 24">
+                <path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1zM19 12h2c0-4.97-4.03-9-9-9v2c3.87 0 7 3.13 7 7zm-4 0h2c0-2.76-2.24-5-5-5v2c1.66 0 3 1.34 3 3z"/>
+              </svg>
+              <div class="service-text">
+                <h6 class="text-uppercase mb-1">020-800-456-747</h6>
+                <p class="text-muted mb-0">24/7 Available Support</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Main block - menus, subscribe form-->
+    <div class="py-6 bg-gray-300 text-muted"> 
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4 mb-5 mb-lg-0">
+            <div class="fw-bold text-uppercase text-lg text-dark mb-3">Shop<span class="text-primary">.</span></div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing.</p>
+            <ul class="list-inline">
+              <li class="list-inline-item"><a class="text-muted text-primary-hover" href="#" target="_blank" title="twitter"><i class="fa fa-twitter"></i></a></li>
+              <li class="list-inline-item"><a class="text-muted text-primary-hover" href="#" target="_blank" title="facebook"><i class="fa fa-facebook"></i></a></li>
+              <li class="list-inline-item"><a class="text-muted text-primary-hover" href="#" target="_blank" title="instagram"><i class="fa fa-instagram"></i></a></li>
+              <li class="list-inline-item"><a class="text-muted text-primary-hover" href="#" target="_blank" title="pinterest"><i class="fa fa-pinterest"></i></a></li>
+              <li class="list-inline-item"><a class="text-muted text-primary-hover" href="#" target="_blank" title="vimeo"><i class="fa fa-vimeo-square"></i></a></li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-md-6 mb-5 mb-lg-0">
+            <h6 class="text-uppercase text-dark mb-3">Shop</h6>
+            <ul class="list-unstyled">
+              <li><a class="text-muted" th:href="@{/shop/women}">For Women</a></li>
+              <li><a class="text-muted" th:href="@{/shop/men}">For Men</a></li>
+              <li><a class="text-muted" th:href="@{/stores}">Stores</a></li>
+              <li><a class="text-muted" th:href="@{/blog}">Our Blog</a></li>
+              <li><a class="text-muted" th:href="@{/shop}">Shop</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-md-6 mb-5 mb-lg-0">
+            <h6 class="text-uppercase text-dark mb-3">Company</h6>
+            <ul class="list-unstyled">
+              <li><a class="text-muted" th:href="@{/login}">Login</a></li>
+              <li><a class="text-muted" th:href="@{/register}">Register</a></li>
+              <li><a class="text-muted" th:href="@{/wishlist}">Wishlist</a></li>
+              <li><a class="text-muted" th:href="@{/products}">Our Products</a></li>
+              <li><a class="text-muted" th:href="@{/checkout}">Checkouts</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-4">
+            <h6 class="text-uppercase text-dark mb-3">Daily Offers & Discounts</h6>
+            <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. At itaque temporibus.</p>
+            <form action="#" id="newsletter-form">
+              <div class="input-group mb-3">
+                <input class="form-control bg-transparent border-secondary border-end-0" type="email" placeholder="Your Email Address" aria-label="Your Email Address">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary border-start-0" type="submit"><i class="fa fa-paper-plane text-lg text-dark"></i></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Copyright section of the footer-->
+    <div class="py-4 fw-light bg-gray-800 text-gray-300">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-6 text-center text-md-start">
+            <p class="mb-md-0">&copy; 2024 Your company. All rights reserved.</p>
+          </div>
+          <div class="col-md-6">
+            <ul class="list-inline mb-0 mt-2 mt-md-0 text-center text-md-end">
+              <li class="list-inline-item"><img class="w-2rem" th:src="@{/assets/images/visa.svg}" alt="..."></li>
+              <li class="list-inline-item"><img class="w-2rem" th:src="@{/assets/images/mastercard.svg}" alt="..."></li>
+              <li class="list-inline-item"><img class="w-2rem" th:src="@{/assets/images/paypal.svg}" alt="..."></li>
+              <li class="list-inline-item"><img class="w-2rem" th:src="@{/assets/images/western-union.svg}" alt="..."></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

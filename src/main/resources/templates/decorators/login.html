@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<!-- Hero Section-->
+    <section class="hero">
+      <div class="container">
+        <!-- Breadcrumbs -->
+        <ol class="breadcrumb justify-content-center">
+          <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+          <li class="breadcrumb-item active">Login                </li>
+        </ol>
+        <!-- Hero Content-->
+        <div class="hero-content pb-5 text-center">
+          <h1 class="hero-heading">Login</h1>
+          <div class="row">
+            <div class="col-xl-8 offset-xl-2 text-lg mb-5 mb-lg-0">Login to your account</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="pb-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-5 col-xl-4 offset-lg-1">
+            <div class="card border-0 shadow">
+              <div class="card-body">
+                <h5 class="text-uppercase mb-4">Login</h5>
+                <form th:action="@{/login}" method="post">
+                  <div class="mb-3">
+                    <label class="form-label" for="email">Email address</label>
+                    <input class="form-control" type="email" name="email" id="email" placeholder="Enter your email">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="password">Password</label>
+                    <input class="form-control" type="password" name="password" id="password" placeholder="Enter your password">
+                  </div>
+                  <div class="mb-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="remember">
+                      <label class="form-check-label" for="remember">Remember me</label>
+                    </div>
+                  </div>
+                  <button class="btn btn-dark" type="submit">Login</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="ps-lg-5">
+              <h6 class="text-uppercase mb-4">Lorem ipsum dolor sit amet</h6>
+              <p class="text-muted text-sm">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <h6 class="text-uppercase mb-4">Lorem ipsum dolor sit amet</h6>
+              <p class="text-muted text-sm">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+</body>
+</html> 

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -14,17 +15,19 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/assets/**", "/vendor/**", "/*.ico", "/images/**", "/css/**", "/js/**").permitAll()
-                .requestMatchers("/").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/**").permitAll()
             )
             .formLogin(form -> form
                 .loginPage("/login")
+                .defaultSuccessUrl("/")
                 .permitAll()
-            );
-        
-        // Disable CSRF for development
-        http.csrf(csrf -> csrf.disable());
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/")
+                .permitAll()
+            )
+            .csrf(csrf -> csrf.disable())
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
         
         return http.build();
     }

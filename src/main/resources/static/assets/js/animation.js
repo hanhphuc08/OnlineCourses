@@ -1,3 +1,33 @@
+$(function () {
+    "use strict";
+    
+    // Initialize WOW.js for scroll animations
+    if (typeof WOW === 'function') {
+        new WOW().init();
+    }
+
+    // Initialize Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Initialize Bootstrap popovers
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    });
+
+    // Smooth scroll for anchors
+    $('a.scroll-link').on('click', function (e) {
+        var anchor = $(this);
+        $('html, body').stop().animate({
+            scrollTop: $(anchor.attr('href')).offset().top - 100
+        }, 1000);
+        e.preventDefault();
+    });
+});
+
 (function() {
   var Util,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -182,12 +212,3 @@
   })();
 
 }).call(this);
-
-
-wow = new WOW(
-  {
-    animateClass: 'animated',
-    offset: 50
-  }
-);
-wow.init();
