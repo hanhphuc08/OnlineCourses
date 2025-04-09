@@ -15,7 +15,7 @@
  * @todo Test Zepto
  * @todo stagePadding calculate wrong active classes
  */
-;(function($, window, document, undefined) {
+; (function($, window, document, undefined) {
 
 	/**
 	 * Creates a carousel.
@@ -153,13 +153,13 @@
 		this._states = {
 			current: {},
 			tags: {
-				'initializing': [ 'busy' ],
-				'animating': [ 'busy' ],
-				'dragging': [ 'interacting' ]
+				'initializing': ['busy'],
+				'animating': ['busy'],
+				'dragging': ['interacting']
 			}
 		};
 
-		$.each([ 'onResize', 'onThrottledResize' ], $.proxy(function(i, handler) {
+		$.each(['onResize', 'onThrottledResize'], $.proxy(function(i, handler) {
 			this._handlers[handler] = $.proxy(this[handler], this);
 		}, this));
 
@@ -266,23 +266,23 @@
 	/**
 	 * List of workers involved in the update process.
 	 */
-	Owl.Workers = [ {
-		filter: [ 'width', 'settings' ],
+	Owl.Workers = [{
+		filter: ['width', 'settings'],
 		run: function() {
 			this._width = this.$element.width();
 		}
 	}, {
-		filter: [ 'width', 'items', 'settings' ],
+		filter: ['width', 'items', 'settings'],
 		run: function(cache) {
 			cache.current = this._items && this._items[this.relative(this._current)];
 		}
 	}, {
-		filter: [ 'items', 'settings' ],
+		filter: ['items', 'settings'],
 		run: function() {
 			this.$stage.children('.cloned').remove();
 		}
 	}, {
-		filter: [ 'width', 'items', 'settings' ],
+		filter: ['width', 'items', 'settings'],
 		run: function(cache) {
 			var margin = this.settings.margin || '',
 				grid = !this.settings.autoWidth,
@@ -298,7 +298,7 @@
 			cache.css = css;
 		}
 	}, {
-		filter: [ 'width', 'items', 'settings' ],
+		filter: ['width', 'items', 'settings'],
 		run: function(cache) {
 			var width = (this.width() / this.settings.items).toFixed(3) - this.settings.margin,
 				merge = null,
@@ -323,7 +323,7 @@
 			this._widths = widths;
 		}
 	}, {
-		filter: [ 'items', 'settings' ],
+		filter: ['items', 'settings'],
 		run: function() {
 			var clones = [],
 				items = this._items,
@@ -352,7 +352,7 @@
 			$(prepend).addClass('cloned').prependTo(this.$stage);
 		}
 	}, {
-		filter: [ 'width', 'items', 'settings' ],
+		filter: ['width', 'items', 'settings'],
 		run: function() {
 			var rtl = this.settings.rtl ? 1 : -1,
 				size = this._clones.length + this._items.length,
@@ -370,7 +370,7 @@
 			this._coordinates = coordinates;
 		}
 	}, {
-		filter: [ 'width', 'items', 'settings' ],
+		filter: ['width', 'items', 'settings'],
 		run: function() {
 			var padding = this.settings.stagePadding,
 				coordinates = this._coordinates,
@@ -383,7 +383,7 @@
 			this.$stage.css(css);
 		}
 	}, {
-		filter: [ 'width', 'items', 'settings' ],
+		filter: ['width', 'items', 'settings'],
 		run: function(cache) {
 			var iterator = this._coordinates.length,
 				grid = !this.settings.autoWidth,
@@ -400,24 +400,24 @@
 			}
 		}
 	}, {
-		filter: [ 'items' ],
+		filter: ['items'],
 		run: function() {
 			this._coordinates.length < 1 && this.$stage.removeAttr('style');
 		}
 	}, {
-		filter: [ 'width', 'items', 'settings' ],
+		filter: ['width', 'items', 'settings'],
 		run: function(cache) {
 			cache.current = cache.current ? this.$stage.children().index(cache.current) : 0;
 			cache.current = Math.max(this.minimum(), Math.min(this.maximum(), cache.current));
 			this.reset(cache.current);
 		}
 	}, {
-		filter: [ 'position' ],
+		filter: ['position'],
 		run: function() {
 			this.animate(this.coordinates(this._current));
 		}
 	}, {
-		filter: [ 'width', 'position', 'items', 'settings' ],
+		filter: ['width', 'position', 'items', 'settings'],
 		run: function() {
 			var rtl = this.settings.rtl ? 1 : -1,
 				padding = this.settings.stagePadding * 2,
@@ -443,7 +443,7 @@
 				this.$stage.children().eq(this.current()).addClass('center');
 			}
 		}
-	} ];
+	}];
 
 	/**
 	 * Create the stage DOM element
@@ -461,7 +461,7 @@
 		// create stage
 		this.$stage = $('<' + this.settings.stageElement + '>', {
 			"class": this.settings.stageClass
-		}).wrap( $( '<div/>', {
+		}).wrap($('<div/>', {
 			"class": this.settings.stageOuterClass
 		}));
 
@@ -744,7 +744,7 @@
 			this.$stage.on('dragstart.owl.core selectstart.owl.core', function() { return false });
 		}
 
-		if (this.settings.touchDrag){
+		if (this.settings.touchDrag) {
 			this.$stage.on('touchstart.owl.core', $.proxy(this.onDragStart, this));
 			this.$stage.on('touchcancel.owl.core', $.proxy(this.onDragEnd, this));
 		}
@@ -905,8 +905,8 @@
 				// on a left pull, check on current index
 				if (direction === 'left' && coordinate > value - pull && coordinate < value + pull) {
 					position = index;
-				// on a right pull, check on previous index
-				// to do so, subtract width from value and set position = index + 1
+					// on a right pull, check on previous index
+					// to do so, subtract width from value and set position = index + 1
 				} else if (direction === 'right' && coordinate > value - width - pull && coordinate < value - width + pull) {
 					position = index + 1;
 				} else if (this.op(coordinate, '<', value)
@@ -1034,11 +1034,11 @@
 		this._speed = 0;
 		this._current = position;
 
-		this.suppress([ 'translate', 'translated' ]);
+		this.suppress(['translate', 'translated']);
 
 		this.animate(this.coordinates(position));
 
-		this.release([ 'translate', 'translated' ]);
+		this.release(['translate', 'translated']);
 	};
 
 	/**
@@ -1553,10 +1553,10 @@
 		var status = {
 			item: { count: this._items.length, index: this.current() }
 		}, handler = $.camelCase(
-			$.grep([ 'on', name, namespace ], function(v) { return v })
+			$.grep(['on', name, namespace], function(v) { return v })
 				.join('-').toLowerCase()
 		), event = $.Event(
-			[ name, 'owl', namespace || 'carousel' ].join('.').toLowerCase(),
+			[name, 'owl', namespace || 'carousel'].join('.').toLowerCase(),
 			$.extend({ relatedTarget: this }, status, data)
 		);
 
@@ -1583,7 +1583,7 @@
 	 * @param name - The state name.
 	 */
 	Owl.prototype.enter = function(name) {
-		$.each([ name ].concat(this._states.tags[name] || []), $.proxy(function(i, name) {
+		$.each([name].concat(this._states.tags[name] || []), $.proxy(function(i, name) {
 			if (this._states.current[name] === undefined) {
 				this._states.current[name] = 0;
 			}
@@ -1597,7 +1597,7 @@
 	 * @param name - The state name.
 	 */
 	Owl.prototype.leave = function(name) {
-		$.each([ name ].concat(this._states.tags[name] || []), $.proxy(function(i, name) {
+		$.each([name].concat(this._states.tags[name] || []), $.proxy(function(i, name) {
 			this._states.current[name]--;
 		}, this));
 	};
@@ -1732,9 +1732,9 @@
 					data.register({ type: Owl.Type.Event, name: event });
 					data.$element.on(event + '.owl.carousel.core', $.proxy(function(e) {
 						if (e.namespace && e.relatedTarget !== this) {
-							this.suppress([ event ]);
+							this.suppress([event]);
 							data[event].apply(this, [].slice.call(arguments, 1));
-							this.release([ event ]);
+							this.release([event]);
 						}
 					}, data));
 				});
@@ -1761,7 +1761,7 @@
  * @author David Deutsch
  * @license The MIT License (MIT)
  */
-;(function($, window, document, undefined) {
+; (function($, window, document, undefined) {
 
 	/**
 	 * Creates the auto refresh plugin.
@@ -1873,7 +1873,7 @@
  * @author David Deutsch
  * @license The MIT License (MIT)
  */
-;(function($, window, document, undefined) {
+; (function($, window, document, undefined) {
 
 	/**
 	 * Creates the lazy plugin.
@@ -1923,9 +1923,9 @@
 						n += settings.lazyLoadEager;
 						// If the carousel is looping also preload images that are to the "left"
 						if (settings.loop) {
-              position -= settings.lazyLoadEager;
-              n++;
-            }
+							position -= settings.lazyLoadEager;
+							n++;
+						}
 					}
 
 					while (i++ < n) {
@@ -1968,7 +1968,7 @@
 
 		$elements.each($.proxy(function(index, element) {
 			var $element = $(element), image,
-                url = (window.devicePixelRatio > 1 && $element.attr('data-src-retina')) || $element.attr('data-src') || $element.attr('data-srcset');
+				url = (window.devicePixelRatio > 1 && $element.attr('data-src-retina')) || $element.attr('data-src') || $element.attr('data-srcset');
 
 			this._core.trigger('load', { element: $element, url: url }, 'lazy');
 
@@ -1977,10 +1977,10 @@
 					$element.css('opacity', 1);
 					this._core.trigger('loaded', { element: $element, url: url }, 'lazy');
 				}, this)).attr('src', url);
-            } else if ($element.is('source')) {
-                $element.one('load.owl.lazy', $.proxy(function() {
-                    this._core.trigger('loaded', { element: $element, url: url }, 'lazy');
-                }, this)).attr('srcset', url);
+			} else if ($element.is('source')) {
+				$element.one('load.owl.lazy', $.proxy(function() {
+					this._core.trigger('loaded', { element: $element, url: url }, 'lazy');
+				}, this)).attr('srcset', url);
 			} else {
 				image = new Image();
 				image.onload = $.proxy(function() {
@@ -2023,7 +2023,7 @@
  * @author David Deutsch
  * @license The MIT License (MIT)
  */
-;(function($, window, document, undefined) {
+; (function($, window, document, undefined) {
 
 	/**
 	 * Creates the auto height plugin.
@@ -2052,7 +2052,7 @@
 				}
 			}, this),
 			'changed.owl.carousel': $.proxy(function(e) {
-				if (e.namespace && this._core.settings.autoHeight && e.property.name === 'position'){
+				if (e.namespace && this._core.settings.autoHeight && e.property.name === 'position') {
 					this.update();
 				}
 			}, this),
@@ -2156,7 +2156,7 @@
  * @author David Deutsch
  * @license The MIT License (MIT)
  */
-;(function($, window, document, undefined) {
+; (function($, window, document, undefined) {
 
 	/**
 	 * Creates the video plugin.
@@ -2194,7 +2194,7 @@
 		this._handlers = {
 			'initialized.owl.carousel': $.proxy(function(e) {
 				if (e.namespace) {
-					this._core.register({ type: 'state', name: 'playing', tags: [ 'interacting' ] });
+					this._core.register({ type: 'state', name: 'playing', tags: ['interacting'] });
 				}
 			}, this),
 			'resize.owl.carousel': $.proxy(function(e) {
@@ -2254,19 +2254,19 @@
 	 * @param {jQuery} item - The item containing the video.
 	 */
 	Video.prototype.fetch = function(target, item) {
-			var type = (function() {
-					if (target.attr('data-vimeo-id')) {
-						return 'vimeo';
-					} else if (target.attr('data-vzaar-id')) {
-						return 'vzaar'
-					} else {
-						return 'youtube';
-					}
-				})(),
-				id = target.attr('data-vimeo-id') || target.attr('data-youtube-id') || target.attr('data-vzaar-id'),
-				width = target.attr('data-width') || this._core.settings.videoWidth,
-				height = target.attr('data-height') || this._core.settings.videoHeight,
-				url = target.attr('href');
+		var type = (function() {
+			if (target.attr('data-vimeo-id')) {
+				return 'vimeo';
+			} else if (target.attr('data-vzaar-id')) {
+				return 'vzaar'
+			} else {
+				return 'youtube';
+			}
+		})(),
+			id = target.attr('data-vimeo-id') || target.attr('data-youtube-id') || target.attr('data-vzaar-id'),
+			width = target.attr('data-width') || this._core.settings.videoWidth,
+			height = target.attr('data-height') || this._core.settings.videoHeight,
+			url = target.attr('href');
 
 		if (url) {
 
@@ -2330,12 +2330,12 @@
 				icon = '<div class="owl-video-play-icon"></div>';
 
 				if (settings.lazyLoad) {
-					tnLink = $('<div/>',{
+					tnLink = $('<div/>', {
 						"class": 'owl-video-tn ' + lazyClass,
 						"srcType": path
 					});
 				} else {
-					tnLink = $( '<div/>', {
+					tnLink = $('<div/>', {
 						"class": "owl-video-tn",
 						"style": 'opacity:1;background-image:url(' + path + ')'
 					});
@@ -2345,7 +2345,7 @@
 			};
 
 		// wrap video content into owl-video-wrapper div
-		target.wrap( $( '<div/>', {
+		target.wrap($('<div/>', {
 			"class": "owl-video-wrapper",
 			"style": dimensions
 		}));
@@ -2428,18 +2428,18 @@
 
 		this._core.reset(item.index());
 
-		html = $( '<iframe frameborder="0" allowfullscreen mozallowfullscreen webkitAllowFullScreen ></iframe>' );
-		html.attr( 'height', height );
-		html.attr( 'width', width );
+		html = $('<iframe frameborder="0" allowfullscreen mozallowfullscreen webkitAllowFullScreen ></iframe>');
+		html.attr('height', height);
+		html.attr('width', width);
 		if (video.type === 'youtube') {
-			html.attr( 'src', '//www.youtube.com/embed/' + video.id + '?autoplay=1&rel=0&v=' + video.id );
+			html.attr('src', '//www.youtube.com/embed/' + video.id + '?autoplay=1&rel=0&v=' + video.id);
 		} else if (video.type === 'vimeo') {
-			html.attr( 'src', '//player.vimeo.com/video/' + video.id + '?autoplay=1' );
+			html.attr('src', '//player.vimeo.com/video/' + video.id + '?autoplay=1');
 		} else if (video.type === 'vzaar') {
-			html.attr( 'src', '//view.vzaar.com/' + video.id + '/player?autoplay=true' );
+			html.attr('src', '//view.vzaar.com/' + video.id + '/player?autoplay=true');
 		}
 
-		iframe = $(html).wrap( '<div class="owl-video-frame" />' ).insertAfter(item.find('.owl-video'));
+		iframe = $(html).wrap('<div class="owl-video-frame" />').insertAfter(item.find('.owl-video'));
 
 		this._playing = item.addClass('owl-video-playing');
 	};
@@ -2452,7 +2452,7 @@
 	 */
 	Video.prototype.isInFullScreen = function() {
 		var element = document.fullscreenElement || document.mozFullScreenElement ||
-				document.webkitFullscreenElement;
+			document.webkitFullscreenElement;
 
 		return element && $(element).parent().hasClass('owl-video-frame');
 	};
@@ -2484,7 +2484,7 @@
  * @author David Deutsch
  * @license The MIT License (MIT)
  */
-;(function($, window, document, undefined) {
+; (function($, window, document, undefined) {
 
 	/**
 	 * Creates the animate plugin.
@@ -2560,7 +2560,7 @@
 		if (outgoing) {
 			left = this.core.coordinates(this.previous) - this.core.coordinates(this.next);
 			previous.one($.support.animation.end, clear)
-				.css( { 'left': left + 'px' } )
+				.css({ 'left': left + 'px' })
 				.addClass('animated owl-animated-out')
 				.addClass(outgoing);
 		}
@@ -2573,7 +2573,7 @@
 	};
 
 	Animate.prototype.clear = function(e) {
-		$(e.target).css( { 'left': '' } )
+		$(e.target).css({ 'left': '' })
 			.removeClass('animated owl-animated-out owl-animated-in')
 			.removeClass(this.core.settings.animateIn)
 			.removeClass(this.core.settings.animateOut);
@@ -2608,7 +2608,7 @@
  * @author Tom De Caluwé
  * @license The MIT License (MIT)
  */
-;(function($, window, document, undefined) {
+; (function($, window, document, undefined) {
 
 	/**
 	 * Creates the autoplay plugin.
@@ -2840,7 +2840,7 @@
  * @author David Deutsch
  * @license The MIT License (MIT)
  */
-;(function($, window, document, undefined) {
+; (function($, window, document, undefined) {
 	'use strict';
 
 	/**
@@ -3013,10 +3013,10 @@
 
 		// create DOM structure for absolute navigation
 		if (!settings.dotsData) {
-			this._templates = [ $('<button role="button">')
+			this._templates = [$('<button role="button">')
 				.addClass(settings.dotClass)
 				.append($('<span>'))
-				.prop('outerHTML') ];
+				.prop('outerHTML')];
 		}
 
 		this._controls.$absolute = (settings.dotsContainer ? $(settings.dotsContainer)
@@ -3247,7 +3247,7 @@
  * @author David Deutsch
  * @license The MIT License (MIT)
  */
-;(function($, window, document, undefined) {
+; (function($, window, document, undefined) {
 	'use strict';
 
 	/**
@@ -3372,7 +3372,7 @@
  * @author David Deutsch
  * @license The MIT License (MIT)
  */
-;(function($, window, document, undefined) {
+; (function($, window, document, undefined) {
 
 	var style = $('<support>').get(0).style,
 		prefixes = 'Webkit Moz O ms'.split(' '),
@@ -3430,13 +3430,13 @@
 	if (tests.csstransitions()) {
 		/* jshint -W053 */
 		$.support.transition = new String(prefixed('transition'))
-		$.support.transition.end = events.transition.end[ $.support.transition ];
+		$.support.transition.end = events.transition.end[$.support.transition];
 	}
 
 	if (tests.cssanimations()) {
 		/* jshint -W053 */
 		$.support.animation = new String(prefixed('animation'))
-		$.support.animation.end = events.animation.end[ $.support.animation ];
+		$.support.animation.end = events.animation.end[$.support.animation];
 	}
 
 	if (tests.csstransforms()) {

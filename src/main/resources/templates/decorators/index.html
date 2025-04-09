@@ -1,399 +1,347 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-  <head>
+<head>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    
-    <title>Your Shop</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
 
-    <!-- Google fonts-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;700&amp;display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;800&amp;display=swap">
-    
-    <!-- CSS files -->
-    <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/style.default.7acfaf01.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/custom.0a822280.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/templatemo-space-dynamic.css}">
+	<title>Online Course</title>
 
-  </head>
+	<!-- Google fonts-->
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;700&amp;display=swap">
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;800&amp;display=swap">
+
+	<!-- CSS files -->
+	<link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/style.default.7acfaf01.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/custom.0a822280.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/templatemo-space-dynamic.css}">
+
+</head>
 
 <body>
 
-  <!-- SVG Sprite -->
-  <div th:insert="~{fragments/svg-sprite :: svg-sprite}"></div>
+	<!-- SVG Sprite -->
+	<div th:insert="~{fragments/svg-sprite :: svg-sprite}"></div>
 
-  <!-- ***** Preloader Start ***** -->
-  <div id="js-preloader" class="js-preloader">
-    <div class="preloader-inner">
-      <span class="dot"></span>
-      <div class="dots">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  </div>
-  <!-- ***** Preloader End ***** -->
+	<!-- ***** Preloader Start ***** -->
+	<div id="js-preloader" class="js-preloader">
+		<div class="preloader-inner">
+			<span class="dot"></span>
+			<div class="dots">
+				<span></span>
+				<span></span>
+				<span></span>
+			</div>
+		</div>
+	</div>
+	<!-- ***** Preloader End ***** -->
 
-  <!-- ***** Header Area Start ***** -->
-  <div th:insert="~{decorators/headers :: header}"></div>
-  <!-- ***** Header Area End ***** -->
+	<!-- ***** Header Area Start ***** -->
+	<div th:insert="~{decorators/headers :: header}"></div>
+	<!-- ***** Header Area End ***** -->
 
-  <div class="space-dynamic">
-    <div class="main-banner wow fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="row">
-              <div class="col-lg-6 align-self-center">
-                <div class="left-content header-text wow fadeInLeft" data-wow-duration="1s" data-wow-delay="1s">
-                  <h6>Welcome to Space Dynamic</h6>
-                  <h2>We Make <em>Digital Ideas</em> &amp; <span>SEO</span> Marketing</h2>
-                  <p>Space Dynamic is a professional looking HTML template using a Bootstrap 5 (beta 2). This CSS template is free for you provided by <a rel="nofollow" href="https://templatemo.com/page/1" target="_parent">TemplateMo</a>.</p>
-                  <form id="search" action="#" method="GET">
-                    <fieldset>
-                      <input type="address" name="address" class="email" placeholder="Your website URL..." autocomplete="on" required>
-                    </fieldset>
-                    <fieldset>
-                      <button type="submit" class="main-button">Analyze Site</button>
-                    </fieldset>
-                  </form>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="right-image wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.5s">
-                  <img th:src="@{/assets/images/banner-right-image.png}" alt="team meeting">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+	<div class="space-dynamic bg-white">
+		<div class="main-banner wow fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="row">
+							<div class="col-lg-6 align-self-center">
+								<div class="left-content header-text wow fadeInLeft" data-wow-duration="1s"
+									data-wow-delay="1s">
+									<h6>Chào mừng bạn đến với P2TS</h6>
+									<h2>Chúng tôi xây dựng <em>các khóa học</em> về <span>Luyện thi Đại học</span></h2>
+									<p>Nhằm giúp học sinh hiểu nhanh và chắc nhất các kiến thức THPT - Hỗ trợ luyện thi giải
+									đề các kỳ thi THPT Quốc Gia đứng lớp bởi<a rel="nofollow"
+											href="https://templatemo.com/page/1" target="_parent"> thầy Hạnh Phúc</a>.</p>
+									<form id="search" action="#" method="GET">
+										<fieldset>
+											<input type="address" name="address" class="email"
+												placeholder="Your website URL..." autocomplete="on" required>
+										</fieldset>
+										<fieldset>
+											<button type="submit" class="main-button">Tìm hiểu thêm</button>
+										</fieldset>
+									</form>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="right-image wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.5s">
+									<img th:src="@{https://img.freepik.com/free-vector/online-courses-elearning-vector-background-online-courses-text-white-desk-with-laptop-computer_572288-1763.jpg?w=2000}" alt="team meeting">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <div id="about" class="about-us section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-4">
-            <div class="left-image wow fadeIn" data-wow-duration="1s" data-wow-delay="0.2s">
-              <img th:src="@{/assets/images/about-left-image.png}" alt="person graphic">
-            </div>
-          </div>
-          <div class="col-lg-8 align-self-center">
-            <div class="services">
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="item wow fadeIn" data-wow-duration="1s" data-wow-delay="0.5s">
-                    <div class="icon">
-                      <svg class="svg-icon">
-                        <use xlink:href="#search-1"></use>
-                      </svg>
-                    </div>
-                    <div class="right-text">
-                      <h4>Data Analysis</h4>
-                      <p>Lorem ipsum dolor sit amet, ctetur aoi adipiscing eliter</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="item wow fadeIn" data-wow-duration="1s" data-wow-delay="0.7s">
-                    <div class="icon">
-                      <svg class="svg-icon">
-                        <use xlink:href="#cart-1"></use>
-                      </svg>
-                    </div>
-                    <div class="right-text">
-                      <h4>Data Reporting</h4>
-                      <p>Lorem ipsum dolor sit amet, ctetur aoi adipiscing eliter</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="item wow fadeIn" data-wow-duration="1s" data-wow-delay="0.9s">
-                    <div class="icon">
-                      <svg class="svg-icon">
-                        <use xlink:href="#retail-bag-1"></use>
-                      </svg>
-                    </div>
-                    <div class="right-text">
-                      <h4>Web Analytics</h4>
-                      <p>Lorem ipsum dolor sit amet, ctetur aoi adipiscing eliter</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="item wow fadeIn" data-wow-duration="1s" data-wow-delay="1.1s">
-                    <div class="icon">
-                      <svg class="svg-icon">
-                        <use xlink:href="#delivery-1"></use>
-                      </svg>
-                    </div>
-                    <div class="right-text">
-                      <h4>SEO Suggestions</h4>
-                      <p>Lorem ipsum dolor sit amet, ctetur aoi adipiscing eliter</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+		
 
-    <div id="services" class="our-services section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-6 align-self-center  wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.2s">
-            <div class="left-image">
-              <img th:src="@{/assets/images/services-left-image.png}" alt="">
-            </div>
-          </div>
-          <div class="col-lg-6 wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.2s">
-            <div class="section-heading">
-              <h2>Grow your website with our <em>SEO</em> service &amp; <span>Project</span> Ideas</h2>
-              <p>Space Dynamic HTML5 template is free to use for your website projects. However, you are not permitted to redistribute the template ZIP file on any CSS template collection websites. Please contact us for more information. Thank you for your kind cooperation.</p>
-            </div>
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="first-bar progress-skill-bar">
-                  <h4>Website Analysis</h4>
-                  <span>84%</span>
-                  <div class="filled-bar"></div>
-                  <div class="full-bar"></div>
-                </div>
-              </div>
-              <div class="col-lg-12">
-                <div class="second-bar progress-skill-bar">
-                  <h4>SEO Reports</h4>
-                  <span>88%</span>
-                  <div class="filled-bar"></div>
-                  <div class="full-bar"></div>
-                </div>
-              </div>
-              <div class="col-lg-12">
-                <div class="third-bar progress-skill-bar">
-                  <h4>Page Optimizations</h4>
-                  <span>94%</span>
-                  <div class="filled-bar"></div>
-                  <div class="full-bar"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+		<div id="services" class="our-services section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-6 align-self-center  wow fadeInLeft" data-wow-duration="1s"
+						data-wow-delay="0.2s">
+						<div class="left-image">
+							<img th:src="@{https://cdn-icons-png.flaticon.com/512/4308/4308850.png	}" alt="">
+						</div>
+					</div>
+					<div class="col-lg-6 wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.2s">
+						<div class="section-heading">
+							<h2 class="text-uppercase">Cam kết đạt ít nhất <em>8 ĐIỂM</em> môn Tiếng Anh. Nếu theo đúng lộ trình của lớp học!</h2>
+							<p>Thầy Trần Huy Hạnh Phúc - Founder Trung Tâm Luyện Thi P2TS</br>
+								Founder nền tảng luyện thi Đại Học trực tuyến P2TS
+							</p>
+						</div>
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="first-bar progress-skill-bar">
+									<h4>Tỉ lệ học viên trên 9</h4>
+									<span>84%</span>
+									<div class="filled-bar"></div>
+									<div class="full-bar"></div>
+								</div>
+							</div>
+							<div class="col-lg-12">
+								<div class="second-bar progress-skill-bar">
+									<h4>Tỉ lệ học viên trên 8.5</h4>
+									<span>88%</span>
+									<div class="filled-bar"></div>
+									<div class="full-bar"></div>
+								</div>
+							</div>
+							<div class="col-lg-12">
+								<div class="third-bar progress-skill-bar">
+									<h4>Tỉ lệ học viên  7</h4>
+									<span>94%</span>
+									<div class="filled-bar"></div>
+									<div class="full-bar"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <div id="portfolio" class="our-portfolio section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-6 offset-lg-3">
-            <div class="section-heading  wow bounceIn" data-wow-duration="1s" data-wow-delay="0.2s">
-              <h2>See What Our Agency <em>Offers</em> &amp; What We <span>Provide</span></h2>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-3 col-sm-6">
-            <a href="#">
-              <div class="item wow bounceInUp" data-wow-duration="1s" data-wow-delay="0.3s">
-                <div class="hidden-content">
-                  <h4>SEO Analysis</h4>
-                  <p>Lorem ipsum dolor sit ameti ctetur aoi adipiscing eto.</p>
-                </div>
-                <div class="showed-content">
-                  <img th:src="@{/assets/images/portfolio-image.png}" alt="">
-                </div>
-              </div>
-            </a>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <a href="#">
-              <div class="item wow bounceInUp" data-wow-duration="1s" data-wow-delay="0.4s">
-                <div class="hidden-content">
-                  <h4>Website Reporting</h4>
-                  <p>Lorem ipsum dolor sit ameti ctetur aoi adipiscing eto.</p>
-                </div>
-                <div class="showed-content">
-                  <img th:src="@{/assets/images/portfolio-image.png}" alt="">
-                </div>
-              </div>
-            </a>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <a href="#">
-              <div class="item wow bounceInUp" data-wow-duration="1s" data-wow-delay="0.5s">
-                <div class="hidden-content">
-                  <h4>Performance Tests</h4>
-                  <p>Lorem ipsum dolor sit ameti ctetur aoi adipiscing eto.</p>
-                </div>
-                <div class="showed-content">
-                  <img th:src="@{/assets/images/portfolio-image.png}" alt="">
-                </div>
-              </div>
-            </a>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <a href="#">
-              <div class="item wow bounceInUp" data-wow-duration="1s" data-wow-delay="0.6s">
-                <div class="hidden-content">
-                  <h4>Data Analysis</h4>
-                  <p>Lorem ipsum dolor sit ameti ctetur aoi adipiscing eto.</p>
-                </div>
-                <div class="showed-content">
-                  <img th:src="@{/assets/images/portfolio-image.png}" alt="">
-                </div>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+		<div id="portfolio" class="our-portfolio section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-6 offset-lg-3">
+						<div class="section-heading  wow bounceIn" data-wow-duration="1s" data-wow-delay="0.2s">
+							<h2 class="text-uppercase">Top 4 trợ giảng ưu tú</h2>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-sm-6">
+						<a href="#">
+							<div class="item wow bounceInUp" data-wow-duration="1s" data-wow-delay="0.3s">
+								<div class="hidden-content">
+									<h4>Hoàng Mạnh Tường</h4>
+									<p>9.6 điểm toán THPT Quốc Gia. Hiện đang là sinh viên chuyên ngành CNTT trường Đh SPKT tpHCM</p>
+								</div>
+								<div class="showed-content">
+									<img th:src="@{/assets/images/portfolio-image.png}" alt="">
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="col-lg-3 col-sm-6">
+						<a href="#">
+							<div class="item wow bounceInUp" data-wow-duration="1s" data-wow-delay="0.4s">
+								<div class="hidden-content">
+									<h4>Trần Huy Hạnh Phúc</h4>
+									<p>2 điểm toán THPT Quốc Gia. Hiện đang là sinh viên chuyên ngành CNTT trường Đh SPKT tpHCM</p>
+								</div>
+								<div class="showed-content">
+								<img th:src="@{/assets/images/portfolio-image.png}" alt="">
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="col-lg-3 col-sm-6">
+						<a href="#">
+							<div class="item wow bounceInUp" data-wow-duration="1s" data-wow-delay="0.5s">
+								<div class="hidden-content">
+									<h4>Trương Thị Anh Thư</h4>
+									<p>1.6 điểm toán THPT Quốc Gia. Hiện đang là sinh viên chuyên ngành CNTT trường Đh SPKT tpHCM</p>
+								</div>
+								<div class="showed-content">
+									<img th:src="@{/assets/images/portfolio-image.png}" alt="">
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="col-lg-3 col-sm-6">
+						<a href="#">
+							<div class="item wow bounceInUp" data-wow-duration="1s" data-wow-delay="0.6s">
+								<div class="hidden-content">
+									<h4>Lê Phước Thành</h4>
+									<p>9.4 điểm toán THPT Quốc Gia. Hiện đang là sinh viên chuyên ngành CNTT trường Đh SPKT tpHCM</p>
+								</div>
+								<div class="showed-content">
+									<img th:src="@{/assets/images/portfolio-image.png}" alt="">
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <div id="blog" class="our-blog section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-6 wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.25s">
-            <div class="section-heading">
-              <h2>Check Out What Is <em>Trending</em> In Our Latest <span>News</span></h2>
-            </div>
-          </div>
-          <div class="col-lg-6 wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.25s">
-            <div class="top-dec">
-              <img th:src="@{/assets/images/blog-dec.png}" alt="">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.25s">
-            <div class="left-image">
-              <a href="#"><img th:src="@{/assets/images/big-blog-thumb.jpg}" alt="Workspace Desktop"></a>
-              <div class="info">
-                <div class="inner-content">
-                  <ul>
-                    <li><i class="fa fa-calendar"></i> 24 Mar 2021</li>
-                    <li><i class="fa fa-users"></i> TemplateMo</li>
-                    <li><i class="fa fa-folder"></i> Branding</li>
-                  </ul>
-                  <a href="#"><h4>SEO Agency &amp; Digital Marketing</h4></a>
-                  <p>Lorem ipsum dolor sit amet, consectetur and sed doer ket eismod tempor incididunt ut labore et dolore magna...</p>
-                  <div class="main-blue-button">
-                    <a href="#">Discover More</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.25s">
-            <div class="right-list">
-              <ul>
-                <li>
-                  <div class="left-content align-self-center">
-                    <span><i class="fa fa-calendar"></i> 18 Mar 2021</span>
-                    <a href="#"><h4>New Websites &amp; Backlinks</h4></a>
-                    <p>Lorem ipsum dolor sit amsecteturii and sed doer ket eismod...</p>
-                  </div>
-                  <div class="right-image">
-                    <a href="#"><img th:src="@{/assets/images/blog-thumb-01.jpg}" alt=""></a>
-                  </div>
-                </li>
-                <li>
-                  <div class="left-content align-self-center">
-                    <span><i class="fa fa-calendar"></i> 14 Mar 2021</span>
-                    <a href="#"><h4>SEO Analysis &amp; Content Ideas</h4></a>
-                    <p>Lorem ipsum dolor sit amsecteturii and sed doer ket eismod...</p>
-                  </div>
-                  <div class="right-image">
-                    <a href="#"><img th:src="@{/assets/images/blog-thumb-01.jpg}" alt=""></a>
-                  </div>
-                </li>
-                <li>
-                  <div class="left-content align-self-center">
-                    <span><i class="fa fa-calendar"></i> 06 Mar 2021</span>
-                    <a href="#"><h4>SEO Tips &amp; Digital Marketing</h4></a>
-                    <p>Lorem ipsum dolor sit amsecteturii and sed doer ket eismod...</p>
-                  </div>
-                  <div class="right-image">
-                    <a href="#"><img th:src="@{/assets/images/blog-thumb-01.jpg}" alt=""></a>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+		<div id="blog" class="our-blog section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-6 wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.25s">
+						<div class="section-heading">
+							<h2>Các khóa học<em> Hot nhất</em> &<span> Được cập nhật mới nhất</span></h2>
+						</div>
+					</div>
+					<div class="col-lg-6 wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.25s">
+						<div class="top-dec">
+							<img th:src="@{/assets/images/blog-dec.png}" alt="">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.25s">
+						<div class="left-image">
+							<a href="#"><img th:src="@{https://info.ehl.edu/hubfs/Blog-EHL-Insights/Blog-Header-EHL-Insights/e_learning_course.jpg}" alt="Workspace Desktop"></a>
+							<div class="info">
+								<div class="inner-content">
+									<ul>
+										<li><i class="fa fa-calendar"></i> 18 Nov 2024</li>
+										<li><i class="fa fa-users"></i>100 Học Viên</li></br>
+										<li><i class="fa fa-folder"></i> 6 Tháng</li>
+									</ul>
+									<a href="#">
+										<h4>Ngữ pháp Tiếng Anh tinh gọn (2025)</h4>
+									</a>
+									<p>Ngữ pháp Tiếng Anh tinh gọn (2025): Bao gồm những chủ điểm Ngữ pháp quan trọng nhất, đã xuất hiện trong đề thi minh họa môn Tiếng Anh năm 2025 (Công bố ngày 18/10/2024). Khóa học giúp em nhanh chóng làm chủ và dành trọn điểm các câu hỏi Ngữ pháp trong đề thi chính thức năm 2025</p>
+									<div class="main-blue-button">
+										<a href="#">Tìm hiểu thêm</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.25s">
+						<div class="right-list">
+							<ul>
+								<li>
+									<div class="left-content align-self-center">
+										<span><i class="fa fa-calendar"></i>01 Jan 2025</span>
+										<a href="#">
+											<h4>Luyện thi đánh giá năng lực môn Tiếng Anh 2025 (Combo Cấp tốc)</h4>
+										</a>
+										<p>Luyện thi đánh giá năng lực môn Tiếng Anh (2025): Chinh phục bài thi Tiếng Anh trong đề thi Đánh giá năng lực của Đại học Quốc Gia TP.HCM theo chuẩn cấu trúc - mức độ đề thi minh họa năm 2025.</p>
+									</div>
+								</li>
+								<li>
+									<div class="left-content align-self-center">
+										<span><i class="fa fa-calendar"></i> 20 Mar 2025</span>
+										<a href="#">
+											<h4>Luyện toàn diện các dạng câu hỏi trong đề thi (2025)</h4>
+										</a>
+										<p>Nâng cấp vốn từ vựng trọng điểm theo chủ đề quan trọng nhất và tự tin giải quyết các dạng bài trong đề thi thông qua các bài giảng kĩ lưỡng cung cấp kiến thức, kĩ năng, mẹo làm bài hiệu quả nhất.</p>
+									</div>
+								</li>
+								<li>
+									<div class="left-content align-self-center">
+										<span><i class="fa fa-calendar"></i> 01 May 2025</span>
+										<a href="#">
+											<h4>Ngân hàng tốt nghiệp THPT 2025</h4>
+										</a>
+										<p>Khóa học cung cấp các Bộ đề thi kiểm tra định kì trên lớp: Bộ đề thi thử tốt nghiệp THPT 2025 theo chuẩn cấu trúc đề minh họa. Tất cả đề thi trong khóa học đều được có lời giải chi tiết 100%.</p>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <div id="contact" class="contact-us section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-6 align-self-center wow fadeInLeft" data-wow-duration="0.5s" data-wow-delay="0.25s">
-            <div class="section-heading">
-              <h2>Feel Free To Send Us a Message About Your Website Needs</h2>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed doer ket eismod tempor incididunt ut labore et dolores</p>
-              <div class="phone-info">
-                <h4>For any enquiry, Call Us: <span><i class="fa fa-phone"></i> <a href="#">010-020-0340</a></span></h4>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 wow fadeInRight" data-wow-duration="0.5s" data-wow-delay="0.25s">
-            <form id="contact" action="" method="post">
-              <div class="row">
-                <div class="col-lg-6">
-                  <fieldset>
-                    <input type="name" name="name" id="name" placeholder="Name" autocomplete="on" required>
-                  </fieldset>
-                </div>
-                <div class="col-lg-6">
-                  <fieldset>
-                    <input type="surname" name="surname" id="surname" placeholder="Surname" autocomplete="on" required>
-                  </fieldset>
-                </div>
-                <div class="col-lg-12">
-                  <fieldset>
-                    <input type="text" name="email" id="email" pattern="[^ @]*@[^ @]*" placeholder="Your Email" required="">
-                  </fieldset>
-                </div>
-                <div class="col-lg-12">
-                  <fieldset>
-                    <textarea name="message" type="text" class="form-control" id="message" placeholder="Message" required=""></textarea>  
-                  </fieldset>
-                </div>
-                <div class="col-lg-12">
-                  <fieldset>
-                    <button type="submit" id="form-submit" class="main-button ">Send Message</button>
-                  </fieldset>
-                </div>
-              </div>
-              <div class="contact-dec">
-                <img th:src="@{/assets/images/contact-decoration.png}" alt="">
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+		<div id="contact" class="contact-us section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-6 align-self-center wow fadeInLeft" data-wow-duration="0.5s"
+						data-wow-delay="0.25s">
+						<div class="section-heading">
+							<h2>Hãy gửi bất kì thắc mắc nào của bạn đến với chúng tôi!</h2>
+							<p>Đội ngũ Chăm sóc khách hàng của chúng tôi hoạt động từ 8:00 - 17:30.
+							Hãy đợi để nhận được giải đáp sớm nhất đến bạn nhé!</p>
+							<div class="phone-info">
+								<h4>Ngoài ra, có thể liên hệ với chúng tôi qua: <span><i class="fa fa-phone"></i> <a
+											href="#">010-020-0340</a></span></h4>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 wow fadeInRight" data-wow-duration="0.5s" data-wow-delay="0.25s">
+						<form id="contact" action="" method="post">
+							<div class="row">
+								<div class="col-lg-6">
+									<fieldset>
+										<input type="name" name="name" id="name" placeholder="Tên" autocomplete="on"
+											required>
+									</fieldset>
+								</div>
+								<div class="col-lg-6">
+									<fieldset>
+										<input type="surname" name="surname" id="surname" placeholder="Tên đệm"
+											autocomplete="on" required>
+									</fieldset>
+								</div>
+								<div class="col-lg-12">
+									<fieldset>
+										<input type="text" name="email" id="email" pattern="[^ @]*@[^ @]*"
+											placeholder="Nhập địa chỉ email của bạn" required="">
+									</fieldset>
+								</div>
+								<div class="col-lg-12">
+									<fieldset>
+										<textarea name="message" type="text" class="form-control" id="message"
+											placeholder="Ghi chú..." required=""></textarea>
+									</fieldset>
+								</div>
+								<div class="col-lg-12">
+									<fieldset>
+										<button type="submit" id="form-submit" class="main-button ">Gửi!</button>
+									</fieldset>
+								</div>
+							</div>
+							<div class="contact-dec">
+								<img th:src="@{/assets/images/contact-decoration.png}" alt="">
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-  <!-- ***** Footer Area Start ***** -->
-  <div th:insert="~{decorators/footers :: footer}"></div>
-  <!-- ***** Footer Area End ***** -->
+	<!-- ***** Footer Area Start ***** -->
+	<div th:insert="~{decorators/footers :: footer}"></div>
+	<!-- ***** Footer Area End ***** -->
 
-  <!-- Scripts -->
-  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
-  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-  <script th:src="@{/assets/js/wow.min.js}"></script>
-  <script th:src="@{/assets/js/owl-carousel.js}"></script>
-  <script th:src="@{/assets/js/animation.js}"></script>
-  <script th:src="@{/assets/js/imagesloaded.js}"></script>
-  <script th:src="@{/assets/js/custom.js}"></script>
+	<!-- Scripts -->
+	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<script th:src="@{/assets/js/wow.min.js}"></script>
+	<script th:src="@{/assets/js/owl-carousel.js}"></script>
+	<script th:src="@{/assets/js/animation.js}"></script>
+	<script th:src="@{/assets/js/imagesloaded.js}"></script>
+	<script th:src="@{/assets/js/custom.js}"></script>
 
 </body>
+
 </html>

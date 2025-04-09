@@ -18,15 +18,15 @@ import Toast from './src/toast'
 import Tooltip from './src/tooltip'
 
 export default {
-  Alert,
-  Button,
-  Carousel,
-  Collapse,
-  Dropdown,
-  Modal,
-  Popover,
-  ScrollSpy,
-  Tab,
-  Toast,
-  Tooltip
+	Alert,
+	Button,
+	Carousel,
+	Collapse,
+	Dropdown,
+	Modal,
+	Popover,
+	ScrollSpy,
+	Tab,
+	Toast,
+	Tooltip
 }

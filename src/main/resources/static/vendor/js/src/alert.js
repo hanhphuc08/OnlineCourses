@@ -6,10 +6,10 @@
  */
 
 import {
-  defineJQueryPlugin,
-  emulateTransitionEnd,
-  getElementFromSelector,
-  getTransitionDurationFromElement
+	defineJQueryPlugin,
+	emulateTransitionEnd,
+	getElementFromSelector,
+	getTransitionDurationFromElement
 } from './util/index'
 import Data from './dom/data'
 import EventHandler from './dom/event-handler'
@@ -43,82 +43,82 @@ const CLASS_NAME_SHOW = 'show'
  */
 
 class Alert extends BaseComponent {
-  // Getters
+	// Getters
 
-  static get DATA_KEY() {
-    return DATA_KEY
-  }
+	static get DATA_KEY() {
+		return DATA_KEY
+	}
 
-  // Public
+	// Public
 
-  close(element) {
-    const rootElement = element ? this._getRootElement(element) : this._element
-    const customEvent = this._triggerCloseEvent(rootElement)
+	close(element) {
+		const rootElement = element ? this._getRootElement(element) : this._element
+		const customEvent = this._triggerCloseEvent(rootElement)
 
-    if (customEvent === null || customEvent.defaultPrevented) {
-      return
-    }
+		if (customEvent === null || customEvent.defaultPrevented) {
+			return
+		}
 
-    this._removeElement(rootElement)
-  }
+		this._removeElement(rootElement)
+	}
 
-  // Private
+	// Private
 
-  _getRootElement(element) {
-    return getElementFromSelector(element) || element.closest(`.${CLASS_NAME_ALERT}`)
-  }
+	_getRootElement(element) {
+		return getElementFromSelector(element) || element.closest(`.${CLASS_NAME_ALERT}`)
+	}
 
-  _triggerCloseEvent(element) {
-    return EventHandler.trigger(element, EVENT_CLOSE)
-  }
+	_triggerCloseEvent(element) {
+		return EventHandler.trigger(element, EVENT_CLOSE)
+	}
 
-  _removeElement(element) {
-    element.classList.remove(CLASS_NAME_SHOW)
+	_removeElement(element) {
+		element.classList.remove(CLASS_NAME_SHOW)
 
-    if (!element.classList.contains(CLASS_NAME_FADE)) {
-      this._destroyElement(element)
-      return
-    }
+		if (!element.classList.contains(CLASS_NAME_FADE)) {
+			this._destroyElement(element)
+			return
+		}
 
-    const transitionDuration = getTransitionDurationFromElement(element)
+		const transitionDuration = getTransitionDurationFromElement(element)
 
-    EventHandler.one(element, 'transitionend', () => this._destroyElement(element))
-    emulateTransitionEnd(element, transitionDuration)
-  }
+		EventHandler.one(element, 'transitionend', () => this._destroyElement(element))
+		emulateTransitionEnd(element, transitionDuration)
+	}
 
-  _destroyElement(element) {
-    if (element.parentNode) {
-      element.parentNode.removeChild(element)
-    }
+	_destroyElement(element) {
+		if (element.parentNode) {
+			element.parentNode.removeChild(element)
+		}
 
-    EventHandler.trigger(element, EVENT_CLOSED)
-  }
+		EventHandler.trigger(element, EVENT_CLOSED)
+	}
 
-  // Static
+	// Static
 
-  static jQueryInterface(config) {
-    return this.each(function () {
-      let data = Data.getData(this, DATA_KEY)
+	static jQueryInterface(config) {
+		return this.each(function() {
+			let data = Data.getData(this, DATA_KEY)
 
-      if (!data) {
-        data = new Alert(this)
-      }
+			if (!data) {
+				data = new Alert(this)
+			}
 
-      if (config === 'close') {
-        data[config](this)
-      }
-    })
-  }
+			if (config === 'close') {
+				data[config](this)
+			}
+		})
+	}
 
-  static handleDismiss(alertInstance) {
-    return function (event) {
-      if (event) {
-        event.preventDefault()
-      }
+	static handleDismiss(alertInstance) {
+		return function(event) {
+			if (event) {
+				event.preventDefault()
+			}
 
-      alertInstance.close(this)
-    }
-  }
+			alertInstance.close(this)
+		}
+	}
 }
 
 /**
