@@ -104,7 +104,7 @@
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/*  Custom Styles */
+/*  Start Custom Styles */
 .bg-blue-300 {
 	background-color: #e2f1f7 !important;
 }
@@ -193,6 +193,8 @@
 	border-top-right-radius: 4px; /* Xóa bo góc trên màn hình nhỏ */
 	border-top-left-radius: 4px;
 }
+/* End Custom Styles */
+
 
 /* Footer Styles */
 .main-footer {
