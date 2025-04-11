@@ -16220,9 +16220,11 @@ fieldset:disabled .btn {
 	border-bottom: 2px solid #3494E6;
 }
 
+
 .product-image:hover .product-hover-overlay {
 	opacity: 1;
 }
+
 
 .product-image:hover .btn {
 	transform: none !important;
