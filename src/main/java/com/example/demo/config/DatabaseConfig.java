@@ -15,7 +15,7 @@ public class DatabaseConfig {
 		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 		dataSource.setUrl("jdbc:mysql://localhost:3306/courseonline?useSSL=false&serverTimezone=UTC");
 		dataSource.setUsername("root");
-		dataSource.setPassword("");
+		dataSource.setPassword("123456");
 
 		return dataSource;
 	}

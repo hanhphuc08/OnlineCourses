@@ -69,5 +69,6 @@ public class CourseRepository {
             throw new RuntimeException("Error fetching courses for CategoryID " + categoryId + ": " + e.getMessage());
         }
     }
+    
 
 }

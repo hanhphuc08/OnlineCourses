@@ -45,7 +45,6 @@ public class CategoryController {
 	// Hiển thị courses thuộc categoryType
 	
     @GetMapping("/category/type/{id}")
-    @ResponseBody
     public String coursesByCategoryType(@PathVariable int id, Model model) {
         categoryType type = categoryService.getCategoryTypeByIdWithCourses(id);
         List<categoryType> categoryTypes = categoryService.getAllWithCategoriesAndCourses();
@@ -56,45 +55,6 @@ public class CategoryController {
         for (category cat : categories) {
             if (cat.getCourses() != null) {
                 courses.addAll(cat.getCourses());
-            }
-        }
-
-        logger.info("Courses thuộc CategoryType ID={}:", id);
-        logger.info("CategoryType: ID={}, Name={}, Description={}, CreateDate={}, UpdateDate={}",
-                type.getCategoryTypeID(),
-                type.getCategoryTypeName(),
-                type.getDescription(),
-                type.getCreateDate(),
-                type.getUpdateDate());
-
-        if (categories.isEmpty()) {
-            logger.info("  Không có categories nào thuộc CategoryType ID={}", id);
-        } else {
-            for (category cat : categories) {
-                logger.info("  Category: ID={}, Name={}, Description={}, CreateDate={}, UpdateDate={}",
-                        cat.getCategoryID(),
-                        cat.getCategoryName(),
-                        cat.getDescription(),
-                        cat.getCreateDate(),
-                        cat.getUpdateDate());
-
-                List<course> catCourses = cat.getCourses();
-                if (catCourses.isEmpty()) {
-                    logger.info("    Không có courses nào thuộc Category ID={}", cat.getCategoryID());
-                } else {
-                    for (course c : catCourses) {
-                        logger.info("    Course: ID={}, Title={}, Description={}, Prices={}, Quantity={}, Status={}, Duration={}, CreateAt={}, Image={}",
-                                c.getCourseID(),
-                                c.getTitle(),
-                                c.getDescription(),
-                                c.getPrices(),
-                                c.getQuantity(),
-                                c.getStatus(),
-                                c.getDuration(),
-                                c.getCreateAt(),
-                                c.getImage());
-                    }
-                }
             }
         }
 
@@ -110,28 +70,11 @@ public class CategoryController {
 	// Hiển thị courses thuộc category
 
 	@GetMapping("/category/{id}")
-	@ResponseBody
 	public String coursesByCategory(@PathVariable int id, Model model) {
 		category cat = categoryService.getCategoryByIdWithCourses(id);
 		List<categoryType> categoryTypes = categoryService.getAllWithCategoriesAndCourses();
 
 		List<course> courses = cat.getCourses();
-
-		logger.info("Courses thuộc Category ID={}:", id);
-		logger.info("Category: ID={}, Name={}, Description={}, CreateDate={}, UpdateDate={}", cat.getCategoryID(),
-				cat.getCategoryName(), cat.getDescription(), cat.getCreateDate(), cat.getUpdateDate());
-
-		if (courses.isEmpty()) {
-			logger.info("  Không có courses nào thuộc Category ID={}", id);
-		} else {
-			for (course c : courses) {
-				logger.info(
-						"  Course: ID={}, Title={}, Description={}, Prices={}, Quantity={}, Status={}, Duration={}, CreateAt={}, Image={}",
-						c.getCourseID(), c.getTitle(), c.getDescription(), c.getPrices(), c.getQuantity(),
-						c.getStatus(), c.getDuration(), c.getCreateAt(), c.getImage());
-			}
-		}
-
 		model.addAttribute("courses", courses);
 		model.addAttribute("categoryTypes", categoryTypes);
 		model.addAttribute("selectedTypeId", 0);

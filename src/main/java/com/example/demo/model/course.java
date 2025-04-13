@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class course {
 	
@@ -15,6 +16,17 @@ public class course {
     private LocalDateTime createAt;
     private String image;
     private category category;
+    
+    private String formattedDuration;
+    
+    public String getFormattedDuration() {
+        return formattedDuration;
+    }
+
+    public void setFormattedDuration(String formattedDuration) {
+        this.formattedDuration = formattedDuration;
+    }
+    
 	public course() {
 		super();
 	}
@@ -58,8 +70,14 @@ public class course {
 		return duration;
 	}
 	public void setDuration(LocalDateTime duration) {
-		this.duration = duration;
-	}
+        this.duration = duration;
+        if (duration != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            this.formattedDuration = duration.format(formatter);
+        } else {
+            this.formattedDuration = "Không xác định";
+        }
+    }
 	public LocalDateTime getCreateAt() {
 		return createAt;
 	}
