@@ -15,4 +15,8 @@ public class AuthController {
     public String register() {
         return "commons/register";
     }
+    @GetMapping("/forgot-password")
+    public String forgotPassword() {
+        return "commons/forgotpassword";
+    }
 } 

@@ -9,4 +9,8 @@ public class CategoryController {
     public String product() {
         return "category/allproduct";
     }
+	 @GetMapping("/product-detail")
+	    public String productDetail() {
+	        return "category/productdetail";
+	    }
 }

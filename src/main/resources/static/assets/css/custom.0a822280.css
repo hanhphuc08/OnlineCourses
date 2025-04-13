@@ -105,6 +105,13 @@
 }
 
 /*  Start Custom Styles */
+.light-blue{
+	color: #CCDDEE;
+}
+.dark-blue{
+	color: #001A35;
+}
+
 .bg-blue-300 {
 	background-color: #e2f1f7 !important;
 }
@@ -179,16 +186,52 @@
 	border-radius: 4px;
 	color: #fff !important;
 }
+.img-bg-custom{
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: cover;
+	border-radius: 4px;
+}
 
 .text-color-custom {
 	color: #fe3f40;
 }
+.text-align-justify{
+	text-align: justify;
+}
+
+.btn1-custom {
+	margin-right: 20px;
+	min-width: 300px;
+	background-color: #fff;
+	border: 1px solid #fe3f40;
+	color: #fe3f40;
+	border-radius: 20px !important;
+	padding: 12px !important;
+	
+}
+
+.btn2-custom{
+	min-width: 300px;
+	margin-right: 20px;
+	background-color: #fe3f40;
+	border: 1px solid #fe3f40;
+	color: #fff;
+	border-radius: 20px !important;
+	padding: 12px !important;
+}
+
 
 .shadow-custom {
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 	border-radius: 4px;
 }
-
+.border-radius-custom{
+	border-radius: 8px !important;
+}
+.border-radius-cus{
+		border-radius: 20px !important;
+}
 .img-custom {
 	border-top-right-radius: 4px; /* Xóa bo góc trên màn hình nhỏ */
 	border-top-left-radius: 4px;
