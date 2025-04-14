@@ -31,32 +31,36 @@
 					<div class="card border-0 shadow">
 						<div class="card-body">
 							<h5 class="text-uppercase mb-4">Register</h5>
-							<form th:action="@{/register}" method="post">
+							<form id="registerForm">
 								<div class="mb-3">
-									<label class="form-label" for="name">Name</label>
-									<input class="form-control" type="text" name="name" id="name"
-										placeholder="Enter your name">
+									<label class="form-label" for="fullname">Full Name</label>
+									<input class="form-control" type="text" name="fullname" id="fullname" required
+										placeholder="Enter your full name">
 								</div>
 								<div class="mb-3">
 									<label class="form-label" for="email">Email address</label>
-									<input class="form-control" type="email" name="email" id="email"
+									<input class="form-control" type="email" name="email" id="email" required
 										placeholder="Enter your email">
 								</div>
 								<div class="mb-3">
+									<label class="form-label" for="phoneNumber">Phone Number</label>
+									<input class="form-control" type="tel" name="phoneNumber" id="phoneNumber" required
+										placeholder="Enter your phone number">
+								</div>
+								<div class="mb-3">
 									<label class="form-label" for="password">Password</label>
-									<input class="form-control" type="password" name="password" id="password"
+									<input class="form-control" type="password" name="password" id="password" required
 										placeholder="Enter your password">
 								</div>
 								<div class="mb-3">
 									<label class="form-label" for="password-confirm">Confirm Password</label>
-									<input class="form-control" type="password" name="password-confirm"
-										id="password-confirm" placeholder="Confirm your password">
+									<input class="form-control" type="password" name="password-confirm" id="password-confirm" required
+										placeholder="Confirm your password">
 								</div>
 								<div class="mb-3">
 									<div class="form-check">
-										<input class="form-check-input" type="checkbox" id="terms">
-										<label class="form-check-label" for="terms">I agree to the terms and
-											conditions</label>
+										<input class="form-check-input" type="checkbox" id="terms" required>
+										<label class="form-check-label" for="terms">I agree to the terms and conditions</label>
 									</div>
 								</div>
 								<button class="btn btn-dark" type="submit">Register</button>
@@ -79,6 +83,67 @@
 			</div>
 		</div>
 	</section>
+
+	<script>
+	document.getElementById('registerForm').addEventListener('submit', function(e) {
+		e.preventDefault();
+		
+		// Validate password match
+		const password = document.getElementById('password').value;
+		const confirmPassword = document.getElementById('password-confirm').value;
+		if (password !== confirmPassword) {
+			alert('Passwords do not match!');
+			return;
+		}
+
+		// Create user object with correct field names
+		const user = {
+			fullname: document.getElementById('fullname').value.trim(),
+			email: document.getElementById('email').value.trim(),
+			phoneNumber: document.getElementById('phoneNumber').value.trim(),
+			password: password
+		};
+
+		// Validate required fields
+		if (!user.fullname || !user.email || !user.phoneNumber || !user.password) {
+			alert('Please fill in all required fields');
+			return;
+		}
+
+		// Send registration request
+		fetch('/api/auth/register', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json'
+			},
+			body: JSON.stringify(user)
+		})
+		.then(response => {
+			if (!response.ok) {
+				return response.text().then(text => {
+					throw new Error(text || 'Registration failed');
+				});
+			}
+			return response.json();
+		})
+		.then(data => {
+			// Store tokens
+			if (data.jwtToken) {
+				localStorage.setItem('jwtToken', data.jwtToken);
+			}
+			if (data.customToken) {
+				localStorage.setItem('firebaseToken', data.customToken);
+			}
+			
+			// Redirect to home page
+			window.location.href = '/';
+		})
+		.catch(error => {
+			alert(error.message);
+		});
+	});
+	</script>
 </body>
 
 </html>

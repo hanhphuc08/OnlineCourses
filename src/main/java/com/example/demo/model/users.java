@@ -1,4 +1,5 @@
 package com.example.demo.model;
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 public class users {
@@ -86,8 +87,8 @@ public class users {
 	        return createDate;
 	    }
 
-	    public void setCreateDate(LocalDateTime createDate) {
-	        this.createDate = createDate;
+	    public void setCreateDate(LocalDateTime date) {
+	        this.createDate = date;
 	    }
 
 	    public LocalDateTime getUpdateDate() {

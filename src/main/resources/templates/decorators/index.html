@@ -83,8 +83,6 @@
 			</div>
 		</div>
 
-		
-
 		<div id="services" class="our-services section">
 			<div class="container">
 				<div class="row">
@@ -341,6 +339,59 @@
 	<script th:src="@{/assets/js/animation.js}"></script>
 	<script th:src="@{/assets/js/imagesloaded.js}"></script>
 	<script th:src="@{/assets/js/custom.js}"></script>
+
+	<!-- Add before closing body tag -->
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	document.addEventListener('DOMContentLoaded', function() {
+		console.log('Index.html DOM loaded, setting up role listeners...');
+		
+		// Function to update role-specific actions
+		function updateRoleActions(role) {
+			console.log('Updating role actions for role:', role);
+			const roleActions = document.getElementById('role-specific-actions');
+			
+			if (role) {
+				roleActions.style.display = 'block';
+				
+				// Hide all role-specific sections first
+				document.getElementById('owner-actions').style.display = 'none';
+				document.getElementById('staff-actions').style.display = 'none';
+				
+				// Show the appropriate section based on role
+				if (role === 'Owner') {
+					console.log('Showing Owner actions in index.html');
+					document.getElementById('owner-actions').style.display = 'block';
+				} else if (role === 'Staff') {
+					console.log('Showing Staff actions in index.html');
+					document.getElementById('staff-actions').style.display = 'block';
+				}
+			} else {
+				roleActions.style.display = 'none';
+			}
+		}
+		
+		// Listen for role updates from headers.html
+		document.addEventListener('userRoleUpdated', function(event) {
+			console.log('Received role update in index.html:', event.detail.role);
+			updateRoleActions(event.detail.role);
+		});
+		
+		// Initial check for user role
+		const userStr = localStorage.getItem('user');
+		if (userStr) {
+			try {
+				const user = JSON.parse(userStr);
+				const role = user.role ? user.role.roleID : null;
+				console.log('Initial role check in index.html:', role);
+				updateRoleActions(role);
+			} catch (error) {
+				console.error('Error parsing user data in index.html:', error);
+			}
+		}
+	});
+	/*]]>*/
+	</script>
 
 </body>
 

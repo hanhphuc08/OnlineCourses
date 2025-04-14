@@ -71,7 +71,7 @@ public class CourseRepository {
     }
 	// Get all courses with their categories
 	public List<course> findAllCourses() {
-        String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description AS CategoryDescription, cat.CreateDate AS CategoryCreateDate, cat.UpdateDate AS CategoryUpdateDate " +
+        String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, cat.CreateDate, cat.UpdateDate " +
                      "FROM course c " +
                      "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID";
         try {
@@ -83,7 +83,7 @@ public class CourseRepository {
 
     // Get courses by CategoryID with their categories
     public List<course> findCoursesByCategoryId(int categoryId) {
-        String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description AS CategoryDescription, cat.CreateDate AS CategoryCreateDate, cat.UpdateDate AS CategoryUpdateDate " +
+        String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, cat.CreateDate, cat.UpdateDate " +
                      "FROM course c " +
                      "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
                      "WHERE c.CategoryID = ?";

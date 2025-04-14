@@ -63,8 +63,7 @@
 				<div class="col-xl-5 col-lg-7 col-md-8">
 					<div class="product shadow-custom">
 						<div class="px-4 py-4 text-black">
-							<form action="<%= request.getContextPath() %>/login"
-								method="post">
+							<form id="loginForm">
 								<div class="text-center mb-3">
 									<div
 										class="d-flex align-items-center justify-content-center mb-3">
@@ -85,16 +84,20 @@
 
 								<!-- Form inputs -->
 								<div class="form-outline mb-3">
-									<label class="form-label" for="username">Email hoặc Số
-										điện thoại</label> <input type="text" id="username" name="username"
-										class="form-control border-radius-custom"  />
+									<label class="form-label" for="emailOrPhone">Email hoặc Số
+										điện thoại</label> <input type="text" id="emailOrPhone" name="emailOrPhone"
+										class="form-control border-radius-custom" required />
 								</div>
 
 								<div class="form-outline mb-3">
 									<label class="form-label" for="password">Mật khẩu</label> <input
 										type="password" id="password" name="password"
-										class="form-control border-radius-custom" />
+										class="form-control border-radius-custom" required />
 								</div>
+
+								<!-- Error message div -->
+								<div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+
 								<div class="mb-3">
 									<button class="btn btn-cart28tech w-100 py-3 border-radius-custom" type="submit">
 										Đăng nhập</button>
@@ -146,5 +149,58 @@
 	<script th:src="@{/assets/js/animation.js}"></script>
 	<script th:src="@{/assets/js/imagesloaded.js}"></script>
 	<script th:src="@{/assets/js/custom.js}"></script>
+
+	<!-- Add this script before the closing body tag -->
+	<script>
+	$(document).ready(function() {
+		$('#loginForm').on('submit', function(e) {
+			e.preventDefault();
+			
+			// Hide any previous error messages
+			$('#errorMessage').hide();
+			
+			// Get form data
+			const emailOrPhone = $('#emailOrPhone').val().trim();
+			const password = $('#password').val().trim();
+			
+			// Create request payload
+			const loginData = {
+				emailOrPhone: emailOrPhone,
+				password: password
+			};
+			
+			// Send login request
+			$.ajax({
+				url: '/api/auth/login',
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify(loginData),
+				success: function(response) {
+					console.log('Login successful:', response);
+					// Store tokens and user info
+					if (response.jwtToken) {
+						localStorage.setItem('jwtToken', response.jwtToken);
+					}
+					if (response.firebaseCustomToken) {
+						localStorage.setItem('firebaseCustomToken', response.firebaseCustomToken);
+					}
+					if (response.user) {
+						localStorage.setItem('user', JSON.stringify(response.user));
+					}
+					// Redirect to home page
+					window.location.href = '/';
+				},
+				error: function(xhr) {
+					console.error('Login failed:', xhr);
+					let errorMessage = 'Đăng nhập thất bại. Vui lòng thử lại.';
+					if (xhr.responseText) {
+						errorMessage = xhr.responseText;
+					}
+					$('#errorMessage').text(errorMessage).show();
+				}
+			});
+		});
+	});
+	</script>
 </body>
 </html>
