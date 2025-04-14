@@ -3,6 +3,7 @@ package com.example.demo.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class course {
 	
@@ -16,8 +17,27 @@ public class course {
     private LocalDateTime createAt;
     private String image;
     private category category;
+    private List<learningPath> learningPaths;
     
-    private String formattedDuration;
+    private String categoryName;
+    
+    
+    public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public List<learningPath> getLearningPaths() {
+		return learningPaths;
+	}
+
+	public void setLearningPaths(List<learningPath> learningPaths) {
+		this.learningPaths = learningPaths;
+	}
+	private String formattedDuration;
     
     public String getFormattedDuration() {
         return formattedDuration;
