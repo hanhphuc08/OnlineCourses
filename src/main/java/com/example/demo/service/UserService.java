@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -90,12 +91,22 @@ public class UserService implements UserDetailsService {
 
     public users findByEmailOrPhone(String emailOrPhone) {
         logger.info("Finding user by email/phone: {}", emailOrPhone);
-        return userRepository.findByEmail(emailOrPhone)
-                .orElseGet(() -> userRepository.findByPhoneNumber(emailOrPhone)
-                        .orElseThrow(() -> {
-                            logger.error("User not found with email/phone: {}", emailOrPhone);
-                            return new UsernameNotFoundException("User not found");
-                        }));
+        
+        // Try finding by email first
+        Optional<users> userByEmail = userRepository.findByEmail(emailOrPhone);
+        if (userByEmail.isPresent()) {
+            return userByEmail.get();
+        }
+        
+        // If not found by email, try phone number
+        Optional<users> userByPhone = userRepository.findByPhoneNumber(emailOrPhone);
+        if (userByPhone.isPresent()) {
+            return userByPhone.get();
+        }
+        
+        // If not found by either, throw exception with specific message
+        logger.error("User not found with email/phone: {}", emailOrPhone);
+        throw new UsernameNotFoundException("Không tìm thấy tài khoản với email hoặc số điện thoại: " + emailOrPhone);
     }
     
     public users findByUid(String uid) {
@@ -163,8 +174,15 @@ public class UserService implements UserDetailsService {
         
         // Ensure phone number is in correct format
         if (user.getPhoneNumber() != null) {
-            if (!user.getPhoneNumber().startsWith("+")) {
-                user.setPhoneNumber("+84" + user.getPhoneNumber().replaceAll("^0", ""));
+            String phone = user.getPhoneNumber();
+            if (phone.startsWith("+84")) {
+                user.setPhoneNumber("0" + phone.substring(3));
+            } else if (phone.startsWith("84")) {
+                user.setPhoneNumber("0" + phone.substring(2));
+            } else if (phone.startsWith("0")) {
+                user.setPhoneNumber(phone);
+            } else {
+                user.setPhoneNumber("0" + phone);
             }
         }
 

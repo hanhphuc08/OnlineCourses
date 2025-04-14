@@ -67,8 +67,10 @@ public class UserRepository {
             if (user != null) {
                 logger.info("Found user: {}, role: {}", user.getEmail(), 
                     user.getRole() != null ? user.getRole().getRoleID() : "no role");
+                return Optional.of(user);
             }
-            return Optional.ofNullable(user);
+            logger.error("No user found with email: {}", email);
+            return Optional.empty();
         } catch (Exception e) {
             logger.error("Error finding user by email {}: {}", email, e.getMessage());
             return Optional.empty();
@@ -78,15 +80,29 @@ public class UserRepository {
     public Optional<users> findByPhoneNumber(String phoneNumber) {
         String sql = "SELECT u.*, r.RoleName FROM users u " +
                     "LEFT JOIN roles r ON u.RoleID = r.RoleID " +
-                    "WHERE u.PhoneNumber = ?";
+                    "WHERE u.PhoneNumber = ? OR u.PhoneNumber = ? OR u.PhoneNumber = ? OR u.PhoneNumber = ?";
         try {
             logger.info("Finding user by phone number: {}", phoneNumber);
-            users user = jdbcTemplate.queryForObject(sql, userRowMapper, phoneNumber);
+            // Remove any potential formatting
+            String cleanPhone = phoneNumber.replaceAll("[^0-9]", "");
+            
+            // Try different formats
+            String withZero = cleanPhone.startsWith("0") ? cleanPhone : "0" + cleanPhone;
+            String with84 = cleanPhone.startsWith("84") ? cleanPhone : "84" + cleanPhone.substring(1);
+            String withPlus84 = "+" + with84;
+            String justNumbers = cleanPhone.startsWith("0") ? cleanPhone.substring(1) : cleanPhone;
+            
+            users user = jdbcTemplate.queryForObject(sql, userRowMapper, 
+                withZero, with84, withPlus84, justNumbers);
+            
             if (user != null) {
                 logger.info("Found user: {}, role: {}", user.getPhoneNumber(), 
                     user.getRole() != null ? user.getRole().getRoleID() : "no role");
+                return Optional.of(user);
             }
-            return Optional.ofNullable(user);
+            logger.error("No user found with phone number: {} (tried formats: {}, {}, {}, {})", 
+                phoneNumber, withZero, with84, withPlus84, justNumbers);
+            return Optional.empty();
         } catch (Exception e) {
             logger.error("Error finding user by phone number {}: {}", phoneNumber, e.getMessage());
             return Optional.empty();

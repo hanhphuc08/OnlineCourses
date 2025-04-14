@@ -40,7 +40,19 @@ public class users {
 	    }
 
 	    public void setPhoneNumber(String phoneNumber) {
-	        this.phoneNumber = phoneNumber;
+	        if (phoneNumber != null) {
+	            if (phoneNumber.startsWith("+84")) {
+	                this.phoneNumber = "0" + phoneNumber.substring(3);
+	            } else if (phoneNumber.startsWith("84")) {
+	                this.phoneNumber = "0" + phoneNumber.substring(2);
+	            } else if (phoneNumber.startsWith("0")) {
+	                this.phoneNumber = phoneNumber;
+	            } else {
+	                this.phoneNumber = "0" + phoneNumber;
+	            }
+	        } else {
+	            this.phoneNumber = phoneNumber;
+	        }
 	    }
 
 	    public String getFullname() {
