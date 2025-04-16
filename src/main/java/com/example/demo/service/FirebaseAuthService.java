@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.users;
-import com.example.demo.util.JwtUtil;
+import com.example.demo.util.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
@@ -32,10 +32,11 @@ public class FirebaseAuthService {
 
     public Map<String, Object> registerUser(users user) throws FirebaseAuthException {
         // Create user in Firebase Authentication
+    	String phoneE164 = PhoneNumberUtil.convertPhoneToE164(user.getPhoneNumber());
         UserRecord.CreateRequest request = new UserRecord.CreateRequest()
             .setEmail(user.getEmail())
             .setPassword(user.getPassword())
-            .setPhoneNumber(user.getPhoneNumber())
+            .setPhoneNumber(phoneE164)
             .setDisplayName(user.getFullname())
             .setEmailVerified(false);
 

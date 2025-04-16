@@ -27,6 +27,7 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
+    
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
