@@ -177,16 +177,19 @@
 				data: JSON.stringify(loginData),
 				success: function(response) {
 					console.log('Login successful:', response);
-					// Store tokens and user info
+					// Store JWT token and user info with correct keys
 					if (response.jwtToken) {
-						localStorage.setItem('jwtToken', response.jwtToken);
-					}
-					if (response.firebaseCustomToken) {
-						localStorage.setItem('firebaseCustomToken', response.firebaseCustomToken);
+						localStorage.setItem('jwt', response.jwtToken);
 					}
 					if (response.user) {
-						localStorage.setItem('user', JSON.stringify(response.user));
+						localStorage.setItem('userData', JSON.stringify(response.user));
 					}
+					
+					// Dispatch login success event
+					window.dispatchEvent(new CustomEvent('LOGIN_SUCCESS', {
+						detail: { user: response.user }
+					}));
+					
 					// Redirect to home page
 					window.location.href = '/';
 				},

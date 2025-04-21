@@ -1,10 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.users;
-import com.example.demo.service.FirebaseAuthService;
+import com.example.demo.model.role;
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtUtil;
-import com.google.firebase.auth.FirebaseAuthException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -29,16 +28,13 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtUtil jwtUtil;
-    private final FirebaseAuthService firebaseAuthService;
 
     public AuthController(AuthenticationManager authenticationManager, 
                          UserService userService, 
-                         JwtUtil jwtUtil,
-                         FirebaseAuthService firebaseAuthService) {
+                         JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.jwtUtil = jwtUtil;
-        this.firebaseAuthService = firebaseAuthService;
     }
 
     @PostMapping("/register")
@@ -73,14 +69,25 @@ public class AuthController {
                 // Phone number not found, continue
             }
 
-            // Register user with Firebase
-            Map<String, Object> response = firebaseAuthService.registerUser(user);
+            // Set default role for new user
+            role defaultRole = new role();
+            defaultRole.setRoleID("CUSTOMER"); // Set default role to CUSTOMER
+            user.setRole(defaultRole);
+
+            // Register user
+            users savedUser = userService.registerUser(user);
             
-            // Return success response with tokens
+            // Generate JWT token with role
+            String jwtToken = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getRole().getRoleID());
+            
+            // Return success response with token
+            Map<String, Object> response = new HashMap<>();
+            response.put("jwtToken", jwtToken);
+            response.put("user", savedUser);
+            
             return ResponseEntity.ok(response);
-        } catch (FirebaseAuthException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
+            logger.error("Registration failed: ", e);
             return ResponseEntity.badRequest().body("Registration failed: " + e.getMessage());
         }
     }
@@ -98,57 +105,31 @@ public class AuthController {
             // Authenticate user
             users user = userService.authenticateUser(emailOrPhone, password);
             
-            // Log user information including role
-            logger.info("User authenticated: {}, Role: {}", user.getEmail(), 
-                user.getRole() != null ? user.getRole().getRoleID() : "No role");
-
-            // Generate tokens
-            String jwtToken = jwtUtil.generateToken(user.getEmail());
-            String firebaseToken = firebaseAuthService.createCustomToken(String.valueOf(user.getUserID()));
-
-            // Return response with complete user info including role
-            Map<String, Object> response = new HashMap<>();
-            response.put("uid", user.getUserID());
-            response.put("jwtToken", jwtToken);
-            response.put("firebaseToken", firebaseToken);
-            response.put("user", user);  // This should include the role information
+            // Generate JWT token with role
+            String jwtToken = jwtUtil.generateToken(user.getEmail(), user.getRole().getRoleID());
             
-            // Add role information separately for clarity
-            if (user.getRole() != null) {
-                response.put("role", user.getRole());
-            }
-
+            // Return success response with token and redirect URL
+            Map<String, Object> response = new HashMap<>();
+            response.put("jwtToken", jwtToken);
+            response.put("user", user);
+            response.put("redirectUrl", "/cart"); // Default redirect to cart
+            
             return ResponseEntity.ok(response);
-        } catch (UsernameNotFoundException e) {
-            return ResponseEntity.badRequest().body("Invalid credentials");
         } catch (Exception e) {
-            logger.error("Login error: ", e);
-            return ResponseEntity.badRequest().body(e.getMessage());
+            logger.error("Login failed: ", e);
+            return ResponseEntity.badRequest().body("Login failed: " + e.getMessage());
         }
     }
 
-    @PostMapping("/verify-token")
-    public ResponseEntity<?> verifyToken(@RequestBody Map<String, String> tokenRequest) {
-        String idToken = tokenRequest.get("idToken");
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
         try {
-            // Xác thực Firebase ID token
-            UserDetails userDetails = firebaseAuthService.verifyIdToken(idToken);
-            
-            // Lấy thông tin người dùng từ database
-            users user = userService.findByEmailOrPhone(userDetails.getUsername());
-            
-            // Tạo JWT token mới
-            String jwtToken = jwtUtil.generateToken(user.getEmail());
-            
-            // Kết hợp kết quả
-            Map<String, Object> response = new HashMap<>();
-            response.put("uid", userDetails.getUsername());
-            response.put("jwtToken", jwtToken);
-            response.put("user", user);
-            
-            return ResponseEntity.ok(response);
-        } catch (FirebaseAuthException e) {
-            return ResponseEntity.badRequest().body("Invalid token");
+            // Xóa authentication
+            SecurityContextHolder.clearContext();
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            logger.error("Logout error: ", e);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

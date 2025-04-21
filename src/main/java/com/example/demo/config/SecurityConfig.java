@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import com.example.demo.security.FirebaseAuthenticationFilter;
 import com.example.demo.security.JwtAuthenticationFilter;
 import com.example.demo.service.UserService;
 import org.springframework.context.annotation.Bean;
@@ -16,11 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Arrays;
 
@@ -31,62 +30,87 @@ public class SecurityConfig {
 
     private final UserService userService;
     private final JwtAuthenticationFilter jwtAuthFilter;
-    private final FirebaseAuthenticationFilter firebaseAuthFilter;
 
     public SecurityConfig(@Lazy UserService userService, 
-                         @Lazy JwtAuthenticationFilter jwtAuthFilter,
-                         @Lazy FirebaseAuthenticationFilter firebaseAuthFilter) {
+                         @Lazy JwtAuthenticationFilter jwtAuthFilter) {
         this.userService = userService;
         this.jwtAuthFilter = jwtAuthFilter;
-        this.firebaseAuthFilter = firebaseAuthFilter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        System.out.println("=== CONFIGURING SECURITY ===");
+        
         http
             .csrf().disable()
             .cors().configurationSource(corsConfigurationSource())
             .and()
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(
-                    "/api/auth/**",
-                    "/api/courses/**",
-                    "/",
-                    "/assets/**",
-                    "/vendor/**",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**",
-                    "/login",
-                    "/register",
-                    "/login.html",
-                    "/register.html",
-                    "/auth/**",
-                    "/category/**",
-                    "/category",
-                    "/courses/**",
-                    "/courses",
-                    "/error"
-                ).permitAll()
-                .requestMatchers("/staff/**").hasRole("STAFF")
-                .requestMatchers("/owner/**").hasRole("OWNER")
-                .requestMatchers("/customer/**").hasRole("CUSTOMER")
-                .anyRequest().authenticated()
-            )
+            .authorizeHttpRequests(authorize -> {
+                System.out.println("Configuring authorization rules...");
+                authorize
+                    .requestMatchers(
+                        "/api/auth/**",
+                        "/api/courses/**",
+                        "/",
+                        "/home",
+                        "/assets/**",
+                        "/vendor/**",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+                        "/login",
+                        "/register",
+                        "/login.html",
+                        "/register.html",
+                        "/auth/**",
+                        "/category/**",
+                        "/category",
+                        "/courses/**",
+                        "/courses",
+                        "/error",
+                        "/api/auth/logout"
+                    ).permitAll()
+                    .requestMatchers("/cart", "/cart/**").authenticated()
+                    .requestMatchers("/staff/**").hasRole("STAFF")
+                    .requestMatchers("/owner/**").hasRole("OWNER")
+                    .requestMatchers("/customer/**").hasRole("CUSTOMER")
+                    .anyRequest().authenticated();
+                System.out.println("Authorization rules configured.");
+            })
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-            .exceptionHandling(exceptions -> exceptions
+            .exceptionHandling(exceptionHandling -> exceptionHandling
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.sendRedirect("/access-denied");
+                    System.out.println("=== ACCESS DENIED ===");
+                    System.out.println("Request URI: " + request.getRequestURI());
+                    System.out.println("Exception: " + accessDeniedException.getMessage());
+                    
+                    String requestedWithHeader = request.getHeader("X-Requested-With");
+                    if ("XMLHttpRequest".equals(requestedWithHeader)) {
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.getWriter().write("Access denied");
+                    } else {
+                        response.sendRedirect("/login");
+                    }
                 })
                 .authenticationEntryPoint((request, response, authException) -> {
-                    response.sendRedirect("/login");
+                    System.out.println("=== AUTHENTICATION FAILED ===");
+                    System.out.println("Request URI: " + request.getRequestURI());
+                    System.out.println("Exception: " + authException.getMessage());
+                    
+                    String requestedWithHeader = request.getHeader("X-Requested-With");
+                    if ("XMLHttpRequest".equals(requestedWithHeader)) {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.getWriter().write("Unauthorized");
+                    } else {
+                        response.sendRedirect("/login");
+                    }
                 })
             );
 
-        http.addFilterBefore(jwtAuthFilter, SecurityContextHolderFilter.class);
-        http.addFilterAfter(firebaseAuthFilter, SecurityContextHolderFilter.class);
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        System.out.println("=== SECURITY CONFIGURATION COMPLETE ===");
 
         return http.build();
     }

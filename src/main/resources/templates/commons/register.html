@@ -179,12 +179,9 @@
                                     return response.json();
                                 })
                                 .then(data => {
-                                    // Store tokens
+                                    // Store JWT token
                                     if (data.jwtToken) {
                                         localStorage.setItem('jwtToken', data.jwtToken);
-                                    }
-                                    if (data.customToken) {
-                                        localStorage.setItem('firebaseToken', data.customToken);
                                     }
                                     
                                     // Redirect to home page
