@@ -22,15 +22,17 @@
 					</div>
 					<div class="col-lg-6 text-end">
 						<ul class="list-inline mb-0" id="auth-buttons">
-							<li class="list-inline-item"><a href="/login" class="text-muted">Đăng nhập</a></li>
+							<li class="list-inline-item"><a th:href="@{/login}" class="text-muted">Đăng nhập</a></li>
 							<li class="list-inline-item">|</li>
-							<li class="list-inline-item"><a href="/register" class="text-muted">Đăng ký</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Top Bar End-->
+							<li class="list-inline-item"><a th:href="@{/register}" class="text-muted">Đăng ký</a></li>
+							<li class="list-inline-item">|</li>
+							<li class="list-inline-item"><a th:href="@{/forgot-password}" class="text-muted">Quên mật khẩu</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Top Bar End-->
 
 		<!-- Navbar -->
 		<nav class="navbar navbar-expand-lg">
@@ -49,17 +51,10 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<!-- Main navigation links - will be updated dynamically -->
 					<ul class="navbar-nav mx-auto" id="main-nav">
-						<li class="nav-item"><a class="nav-link active"
-							th:href="@{/}">Trang chủ</a></li>
-						<li class="nav-item"><a class="nav-link"
-							th:href="@{/category}">Khóa học</a></li>
-
-						<li class="nav-item"><a class="nav-link" th:href="@{/shop}">Lịch
-								học và Live</a></li>
-						<li class="nav-item"><a class="nav-link" th:href="@{/blog}">Giới
-								thiệu</a></li>
-						<!-- <li class="nav-item"><a class="nav-link"
-							th:href="@{/contact}">Liên hệ</a></li> -->
+						<li class="nav-item"><a class="nav-link active" th:href="@{/}">Trang chủ</a></li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/category}">Khóa học</a></li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/schedule}">Lịch học và Live</a></li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/introduce}">Giới thiệu</a></li>
 					</ul>
 
 					<!-- Right aligned nav items -->
@@ -206,15 +201,15 @@
 					navItems = `
 						<li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
 						<li class="nav-item"><a class="nav-link" href="/category">Khóa học</a></li>
-						<li class="nav-item"><a class="nav-link" href="/shop">Lịch học và Live</a></li>
-						<li class="nav-item"><a class="nav-link" href="/blog">Giới thiệu</a></li>
+						<li class="nav-item"><a class="nav-link" href="/schedule">Lịch học và Live</a></li>
+						<li class="nav-item"><a class="nav-link" href="/introduce">Giới thiệu</a></li>
 					`;
 				} else {
 					console.log('Setting up Guest navigation');
 					navItems = `
 						<li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
 						<li class="nav-item"><a class="nav-link" href="/category">Khóa học</a></li>
-						<li class="nav-item"><a class="nav-link" href="/blog">Giới thiệu</a></li>
+						<li class="nav-item"><a class="nav-link" href="/introduce">Giới thiệu</a></li>
 					`;
 				}
 
@@ -250,6 +245,8 @@
 						<li class="list-inline-item"><a href="/login" class="text-muted">Đăng nhập</a></li>
 						<li class="list-inline-item">|</li>
 						<li class="list-inline-item"><a href="/register" class="text-muted">Đăng ký</a></li>
+						<li class="list-inline-item">|</li>
+						<li class="list-inline-item"><a href="/forgot-password" class="text-muted">Quên mật khẩu</a></li>
 					`;
 				}
 			}

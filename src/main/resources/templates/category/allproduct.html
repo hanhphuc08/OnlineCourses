@@ -134,10 +134,11 @@
 										th:src="@{https://cdn-main.28tech.com.vn/media/anh-khoa-hoc/anh_dai_dien_khoa_hoc/new/c%C6%A1%20s%E1%BB%9F%20d%E1%BB%AF%20li%E1%BB%87u%20v%C3%A0%20sql.png}"
 										alt="product" />
 									<div class="product-hover-overlay">
-                                        <a class="product-hover-overlay-link" th:href="detail.html"></a>
+                                        <a class="product-hover-overlay-link" th:href="@{/course/detail/{id}(id=${course.courseID})}"></a>
                                         <div class="product-hover-overlay-buttons">
-                                           <a class="btn btn-cart28tech btn-buy" th:href="@{/cart}"><i
-												class="fa fa-shopping-cart"></i></a>
+                                           <a class="btn btn-cart28tech btn-buy cart-link" href="#" onclick="handleCartClick(event)">
+                                                <i class="fa fa-shopping-cart"></i>
+                                            </a>
                                             <a class="btn btn-detail28tech btn-buy quick-view-btn"
                                                 href="#"
                                                 data-bs-toggle="modal"
@@ -253,6 +254,42 @@
             const quickViewButtons = document.querySelectorAll('.quick-view-btn');
             const modal = document.getElementById('quickViewModal');
 
+            // Hàm xử lý click cart
+            window.handleCartClick = function(e) {
+                e.preventDefault();
+                console.log('=== CART CLICK HANDLER START ===');
+                
+                const jwtToken = localStorage.getItem('jwt');
+                console.log('JWT Token exists:', !!jwtToken);
+                
+                if (!jwtToken) {
+                    console.log('No token found, redirecting to login');
+                    window.location.href = '/login';
+                    return false;
+                }
+                
+                // Chuyển hướng đến cart với token
+                const cartUrl = '/cart?token=' + encodeURIComponent(jwtToken);
+                console.log('Redirecting to:', cartUrl);
+                window.location.href = cartUrl;
+                
+                return false;
+            };
+
+            // Hàm xử lý click chi tiết sản phẩm
+            window.handleProductDetailClick = function(e, courseId) {
+                e.preventDefault();
+                console.log('=== PRODUCT DETAIL CLICK HANDLER START ===');
+                console.log('Course ID:', courseId);
+                
+                // Chuyển hướng đến trang chi tiết
+                const detailUrl = `/course/detail/${courseId}`;
+                console.log('Redirecting to:', detailUrl);
+                window.location.href = detailUrl;
+                
+                return false;
+            };
+
             quickViewButtons.forEach(button => {
                 button.addEventListener('click', function () {
                     const courseId = this.getAttribute('data-course-id');
@@ -262,21 +299,17 @@
                     const image = this.getAttribute('data-course-image');
                     const duration = this.getAttribute('data-course-duration');
 
-                   
                     document.getElementById('quickViewTitleCourse').textContent = title;
                     document.getElementById('quickViewDescription').textContent = description;
                     document.getElementById('quickViewPrice').textContent = price;
                     document.getElementById('quickViewImage').src = image;
                     document.getElementById('quickViewDuration').textContent = duration;
 
-                   
-                   
                     const buyNowLink = document.getElementById('quickViewBuyNow');
                     buyNowLink.href = `/checkout?courseId=${courseId}`;
                 });
             });
 
-            
             modal.addEventListener('hidden.bs.modal', function () {
                 document.getElementById('quickViewTitleCourse').textContent = '';
                 document.getElementById('quickViewDescription').textContent = '';

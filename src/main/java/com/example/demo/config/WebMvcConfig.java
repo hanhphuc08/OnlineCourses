@@ -24,6 +24,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/register").setViewName("commons/register");
         registry.addViewController("/cart").setViewName("commons/cart");
         registry.addViewController("/error").setViewName("error");
+        registry.addViewController("/introduce").setViewName("commons/introduce");
+        registry.addViewController("/schedule").setViewName("commons/schedule");
+        registry.addViewController("/forgot-password").setViewName("commons/forgotpassword");
+        registry.addViewController("/course/detail/**").setViewName("category/productdetail");
     }
 
     @Override
@@ -32,19 +36,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")  // Áp dụng cho tất cả các request
                 .excludePathPatterns(    // Loại trừ các đường dẫn không cần kiểm tra
                         "/api/auth/**",
-                        "/login",
-                        "/register",
                         "/assets/**",
                         "/vendor/**",
                         "/css/**",
                         "/js/**",
                         "/images/**",
-                        "/error",
-                        "/api/courses/**",
-                        "/courses",
-                        "/category",
-                        "/category/**"
-                          
+                        "/course/detail/**"
                 );
     }
 } 

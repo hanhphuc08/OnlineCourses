@@ -25,9 +25,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String path = request.getRequestURI();
         System.out.println("Processing request to: " + path);
         
-        // Danh sách các đường dẫn công khai không cần đăng nhập
+        // Bỏ qua các đường dẫn công khai
         if (isPublicPath(path)) {
-            System.out.println("Public path, allowing access: " + path);
+            System.out.println("Skipping authentication for public path: " + path);
             return true;
         }
         
@@ -35,71 +35,25 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String token = request.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
-            System.out.println("Token found in Authorization header");
         }
         
         // Nếu không có token trong header, kiểm tra trong URL parameter
         if (token == null) {
             token = request.getParameter("token");
-            if (token != null) {
-                System.out.println("Token found in URL parameter");
-            }
-        }
-        
-        // Nếu không có token trong header hoặc URL, kiểm tra trong cookie
-        if (token == null) {
-            jakarta.servlet.http.Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (jakarta.servlet.http.Cookie cookie : cookies) {
-                    if (cookie.getName().equals("jwt_token")) {
-                        token = cookie.getValue();
-                        System.out.println("Token found in cookie");
-                        break;
-                    }
-                }
-            }
         }
 
         // Kiểm tra token
         if (token != null) {
             try {
-                // Lấy claims từ token
                 Claims claims = jwtUtil.extractAllClaims(token);
-                System.out.println("Token claims: " + claims);
                 
                 // Kiểm tra token có hết hạn không
                 if (claims.getExpiration().before(new java.util.Date())) {
-                    System.out.println("Token expired, redirecting to login");
                     response.sendRedirect("/login");
                     return false;
                 }
 
-                // Lấy role từ claims
-                String role = claims.get("role", String.class);
-                System.out.println("User role from token: " + role);
-                
-                // Kiểm tra quyền truy cập dựa trên đường dẫn và role
-                if (path.startsWith("/cart")) {
-                    System.out.println("Accessing cart page");
-                    if (role != null) {
-                        System.out.println("Access granted to cart for role: " + role);
-                        return true;
-                    } else {
-                        System.out.println("Access denied to cart - No role found");
-                        response.sendRedirect("/login");
-                        return false;
-                    }
-                }
-                
-                // Cho phép tất cả user đã đăng nhập truy cập các trang chung
-                if (path.startsWith("/courses") || path.equals("/") || path.equals("/home")) {
-                    System.out.println("Access granted to public path: " + path);
-                    return true;
-                }
-                
-                System.out.println("Access denied for path: " + path + ", role: " + role);
-                response.sendRedirect("/login");
-                return false;
+                return true;
                 
             } catch (Exception e) {
                 System.out.println("Error processing token: " + e.getMessage());
@@ -108,7 +62,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             }
         }
 
-        System.out.println("No token found, redirecting to login");
         response.sendRedirect("/login");
         return false;
     }
@@ -119,16 +72,19 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                path.equals("/home") || 
                path.equals("/login") || 
                path.equals("/register") || 
+               path.equals("/introduce") ||
+               path.equals("/schedule") ||
+               path.equals("/forgot-password") ||
+               path.equals("/category") ||
                path.startsWith("/assets/") || 
                path.startsWith("/vendor/") || 
                path.startsWith("/css/") || 
                path.startsWith("/js/") || 
                path.startsWith("/images/") || 
                path.startsWith("/api/auth/") || 
-               path.startsWith("/api/courses/") || 
-               path.equals("/error") || 
-               path.startsWith("/courses") || 
-               path.equals("/category") || 
-               path.startsWith("/category/");
+               path.startsWith("/category/") ||
+               path.startsWith("/courses/") ||
+               path.startsWith("/course/detail/") ||
+               path.equals("/error");
     }
 } 

@@ -37,15 +37,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String requestURI = request.getRequestURI();
             System.out.println("\n=== JWT FILTER START ===");
             System.out.println("Processing request: " + requestURI);
-            System.out.println("Request method: " + request.getMethod());
+
+            // Kiểm tra xem request có cần xác thực không
+            if (shouldNotFilter(request)) {
+                System.out.println("Skipping JWT filter for public path: " + requestURI);
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             String jwt = null;
             String username = null;
 
             // Kiểm tra token trong header
             String authorizationHeader = request.getHeader("Authorization");
-            System.out.println("Authorization header: " + (authorizationHeader != null ? "present" : "not present"));
-            
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 jwt = authorizationHeader.substring(7);
                 System.out.println("JWT token found in Authorization header");
@@ -59,37 +63,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (jwt != null) {
                 try {
                     username = jwtUtil.extractUsername(jwt);
-                    System.out.println("Username from token: " + username);
-                    
                     String role = jwtUtil.extractRole(jwt);
-                    System.out.println("Role from token: " + role);
                     
                     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                         UserDetails userDetails = this.userService.loadUserByUsername(username);
-                        System.out.println("User authorities: " + userDetails.getAuthorities());
-
+                        
                         if (jwtUtil.validateToken(jwt, userDetails)) {
                             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                                     userDetails, null, userDetails.getAuthorities());
                             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                             System.out.println("Authentication set in SecurityContext");
-                            
-                            // Nếu đang truy cập cart, kiểm tra role
-                            if (requestURI.startsWith("/cart")) {
-                                boolean hasValidRole = userDetails.getAuthorities().stream()
-                                    .anyMatch(a -> a.getAuthority().startsWith("ROLE_"));
-                                System.out.println("Cart access - Has valid role: " + hasValidRole);
-                            }
                         } else {
                             System.out.println("Token validation failed");
+                            response.sendRedirect("/login");
+                            return;
                         }
                     }
                 } catch (Exception e) {
                     System.out.println("Error processing token: " + e.getMessage());
+                    response.sendRedirect("/login");
+                    return;
                 }
             } else {
                 System.out.println("No JWT token found in request");
+                response.sendRedirect("/login");
+                return;
             }
 
             System.out.println("=== JWT FILTER END ===\n");
@@ -98,7 +97,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             System.out.println("Error in JWT filter: " + e.getMessage());
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+            response.sendRedirect("/login");
         }
     }
 
@@ -106,17 +105,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
         return path.startsWith("/api/auth/") || 
-               path.startsWith("/login") || 
-               path.startsWith("/register") || 
                path.startsWith("/assets/") || 
                path.startsWith("/vendor/") || 
                path.startsWith("/css/") || 
                path.startsWith("/js/") || 
-               path.startsWith("/images/") || 
-               path.startsWith("/api/courses/") || 
-               path.equals("/error") || 
-               path.startsWith("/courses") || 
-               path.equals("/category") || 
-               path.startsWith("/category/");
+               path.startsWith("/images/") ||
+               path.equals("/") ||
+               path.equals("/home") ||
+               path.equals("/login") ||
+               path.equals("/register") ||
+               path.equals("/introduce") ||
+               path.equals("/schedule") ||
+               path.equals("/forgot-password") ||
+               path.equals("/category") ||
+               path.startsWith("/category/") ||
+               path.startsWith("/courses/") ||
+               path.startsWith("/course/detail/") ||
+               path.equals("/error");
     }
 } 

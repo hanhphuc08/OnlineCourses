@@ -50,7 +50,6 @@ public class SecurityConfig {
                 authorize
                     .requestMatchers(
                         "/api/auth/**",
-                        "/api/courses/**",
                         "/",
                         "/home",
                         "/assets/**",
@@ -60,17 +59,15 @@ public class SecurityConfig {
                         "/images/**",
                         "/login",
                         "/register",
-                        "/login.html",
-                        "/register.html",
-                        "/auth/**",
+                        "/introduce",
+                        "/schedule",
+                        "/forgot-password",
                         "/category/**",
-                        "/category",
                         "/courses/**",
-                        "/courses",
-                        "/error",
-                        "/api/auth/logout"
+                        "/course/detail/**",
+                        "/error"
                     ).permitAll()
-                    .requestMatchers("/cart", "/cart/**").authenticated()
+                    .requestMatchers("/cart/**").authenticated()
                     .requestMatchers("/staff/**").hasRole("STAFF")
                     .requestMatchers("/owner/**").hasRole("OWNER")
                     .requestMatchers("/customer/**").hasRole("CUSTOMER")
@@ -85,27 +82,13 @@ public class SecurityConfig {
                     System.out.println("=== ACCESS DENIED ===");
                     System.out.println("Request URI: " + request.getRequestURI());
                     System.out.println("Exception: " + accessDeniedException.getMessage());
-                    
-                    String requestedWithHeader = request.getHeader("X-Requested-With");
-                    if ("XMLHttpRequest".equals(requestedWithHeader)) {
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        response.getWriter().write("Access denied");
-                    } else {
-                        response.sendRedirect("/login");
-                    }
+                    response.sendRedirect("/login");
                 })
                 .authenticationEntryPoint((request, response, authException) -> {
                     System.out.println("=== AUTHENTICATION FAILED ===");
                     System.out.println("Request URI: " + request.getRequestURI());
                     System.out.println("Exception: " + authException.getMessage());
-                    
-                    String requestedWithHeader = request.getHeader("X-Requested-With");
-                    if ("XMLHttpRequest".equals(requestedWithHeader)) {
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.getWriter().write("Unauthorized");
-                    } else {
-                        response.sendRedirect("/login");
-                    }
+                    response.sendRedirect("/login");
                 })
             );
 
