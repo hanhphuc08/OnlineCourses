@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>Online Course</title>
+
+<!-- Google fonts-->
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;700&amp;display=swap">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;800&amp;display=swap">
+<link rel="stylesheet"
+	th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}"
+	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2Lw=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- CSS files -->
+<link rel="stylesheet"
+	th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+<link rel="stylesheet"
+	th:href="@{/assets/css/style.default.7acfaf01.css}">
+<link rel="stylesheet" th:href="@{/assets/css/custom.0a822280.css}">
+<link rel="stylesheet"
+	th:href="@{/assets/css/templatemo-space-dynamic.css}">
+
+<style>
+    .content-section {
+        background-color: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-contact-custom {
+        background-color: white;
+        color: black;
+        border-radius: 20px;
+        border: 1px solid black;
+        padding: 4px 6px;
+    }
+
+    .btn-contact-custom:hover {
+        background-color: #ff4081;
+        color: white;
+        border: 1px solid #ff4081;
+        border-radius: 20px;
+        padding: 4px 6px;
+    }
+
+    /* custom giống phần tab ở trang khóa học chi tiết */
+    .nav-tabs-custom .nav-link {
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    .nav-tabs-custom .nav-link.active {
+        color: #dc3545 !important;
+        border-bottom: 2px solid #dc3545 !important;
+    }
+
+    .schedule-card {
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .date-filter {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            padding: 12px;
+            background-color: #ffefd5;
+        }
+        .date-filter button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #dc3545;
+        }
+        .date-filter span {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+</style>
+</head>
+
+
+<body>
+	<!-- ***** Header Area Start ***** -->
+	<div th:insert="~{decorators/headers :: header}"></div>
+	<!-- ***** Header Area End ***** -->
+
+	<!-- Fullscreen search area-->
+	<div class="search-area-wrapper">
+		<div
+			class="search-area d-flex align-items-center justify-content-center">
+			<div class="close-btn">
+				<svg class="svg-icon svg-icon-light w-3rem h-3rem">
+              <use xlink:href="#close-1"> </use>
+            </svg>
+			</div>
+			<form class="search-area-form" action="#">
+				<div class="mb-4 position-relative">
+					<input class="search-area-input" type="search" name="search"
+						id="search" placeholder="What are you looking for?">
+					<button class="search-area-button" type="submit">
+						<svg class="svg-icon">
+                  <use xlink:href="#search-1"> </use>
+                </svg>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!-- /Fullscreen search area-->
+	
+	<!--Section area-->
+    <div class="container my-5">
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Lịch học và Live</li>
+            </ol>
+        </nav>
+
+        <ul class="nav nav-tabs nav-tabs-custom mb-4" id="scheduleTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="general-schedule-tab" data-bs-toggle="tab" href="#general-schedule"
+                    role="tab" aria-controls="general-schedule" aria-selected="true">Lịch học chung</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="my-schedule-tab" data-bs-toggle="tab" href="#my-schedule" role="tab"
+                    aria-controls="my-schedule" aria-selected="false">Lịch học của tui</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="detailed-plan-tab" data-bs-toggle="tab" href="#detailed-plan" role="tab"
+                    aria-controls="detailed-plan" aria-selected="false">Lộ trình học chi tiết</a>
+            </li>
+        </ul>
+
+        <div class="date-filter">
+            <button><i class="fas fa-chevron-left"></i></button>
+            <span>14/04/2025 - 20/04/2025</span>
+            <button><i class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <!-- Tabs Content -->
+        <div class="tab-content content-section" id="scheduleTabsContent">
+            <!-- Lịch học chung Tab -->
+            <div class="tab-pane fade show active" id="general-schedule" role="tabpanel"
+                aria-labelledby="general-schedule-tab">
+                <div class="schedule-card p-3">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h6>[TS2025.14] Đề thi thử tốt nghiệp THPT 2025: THPT Nghệ An - Hà Tĩnh</h6>
+                            <p class="text-muted mb-0">Nguồn hàng đề thi tốt nghiệp THPT...</p>
+                            <p class="text-muted mb-0"><i class="fas fa-clock text-danger me-2"></i>01:52 20/04/2025</p>
+                        </div>
+                        <a href="#" class="btn btn-contact-custom ms-auto">Tham gia ngay</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lịch học của tui Tab -->
+            <div class="tab-pane fade" id="my-schedule" role="tabpanel" aria-labelledby="my-schedule-tab">
+                <div class="schedule-card p-3">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h6>Ngày 71: Dự đoán đặc biệt Độc diễn - Đọc hiểu trọng để thi (Buổi 1)</h6>
+                            <p class="text-muted mb-0">Tổng Ôn trọng điểm & Luyện đề dự...</p>
+                            <p class="text-muted mb-0"><i class="fas fa-clock text-danger me-2"></i>00:00 20/04/2025</p>
+                        </div>
+                        <a href="#" class="btn btn-contact-custom ms-auto">Tham gia ngay</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lộ trình học chi tiết Tab -->
+            <div class="tab-pane fade" id="detailed-plan" role="tabpanel" aria-labelledby="detailed-plan-tab">
+                <p class="text-muted">Chưa có lộ trình học chi tiết. Vui lòng kiểm tra lại sau!</p>
+            </div>
+        </div>
+
+	<!-- ***** Footer Area Start ***** -->
+	<div th:insert="~{decorators/footers :: footer}"></div>
+	<!-- ***** Footer Area End ***** -->
+
+	<!-- Scripts -->
+	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<script th:src="@{/assets/js/wow.min.js}"></script>
+	<script th:src="@{/assets/js/owl-carousel.js}"></script>
+	<script th:src="@{/assets/js/animation.js}"></script>
+	<script th:src="@{/assets/js/imagesloaded.js}"></script>
+	<script th:src="@{/assets/js/custom.js}"></script>
+</body>
+</html>

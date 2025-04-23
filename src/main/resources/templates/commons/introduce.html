@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>Online Course</title>
+
+<!-- Google fonts-->
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;700&amp;display=swap">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;800&amp;display=swap">
+<link rel="stylesheet"
+	th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}"
+	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2Lw=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- CSS files -->
+<link rel="stylesheet"
+	th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+<link rel="stylesheet"
+	th:href="@{/assets/css/style.default.7acfaf01.css}">
+<link rel="stylesheet" th:href="@{/assets/css/custom.0a822280.css}">
+<link rel="stylesheet"
+	th:href="@{/assets/css/templatemo-space-dynamic.css}">
+</head>
+<style>
+.content-section {
+	background-color: white;
+	padding: 40px;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.skill-card {
+	background-color: #fce4ec;
+	border: none;
+	border-radius: 10px;
+}
+
+.btn-contact-custom {
+	background-color: white;
+	color: black;
+	border-radius: 20px;
+	border: 1px solid black;
+	padding: 4px 6px;
+}
+
+.btn-contact-custom:hover {
+	background-color: #ff4081;
+	color: white;
+	border: 1px solid #ff4081;
+	border-radius: 20px;
+	padding: 4px 6px;
+}
+</style>
+<body>
+	<!-- ***** Header Area Start ***** -->
+	<div th:insert="~{decorators/headers :: header}"></div>
+	<!-- ***** Header Area End ***** -->
+
+	<!-- Fullscreen search area-->
+	<div class="search-area-wrapper">
+		<div
+			class="search-area d-flex align-items-center justify-content-center">
+			<div class="close-btn">
+				<svg class="svg-icon svg-icon-light w-3rem h-3rem">
+              <use xlink:href="#close-1"> </use>
+            </svg>
+			</div>
+			<form class="search-area-form" action="#">
+				<div class="mb-4 position-relative">
+					<input class="search-area-input" type="search" name="search"
+						id="search" placeholder="What are you looking for?">
+					<button class="search-area-button" type="submit">
+						<svg class="svg-icon">
+                  <use xlink:href="#search-1"> </use>
+                </svg>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!-- /Fullscreen search area-->
+
+	<!-- Section -->
+<div class="container my-5">
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="header">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Giới thiệu</li>
+        </ol>
+    </nav>
+    <div class="row content-section">
+        <div class="col-lg-4">
+            <img src="https://ngoaingu24h.vn/_next/image?url=%2Fimages%2Fnn24h%2Fabout.png&w=640&q=75" alt="Cô Vũ Thị Mai Phương" class="img-fluid rounded">
+        </div>
+        <div class="col-lg-8">
+            <h1 class="text-danger">Cô Vũ Thị Mai Phương</h1>
+            <h5>Founder & CEO Ngoaingu24h</h5>
+            <p>Chuyên gia Tiếng Anh với hơn 15 năm kinh nghiệm, đạt IELTS 8.0 và TOEIC 990/990. Đã đào tạo hơn 10,000 học viên và nhiều giáo viên trên toàn quốc.</p>
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Thủ Khoa Đ1 và Á khoa A1 năm 2022</li>
+                <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Nhiều học viên đạt điểm 10 môn Tiếng Anh</li>
+                <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Đào tạo hàng ngàn giáo viên khối D1, A1, D07</li>
+            </ul>
+            <h5>Kỹ năng</h5>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card skill-card text-center mb-3">
+                        <div class="card-body">
+                            <h5>8.0</h5>
+                            <p>IELTS</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card skill-card text-center mb-3">
+                        <div class="card-body">
+                            <h5>990/990</h5>
+                            <p>TOEIC</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card skill-card text-center mb-3">
+                        <div class="card-body">
+                            <h5>200/200</h5>
+                            <p>TOEIC Writing</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card skill-card text-center mb-3">
+                        <div class="card-body">
+                            <h5>180/200</h5>
+                            <p>TOEIC Speaking</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h5 class="mt-4">Cộng đồng</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-body d-flex align-items-center">
+                            <img src="https://scontent.fsgn10-2.fna.fbcdn.net/v/t39.30808-1/326572849_562595969140033_3823657108201955856_n.png?stp=cp0_dst-png_s40x40&_nc_cat=103&ccb=1-7&_nc_sid=2d3e12&_nc_eui2=AeELr1p2HdBJfnximJfWHiTgTwRTPNDvWZ1PBFM80O9ZndzpHDhVN4YEaHWIcSTBfE_BiaM7nK__jPK4qEEyiPjb&_nc_ohc=MclgmG87CfIQ7kNvwFyR9kJ&_nc_oc=AdnlaGdTO_AC8Ax4dwmqTBIm8cD3ZgNCrJPxo4U79LAxuBcqJH5DxH4T3_dOhdReM9iqTWsiTj7CkEfzvGUum6_e&_nc_zt=24&_nc_ht=scontent.fsgn10-2.fna&_nc_gid=vZWafSClmaikgPIOz_1qsA&oh=00_AfEGMSyTFhNUcUsBpYn8Md43ltYQm2dGN3QuDIsLeedpWQ&oe=6809917D" alt="Fanpage" class="rounded-circle me-3" width="50">
+                            <div>
+                                <h6>Học tiếng Anh cùng cô Vũ Thị Mai Phương</h6>
+                                <p>1.1M likes · 1.6M followers</p>
+                            </div>
+                            <a href="#" class="btn btn-contact-custom">Theo dõi</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-body d-flex align-items-center">
+                            <img src="https://scontent.fsgn10-2.fna.fbcdn.net/v/t39.30808-1/326572849_562595969140033_3823657108201955856_n.png?stp=cp0_dst-png_s40x40&_nc_cat=103&ccb=1-7&_nc_sid=2d3e12&_nc_eui2=AeELr1p2HdBJfnximJfWHiTgTwRTPNDvWZ1PBFM80O9ZndzpHDhVN4YEaHWIcSTBfE_BiaM7nK__jPK4qEEyiPjb&_nc_ohc=MclgmG87CfIQ7kNvwFyR9kJ&_nc_oc=AdnlaGdTO_AC8Ax4dwmqTBIm8cD3ZgNCrJPxo4U79LAxuBcqJH5DxH4T3_dOhdReM9iqTWsiTj7CkEfzvGUum6_e&_nc_zt=24&_nc_ht=scontent.fsgn10-2.fna&_nc_gid=vZWafSClmaikgPIOz_1qsA&oh=00_AfEGMSyTFhNUcUsBpYn8Md43ltYQm2dGN3QuDIsLeedpWQ&oe=6809917D" alt="Group" class="rounded-circle me-3" width="50">
+                            <div>
+                                <h6>Tiếng Anh cùng Vũ Thị Mai Phương</h6>
+                                <p>434K thành viên</p>
+                            </div>
+                            <a href="#" class="btn btn-contact-custom">Tham gia nhóm</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+	<!-- ***** Footer Area Start ***** -->
+	<div th:insert="~{decorators/footers :: footer}"></div>
+	<!-- ***** Footer Area End ***** -->
+
+	<!-- Scripts -->
+	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<script th:src="@{/assets/js/wow.min.js}"></script>
+	<script th:src="@{/assets/js/owl-carousel.js}"></script>
+	<script th:src="@{/assets/js/animation.js}"></script>
+	<script th:src="@{/assets/js/imagesloaded.js}"></script>
+	<script th:src="@{/assets/js/custom.js}"></script>
+</body>
+</html>

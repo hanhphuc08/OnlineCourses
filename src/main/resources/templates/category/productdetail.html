@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
-
 <title>Online Course</title>
 
 <!-- Google fonts-->
@@ -16,7 +14,10 @@
 	href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;700&amp;display=swap">
 <link rel="stylesheet"
 	href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;800&amp;display=swap">
-
+<link rel="stylesheet"
+	th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}"
+	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2Lw=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
 <!-- CSS files -->
 <link rel="stylesheet"
 	th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
@@ -28,24 +29,51 @@
 	th:href="@{/assets/css/templatemo-space-dynamic.css}">
 
 </head>
-<header>
-	<!-- SVG Sprite -->
-	<div th:insert="~{fragments/svg-sprite :: svg-sprite}"></div>
+<style>
+.form-control-custom {
+	display: block;
+	width: 80%;
+	padding: 0.2rem 0.6rem;
+	font-size: 0.9rem;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #212529;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid #ced4da;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	border-radius: 4px;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
 
-	<!-- ***** Preloader Start ***** -->
-	<div id="js-preloader" class="js-preloader">
-		<div class="preloader-inner">
-			<span class="dot"></span>
-			<div class="dots">
-				<span></span> <span></span> <span></span>
-			</div>
-		</div>
-	</div>
-	<!-- ***** Preloader End ***** -->
+.course-details-wrapper {
+	background-color: #f8f9fa;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
+.rating-custom {
+	padding: 4px 6px;
+	border-radius: 2px;
+}
+
+.nav-tabs-custom .nav-link {
+	font-size: 1rem;
+	font-weight: bold;
+}
+
+.nav-tabs-custom .nav-link.active {
+	color: #dc3545 !important;
+	border-bottom: 2px solid #dc3545 !important;
+}
+</style>
+
+<body>
 	<!-- ***** Header Area Start ***** -->
 	<div th:insert="~{decorators/headers :: header}"></div>
 	<!-- ***** Header Area End ***** -->
+
 	<!-- Fullscreen search area-->
 	<div class="search-area-wrapper">
 		<div
@@ -69,152 +97,246 @@
 		</div>
 	</div>
 	<!-- /Fullscreen search area-->
-</header>
-<section class="product-details py-8">
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-lg-6 py-3 order-2 order-lg-1">
-				<div class="owl-carousel owl-theme owl-dots-modern detail-full"
-					data-slider-id="1">
-					<div class="detail-full-item"
-						style="background: center center url(https://d19m59y37dris4.cloudfront.net/sell/2-0-1/img/photo/kyle-loftus-596319-detail-1.jpg) no-repeat; background-size: cover;"></div>
-				</div>
-			</div>
-			<div
-				class="align-items-start col-lg-6 col-xl-5 ps-lg-5 mb-5 order-1 order-lg-2">
-				<div>
-					<ul class="breadcrumb justify-content-start">
-						<li class="breadcrumb-item"><a href="home">Trang chủ</a></li>
-						<li class="breadcrumb-item"><a href="categories">Toàn bộ
-								sản phẩm</a></li>
-						<li class="breadcrumb-item active">Áo khoác</li>
-					</ul>
-					<h3 class="mb-4">Áo Thun</h3>
-					<div
-						class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mb-4">
-						<ul class="list-inline mb-2 mb-sm-0">
-							<li class="list-inline-item h4 fw-light mb-0">165.000</li>
-							<li class="list-inline-item text-muted fw-light"><del>290.000</del>
-							</li>
-						</ul>
-					</div>
 
-					<form action="#">
-						<div class="row mb-3">
-							<div class="col-sm-6 detail-option">
-								<h6 class="detail-option-heading">
-									Size <span>(*)</span>
-								</h6>
-								<label
-									class="btn btn-sm btn-outline-secondary detail-option-btn-label"
-									for="size_0"> S <input class="input-invisible"
-									type="radio" name="size" value="value_0" id="size_0" required>
-								</label> <label
-									class="btn btn-sm btn-outline-secondary detail-option-btn-label"
-									for="size_1"> M <input class="input-invisible"
-									type="radio" name="size" value="value_1" id="size_1" required>
-								</label> <label
-									class="btn btn-sm btn-outline-secondary detail-option-btn-label"
-									for="size_2"> L <input class="input-invisible"
-									type="radio" name="size" value="value_2" id="size_2" required>
-								</label> <label
-									class="btn btn-sm btn-outline-secondary detail-option-btn-label"
-									for="size_3"> XL <input class="input-invisible"
-									type="radio" name="size" value="value_3" id="size_3" required>
-								</label>
-							</div>
-							<div class="col-sm-6 detail-option">
-								<h6 class="detail-option-heading">
-									Màu sắc <span>(*)</span>
-								</h6>
-								<ul class="list-inline mb-0 colours-wrapper">
-									<li class="list-inline-item"><label class="btn-colour"
-										for="colour_Blue" style="background-color: #668cb9"> </label>
-										<input class="input-invisible" type="radio" name="colour"
-										value="value_Blue" id="colour_Blue" required></li>
-									<li class="list-inline-item"><label class="btn-colour"
-										for="colour_White" style="background-color: #fff"> </label> <input
-										class="input-invisible" type="radio" name="colour"
-										value="value_White" id="colour_White" required></li>
-									<li class="list-inline-item"><label class="btn-colour"
-										for="colour_Violet" style="background-color: #8b6ea4">
-									</label> <input class="input-invisible" type="radio" name="colour"
-										value="value_Violet" id="colour_Violet" required></li>
-									<li class="list-inline-item"><label class="btn-colour"
-										for="colour_Red" style="background-color: #dd6265"> </label> <input
-										class="input-invisible" type="radio" name="colour"
-										value="value_Red" id="colour_Red" required></li>
-								</ul>
-							</div>
-						</div>
 
-						<div class="row mb-3">
-							<div class="col-sm-6 detail-option">
-								<label class="detail-option-heading fw-bold">Sản phẩm <span>(*)</span></label>
-								<div class="d-flex align-items-center">
-									<input class="form-control detail-quantity" name="items"
-										type="number" value="1">
-									<!-- Số lượng hàng có sẵn -->
-									<span class="available-stock ms-2">Kho: <strong>20</strong></span>
+	<!-- Section -->
+	<section>
+		<div class="container">
+			<!-- Breadcrumbs -->
+			<ol class="breadcrumb justify-content-left">
+				<li class="breadcrumb-item"><i class="fas fa-home"></i><a
+					href="index.html">Trang chủ</a></li>
+				<li class="breadcrumb-item">Danh mục khóa học</li>
+				<li class="breadcrumb-item active">Gói học tổng hợp giúp học
+					sinh ôn luyện toàn diện cho kỳ thi THPT Quốc gia 2025</li>
+			</ol>
+
+			<div class="row mb-5">
+				<!-- Course Details -->
+				<div class="col-lg-8 course-details-wrapper">
+					<div class="cart">
+						<div class="cart-wrapper">
+							<div class="cart-header">
+								<div class="row">
+									<div class="col-12">
+										<h5 class="mt-3 text-center">Gói học tổng hợp giúp học
+											sinh ôn luyện toàn diện cho kỳ thi THPT Quốc gia 2025</h5>
+									</div>
 								</div>
 							</div>
-							<div class="col-sm-6 detail-option">
-								<ul class="list-inline">
-									<li class="list-inline-item">
-										<button class="btn btn-dark mb-1 my-4" type="submit">
-											<i class="fa fa-shopping-cart me-2"></i>Thêm vào giỏ hàng
-										</button>
+						</div>
+					</div>
+					<ul class="nav nav-tabs mt-4 nav-tabs-custom" id="courseTabs"
+						role="tablist">
+						<li class="nav-item" role="presentation"><a
+							class="nav-link active" id="content-tab" data-bs-toggle="tab"
+							href="#content" role="tab" aria-controls="content"
+							aria-selected="true">Nội dung</a></li>
+						<li class="nav-item" role="presentation"><a class="nav-link"
+							id="comments-tab" data-bs-toggle="tab" href="#comments"
+							role="tab" aria-controls="comments" aria-selected="false">Bình
+								luận</a></li>
+						<li class="nav-item" role="presentation"><a class="nav-link"
+							id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab"
+							aria-controls="reviews" aria-selected="false">Đánh giá</a></li>
+					</ul>
+
+					<!-- Tabs Content -->
+					<div class="tab-content mt-3" id="courseTabsContent">
+						<!-- Nội dung Tab -->
+						<div class="tab-pane fade show active" id="content"
+							role="tabpanel" aria-labelledby="content-tab">
+							<div class="mt-4">
+								<p>Gói học tổng hợp giúp học sinh ôn luyện toàn diện cho kỳ
+									thi THPT Quốc gia 2025: Bao gồm những chủ điểm quan trọng nhất,
+									đa xuất hiện trong đề thi minh họa năm 2025 (Công bố ngày
+									18/10/2024). Khóa học giúp em nắm chắc phần chương làm chủ và
+									định hướng điểm các câu hỏi trong đề thi chính thức năm 2025.</p>
+								<h5 class="text-danger">Chuyên đề 1: Toán Chương 1 - 2 - 3</h5>
+								<p class="text-muted">9 Bài giảng / 15 Bài thi online cập
+									nhật MỚI</p>
+								<ul class="list-unstyled">
+									<li class="mb-3">
+										<div class="d-flex align-items-center">
+											<span class="badge bg-danger rounded-circle me-2">01</span>
+											<div>
+												<strong><i class="fas fa-play-circle me-2"></i>Bài
+													1: Thi hiện tại tiếp diễn</strong>
+												<p class="text-muted mb-0">1 bài giảng</p>
+											</div>
+										</div>
+									</li>
+									<li class="mb-3">
+										<div class="d-flex align-items-center">
+											<span class="badge bg-danger rounded-circle me-2">02</span>
+											<div>
+												<strong><i class="fas fa-clock me-2"></i>Thi
+													Online: Thi Hiện tại tiếp diễn (Đề số 01)</strong>
+												<p class="text-muted mb-0">1 Tài liệu / 30 Câu hỏi</p>
+											</div>
+										</div>
+									</li>
+									<li class="mb-3">
+										<div class="d-flex align-items-center">
+											<span class="badge bg-danger rounded-circle me-2">03</span>
+											<div>
+												<strong><i class="fas fa-clock me-2"></i>Thi
+													Online: Thi Hiện tại tiếp diễn (Đề số 02)</strong>
+												<p class="text-muted mb-0">1 Tài liệu / 30 Câu hỏi</p>
+											</div>
+										</div>
+									</li>
+									<li class="mb-3">
+										<div class="d-flex align-items-center">
+											<span class="badge bg-danger rounded-circle me-2">04</span>
+											<div>
+												<strong><i class="fas fa-play-circle me-2"></i>Bài
+													2: Thi hiện tại đơn</strong>
+												<p class="text-muted mb-0">1 Tài liệu / 30 Câu hỏi</p>
+											</div>
+										</div>
+									</li>
+								</ul>
+								<!-- Separator -->
+								<hr class="my-4">
+								<!-- Second Section -->
+								<h5 class="text-danger">Chuyên đề 2: Danh động từ và động
+									từ nguyên mẫu</h5>
+								<p class="text-muted">3 Bài giảng / 7 Bài thi online cập
+									nhật MỚI</p>
+								<ul class="list-unstyled">
+									<li class="mb-3">
+										<div class="d-flex align-items-center">
+											<span class="badge bg-danger rounded-circle me-2">01</span>
+											<div>
+												<strong><i class="fas fa-play-circle me-2"></i>Bài
+													1: Động từ nguyến mẫu</strong>
+												<p class="text-muted mb-0">1 bài giảng</p>
+											</div>
+										</div>
+									</li>
+									<li class="mb-3">
+										<div class="d-flex align-items-center">
+											<span class="badge bg-danger rounded-circle me-2">02</span>
+											<div>
+												<strong><i class="fas fa-clock me-2"></i>Thi
+													Online: Động từ nguyến mẫu (Đề số 01)</strong>
+												<p class="text-muted mb-0">1 Tài liệu / 30 Câu hỏi</p>
+											</div>
+										</div>
 									</li>
 								</ul>
 							</div>
 						</div>
-					</form>
-					<div class="mt-2">
-						<h6 class="detail-option-heading">Mô tả sản phẩm</h6>
-						<p class="text-muted my-2">1. Kiểu sản phẩm: Áo thun trơn tay
-							ngắn</p>
-						<p class="text-muted my-2">2. Co giãn tốt, chống co rút tốt,
-							giữ form sau nhiều lần sử dụng, thấm hút và thoát mồ hôi tốt</p>
-						<p class="text-muted my-2">3. Chất liệu: 100% cotton</p>
+
+						<!-- Bình luận Tab -->
+						<div class="tab-pane fade" id="comments" role="tabpanel"
+							aria-labelledby="comments-tab">
+							<p class="text-muted mx-4">Chưa có bình luận nào cho khóa học
+								này. Hãy là người đầu tiên để lại bình luận!</p>
+						</div>
+
+						<!-- Đánh giá Tab -->
+						<div class="tab-pane fade" id="reviews" role="tabpanel"
+							aria-labelledby="reviews-tab">
+							<div class="rating-summary d-flex align-items-center">
+								<div class="rating-score me-3 mx-6">
+									<h1 class="text-danger mb-0">5.0</h1>
+									<div>
+										<i class="fas fa-star text-warning"></i> <i
+											class="fas fa-star text-warning"></i> <i
+											class="fas fa-star text-warning"></i> <i
+											class="fas fa-star text-warning"></i> <i
+											class="fas fa-star text-warning"></i>
+									</div>
+									<p class="text-muted mb-0">
+										<i class="fas fa-user me-1"></i>đánh giá
+									</p>
+								</div>
+								<div class="rating-distribution">
+									<div class="d-flex align-items-center mb-1">
+										<span class="me-2">5</span> <span
+											class="rating-circle bg-success rating-custom">(0)</span>
+									</div>
+									<div class="d-flex align-items-center mb-1">
+										<span class="me-2">4</span> <span
+											class="rating-circle bg-success rating-custom">(0)</span>
+									</div>
+									<div class="d-flex align-items-center mb-1">
+										<span class="me-2">3</span> <span
+											class="rating-circle bg-warning rating-custom">(0)</span>
+									</div>
+									<div class="d-flex align-items-center mb-1">
+										<span class="me-2">2</span> <span
+											class="rating-circle bg-warning rating-custom">(0)</span>
+									</div>
+									<div class="d-flex align-items-center mb-1">
+										<span class="me-2">1</span> <span
+											class="rating-circle bg-danger rating-custom">(0)</span>
+									</div>
+								</div>
+							</div>
+							<!-- User Reviews Section -->
+							<div class="user-reviews mt-4">
+								<p class="text-muted mx-4">Chưa có đánh giá nào cho khóa học
+									này. Hãy để lại đánh giá nếu bạn đã tham gia khóa học!</p>
+								<div class="text-center mt-3">
+									<a href="#" class="btn btn-primary mb-4">Viết đánh giá</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Sidebar with Course Summary -->
+				<div class="col-lg-4">
+					<div class="block mb-5">
+						<div class="block-header">
+							<h6 class="text-uppercase mb-0">Tổng quan khóa học:</h6>
+						</div>
+						<div class="block-body bg-light pt-2">
+							<ul class="order-summary mb-0 list-unstyled">
+								<li class="order-summary-item d-flex justify-content-between">
+									<span> <i class="fas fa-star text-warning"></i> <i
+										class="fas fa-star text-warning"></i> <i
+										class="fas fa-star text-warning"></i> <i
+										class="fas fa-star text-warning"></i> <i
+										class="fas fa-star text-warning"></i> 5.0 (0)
+								</span>
+								</li>
+								<li class="order-summary-item d-flex justify-content-between">
+									<span>Học phí:</span><span>1.500.000 VND</span>
+								</li>
+								<li class="order-summary-item d-flex justify-content-between">
+									<span>Thời hạn khóa học:</span><span>Sau khi kết thúc kỳ
+										thi THPT 2025</span>
+								</li>
+								<li class="d-flex justify-content-center align-items-center">
+									<a class="btn btn-warning mt-4 mb-4 mx-2 text-white"
+									href="checkout1.html">Xem giỏ hàng</a> <a
+									class="btn btn-success mt-4 mb-4 mx-2" href="checkout1.html">Mua
+										ngay</a>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
-
-<section class="mt-5">
-	<div class="container">
-		<ul class="nav nav-tabs flex-column flex-sm-row" role="tablist">
-			<li class="nav-item"><a class="nav-link detail-nav-link"
-				data-bs-toggle="tab" role="tab"></a></li>
-		</ul>
-		<div class="tab-content py-4">
-			<div class="tab-pane" id="additional-information" role="tabpanel"></div>
-		</div>
-	</div>
-</section>
+	</section>
 
 
+	<!-- ***** Footer Area Start ***** -->
+	<!-- <div th:insert="~{decorators/footers :: footer}"></div> -->
+	<!-- ***** Footer Area End ***** -->
 
-<section class="my-5">
-	<div class="container">
-		<h6 class="text-uppercase mb-5">Sản phẩm tương tự</h6>
-	</div>
-</section>
-<!-- ***** Footer Area Start ***** -->
-<div th:insert="~{decorators/footers :: footer}"></div>
-<!-- ***** Footer Area End ***** -->
-
-<!-- Scripts -->
-<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
-<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/assets/js/wow.min.js}"></script>
-<script th:src="@{/assets/js/owl-carousel.js}"></script>
-<script th:src="@{/assets/js/animation.js}"></script>
-<script th:src="@{/assets/js/imagesloaded.js}"></script>
-<script th:src="@{/assets/js/custom.js}"></script>
-
+	<!-- Scripts -->
+	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<script th:src="@{/assets/js/wow.min.js}"></script>
+	<script th:src="@{/assets/js/owl-carousel.js}"></script>
+	<script th:src="@{/assets/js/animation.js}"></script>
+	<script th:src="@{/assets/js/imagesloaded.js}"></script>
+	<script th:src="@{/assets/js/custom.js}"></script>
 </body>
-
 </html>

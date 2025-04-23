@@ -35,142 +35,173 @@
 	<!-- ***** Header Area Start ***** -->
 	<div th:insert="~{decorators/headers :: header}"></div>
 	<!-- ***** Header Area End ***** -->
-		<!-- Hero Section-->
-		<section class="hero">
-			<div class="container">
-				<!-- Breadcrumbs -->
-				<ol class="breadcrumb justify-content-center">
-					<li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/user/home">Trang chủ</a>
-					</li>
-					<li class="breadcrumb-item active"><a href="${pageContext.request.contextPath}/user/cart">Giỏ
-							hàng</a></li>
-				</ol>
-				<!-- Hero Content-->
-				<div class="hero-content pb-5 text-center">
-					<h1 class="hero-heading">Chi tiết giỏ hàng</h1>
-					<div class="row">
-						<div class="col-xl-8 offset-xl-2">
-							<p class="lead text-muted">Bạn đang có ${cartItems.size() > 0 ? cartItems.size() : "0"} sản
-								phẩm trong giỏ hàng</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- Shopping Cart Section-->
-		<section>
-			<div class="container">
-				<div class="row mb-5">
-					<div class="col-lg-8">
-						<div class="cart">
-							<div class="cart-wrapper">
-								<div class="cart-header text-center">
-									<div class="row">
-										<div class="col-5">sản phẩm</div>
-										<div class="col-2">Giá</div>
-										<div class="col-2">Sổ lượng</div>
-										<div class="col-2">Tổng</div>
-										<div class="col-1"></div>
-									</div>
-								</div>
-								<div class="cart-body">
-									<c:if test="${cartItems.size() == 0}">
-										<div class="cart-item text-center">
-											<p class="text-muted">Giỏ hàng của bạn hiện đang trống!</p>
-										</div>
-									</c:if>
-									<!-- Product-->
-									<div class="cart-item">
-										<c:forEach items="${cartItems}" var="item">
 
+<style>
+.form-control-custom {
+	display: block;
+	width: 80%;
+	padding: 0.2rem 0.6rem;
+	font-size: 0.9rem;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #212529;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid #ced4da;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	border-radius: 4px;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+</style>
+
+
+	<!-- Hero Section-->
+	<section class="hero pt-7">
+		<div class="container">
+			<!-- Breadcrumbs -->
+			<ol class="breadcrumb justify-content-left">
+				<li class="breadcrumb-item"><a
+					href="index.html"> <i class="fas fa-home"></i>Trang chủ</a></li>
+				<li class="breadcrumb-item active">Giỏ hàng</li>
+			</ol>
+
+			<!-- Shopping Cart Section-->
+			<section>
+				<div class="container">
+					<div class="row mb-5">
+						<div class="col-lg-8">
+							<div class="cart">
+								<div class="cart-wrapper">
+									<div class="cart-header text-left">
+										<div class="row">
+											<div class="col-7">Item</div>
+											<div class="col-2 text-center">Quantity</div>
+											<div class="col-2 text-center cart-title">Price</div>
+											<div class="col-1"></div>
+										</div>
+									</div>
+									<div>
+										<!-- Product-->
+										<div class="cart-item">
 											<div class="row d-flex align-items-center text-center">
-												<div class="col-5">
-													<div class="d-flex align-items-center"><a
-															href="${pageContext.request.contextPath}/user/categoryDetail?productCode=${item.productCode}">
-															<img class="cart-item-img" src="${item.image}"
-																alt="${item.productName}"></a>
-														<div class="cart-title text-start"><a
-																class="text-uppercase text-dark"
-																href="${pageContext.request.contextPath}/user/categoryDetail?productCode=${item.productCode}">
-																<strong>${item.productName}</strong>
-															</a><br><span class="text-muted text-sm">Size:
-																${item.size}</span><br>
-															<span class="text-muted text-sm">Colour: ${item.color
-																}</span>
+												<div class="col-7">
+													<div class="d-flex align-items-center">
+														<a href="detail.html"><img class="cart-item-img"
+															src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/img/product/product-square-ian-dooley-347968-unsplash.jpg"
+															alt="..."></a>
+														<div class="cart-title text-start">
+															<a class="text-uppercase text-dark" href="detail.html"><strong>Skull
+																	Tee</strong></a><br>
 														</div>
 													</div>
 												</div>
-												<div class="col-2">${item.priceFormatted}</div>
 												<div class="col-2">
 													<div class="d-flex align-items-center">
-														<%-- <a
-															href="${pageContext.request.contextPath}/user/cart/?action=remove&productCode=${item.productCode}&size=${item.size }&quantityChange=-1"
-															class="btn btn-items btn-items-decrease">
-															<c:if test="${item.quantity <= 1}">style="pointer-events:
-																none; opacity: 0.5;"</c:if>-</a> --%>
-
-															<input class="form-control text-center input-items"
-																type="text" value="${item.quantity}" readonly>
-															<%-- <a
-																href="${pageContext.request.contextPath}/user/cart?action=add&productCode=${item.productCode}&size=${item.size}&quantityChange=1"
-																class="btn btn-items btn-items-increase" <c:if
-																test="${item.quantity >= item.stockQuantity}">style="pointer-events:
-																none; opacity: 0.5;"</c:if>>+</a> --%>
+														<input class="form-control-custom text-center input-items"
+															value="1" readonly />
 													</div>
 												</div>
-												<div class="col-2 text-center">${item.totalPriceFormatted}</div>
+												<div class="col-2 text-center">$260.00</div>
 												<div class="col-1 text-center">
-													<form action="${pageContext.request.contextPath}/user/cart"
-														method="POST">
-														<input type="hidden" name="action" value="delete">
-														<input type="hidden" name="productCode"
-															value="${item.productCode}">
-														<input type="hidden" name="size" value="${item.size}">
-														<input type="hidden" name="quantity" value="${item.quantity}">
-														<button type="submit" class="cart-remove btn btn-link">
-															<i class="fa fa-times"></i>
-														</button>
-													</form>
+													<a class="cart-remove" href="#"> <i class="fa fa-trash"
+														aria-hidden="true"></i></a>
 												</div>
 											</div>
-										</c:forEach>
+										</div>
+										<!-- Product-->
+										<div class="cart-item">
+											<div class="row d-flex align-items-center text-center">
+												<div class="col-7">
+													<div class="d-flex align-items-center">
+														<a href="detail.html"><img class="cart-item-img"
+															src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/img/product/product-square-kyle-loftus-596319-unsplash.jpg"
+															alt="..."></a>
+														<div class="cart-title text-start">
+															<a class="text-uppercase text-dark" href="detail.html"><strong>Transparent
+																	Blouse</strong></a><br>
+														</div>
+													</div>
+												</div>
+												<div class="col-2">
+													<div class="d-flex align-items-center">
+														<input class="form-control-custom text-center input-items"
+															value="1" readonly />
+													</div>
+												</div>
+												<div class="col-2 text-center">$165.00</div>
+												<div class="col-1 text-center">
+													<a class="cart-remove" href="#"> <i class="fa fa-trash"
+														aria-hidden="true"></i>
+													</a>
+												</div>
+											</div>
+										</div>
+										<!-- Product-->
+										<div class="cart-item">
+											<div class="row d-flex align-items-center text-center">
+												<div class="col-7">
+													<div class="d-flex align-items-center">
+														<a href="detail.html"><img class="cart-item-img"
+															src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/img/product/product-square-serrah-galos-494312-unsplash.jpg"
+															alt="..."></a>
+														<div class="cart-title text-start">
+															<a class="text-uppercase text-dark" href="detail.html"><strong>White
+																	Tee</strong></a><br>
+														</div>
+													</div>
+												</div>
+												<div class="col-2">
+													<div class="d-flex align-items-center">
+														<input class="form-control-custom text-center input-items"
+															value="1" readonly />
+													</div>
+												</div>
+												<div class="col-2 text-center">$165.00</div>
+												<div class="col-1 text-center">
+													<a class="cart-remove" href="#"><i class="fa fa-trash"
+														aria-hidden="true"></i></a>
+												</div>
+											</div>
+										</div>
 									</div>
-									<!-- Product-->
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-4">
+							<div class="block mb-5">
+								<div class="block-header">
+									<h6 class="text-uppercase mb-0">Đơn hàng của bạn:</h6>
+								</div>
+								<div class="block-body bg-light pt-1">
+									<ul class="order-summary mb-0 list-unstyled">
+										<li class="order-summary-item"><span>Giá trị đơn
+												hàng:</span><span>$390.00</span></li>
+										<li class="order-summary-item"><span>Khuyến mãi</span><span>$0.00</span></li>
+										<li class="order-summary-item border-0"><span>Tổng
+												tiền:</span><strong class="order-summary-total">$400.00</strong></li>
+									</ul>
+
+									<a class="btn btn-dark d-block mt-4 mb-4" href="checkout1.html">Tiến
+										hành thanh toán<i class="fa fa-chevron-right"></i>
+									</a>
 
 								</div>
 							</div>
 						</div>
-						<div class="my-5 d-flex justify-content-between flex-column flex-lg-row"><a
-								class="btn btn-link text-muted"
-								href="${pageContext.request.contextPath}/user/categories"><i
-									class="fa fa-chevron-left"></i>Tiếp tục mua sắm</a><a class="btn btn-dark"
-								href="${pageContext.request.contextPath}/user/checkoutAddress">Tiến hành thanh toán<i
-									class="fa fa-chevron-right"></i> </a></div>
 					</div>
-					<div class="col-lg-4">
-						<div class="block mb-5">
-							<div class="block-header">
-								<h6 class="text-uppercase mb-0">Tổng tiền đơn hàng dự kiến</h6>
-							</div>
-							<div class="block-body bg-light pt-1">
-								<p class="text-sm">Chi phí vận chuyển và chi phí bổ sung sẽ được tính dựa trên các sản
-									phẩm bạn đã chọn.</p>
-								<ul class="order-summary mb-0 list-unstyled">
-									<li class="order-summary-item"><span>Tổng tiền ước
-											tính</span><span>${totalAmountFormatted }</span></li>
-									<li class="order-summary-item"><span>Phí vận
-											chuyện</span><span>${shippingFormatted}</span></li>
-									<li class="order-summary-item"><span>Thuế dịch vụ</span><span>${serviceTaxFormatted
-											}</span></li>
-									<li class="order-summary-item border-0"><span>Tổng tiền</span><strong
-											class="order-summary-total">${finalTotalFormatted }</strong></li>
-								</ul>
-							</div>
-						</div>
+					<div
+						class="my-5 d-flex justify-content-between flex-column flex-lg-row">
+						<a class="btn btn-link text-muted" th:href="@{/category}"><i
+							class="fa fa-chevron-left"></i> Quay lại trang khóa học</a>
 					</div>
 				</div>
-			</div>
-		</section>
+			</section>
+		</div>
+	</section>
+
+
 	<!-- ***** Footer Area Start ***** -->
 	<div th:insert="~{decorators/footers :: footer}"></div>
 	<!-- ***** Footer Area End ***** -->
