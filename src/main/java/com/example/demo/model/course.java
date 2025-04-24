@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -11,6 +12,7 @@ public class course {
     private String title;
     private String description;
     private BigDecimal prices;
+    private String formattedPrice;
     private int quantity;
     private courseStatus status;
     private LocalDateTime duration;
@@ -22,7 +24,15 @@ public class course {
     private String categoryName;
     
     
-    public String getCategoryName() {
+    public String getFormattedPrice() {
+		return formattedPrice;
+	}
+
+	public void setFormattedPrice(String formattedPrice) {
+		this.formattedPrice = formattedPrice;
+	}
+
+	public String getCategoryName() {
 		return categoryName;
 	}
 
@@ -73,6 +83,12 @@ public class course {
 	}
 	public void setPrices(BigDecimal prices) {
 		this.prices = prices;
+        if (prices != null) {
+            DecimalFormat formatter = new DecimalFormat("#,###");
+            this.formattedPrice = formatter.format(prices) + " VNĐ";
+        } else {
+            this.formattedPrice = "Chưa có thông tin";
+        }
 	}
 	public int getQuantity() {
 		return quantity;

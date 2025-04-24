@@ -31,7 +31,7 @@
 </head>
 <body>
 	<!-- ***** Header Area Start ***** -->
-	
+	<div th:insert="~{decorators/headers :: header}"></div>
 	<!-- ***** Header Area End ***** -->
 
 	<!-- Fullscreen search area-->
@@ -62,16 +62,21 @@
 	<!-- Section -->
 	<section class="hero pt-7">
 		<div class="container">
+				<div th:if="${success}" class="alert alert-success" role="alert">
+		                <span th:text="${success}"></span>
+		            </div>
+		            <div th:if="${error}" class="alert alert-danger" role="alert">
+		                <span th:text="${error}"></span>
+		            </div>
 			<!-- Breadcrumbs -->
 			<ol class="breadcrumb justify-content-left">
 				<li class="breadcrumb-item"><i class="fas fa-home pe-sm-2"></i><a
 					href="index.html">Trang chủ</a></li>
 				<li class="breadcrumb-item">Danh mục khóa học</li>
-				<li class="breadcrumb-item active" >Gói học tổng hợp giúp học
-					sinh ôn luyện toàn diện cho kỳ thi THPT Quốc gia 2025</li>
+				<li class="breadcrumb-item active" th:text = "${course != null ? course.title : 'Không tìm thấy khóa học'}"></li>
 			</ol>
 
-			<div class="row mb-5">
+			<div th:if="${course != null}" class="row mb-5">
 				<!-- Course Details -->
 				<div class="col-lg-8 course-details-wrapper">
 					<div class="cart">
@@ -79,8 +84,7 @@
 							<div class="cart-header">
 								<div class="row">
 									<div class="col-12">
-										<h5 class="mt-3 text-center">Gói học tổng hợp giúp học
-											sinh ôn luyện toàn diện cho kỳ thi THPT Quốc gia 2025</h5>
+										<h5 class="mt-3 text-center" th:text="${course.title}">Tên khóa học</h5>
 									</div>
 								</div>
 							</div>
@@ -107,87 +111,30 @@
 						<div class="tab-pane fade show active" id="content"
 							role="tabpanel" aria-labelledby="content-tab">
 							<div class="mt-4">
-								<p>Gói học tổng hợp giúp học sinh ôn luyện toàn diện cho kỳ
-									thi THPT Quốc gia 2025: Bao gồm những chủ điểm quan trọng nhất,
-									đa xuất hiện trong đề thi minh họa năm 2025 (Công bố ngày
-									18/10/2024). Khóa học giúp em nắm chắc phần chương làm chủ và
-									định hướng điểm các câu hỏi trong đề thi chính thức năm 2025.</p>
-								<h5 class="text-danger">Chuyên đề 1: Toán Chương 1 - 2 - 3</h5>
-								<p class="text-muted">9 Bài giảng / 15 Bài thi online cập
-									nhật MỚI</p>
+								<p th:text="${course.description ?: 'Chưa có mô tả khóa học'}">Mô tả khóa học</p>
+								<div th:each="learningPath, iterStat : ${course.learningPaths}">
+								<h5 class="text-danger" th:text="${learningPath.title}">Chuyên đề</h5>
 								<ul class="list-unstyled">
 									<li class="mb-3">
 										<div class="d-flex align-items-center">
-											<span class="badge bg-danger rounded-circle-cus me-2">01</span>
 											<div>
-												<strong><i class="fas fa-play-circle me-2"></i>Bài
-													1: Thi hiện tại tiếp diễn</strong>
-												<p class="text-muted mb-0">1 bài giảng</p>
+												<strong><i class="fas fa-play-circle me-2"></i>
+												<span th:text="${learningPath.title}">Tiêu đề nội dung</span>
+												</strong>
+												
 											</div>
 										</div>
 									</li>
-									<li class="mb-3">
-										<div class="d-flex align-items-center">
-											<span class="badge bg-danger rounded-circle-cus me-2">02</span>
-											<div>
-												<strong><i class="fas fa-clock me-2"></i>Thi
-													Online: Thi Hiện tại tiếp diễn (Đề số 01)</strong>
-												<p class="text-muted mb-0">1 Tài liệu / 30 Câu hỏi</p>
-											</div>
-										</div>
-									</li>
-									<li class="mb-3">
-										<div class="d-flex align-items-center">
-											<span class="badge bg-danger rounded-circle-cus me-2">03</span>
-											<div>
-												<strong><i class="fas fa-clock me-2"></i>Thi
-													Online: Thi Hiện tại tiếp diễn (Đề số 02)</strong>
-												<p class="text-muted mb-0">1 Tài liệu / 30 Câu hỏi</p>
-											</div>
-										</div>
-									</li>
-									<li class="mb-3">
-										<div class="d-flex align-items-center">
-											<span class="badge bg-danger rounded-circle-cus me-2">04</span>
-											<div>
-												<strong><i class="fas fa-play-circle me-2"></i>Bài
-													2: Thi hiện tại đơn</strong>
-												<p class="text-muted mb-0">1 Tài liệu / 30 Câu hỏi</p>
-											</div>
-										</div>
-									</li>
+									
+								
 								</ul>
 								<!-- Separator -->
 								<hr class="my-4">
-								<!-- Second Section -->
-								<h5 class="text-danger">Chuyên đề 2: Danh động từ và động
-									từ nguyên mẫu</h5>
-								<p class="text-muted">3 Bài giảng / 7 Bài thi online cập
-									nhật MỚI</p>
-								<ul class="list-unstyled">
-									<li class="mb-3">
-										<div class="d-flex align-items-center">
-											<span class="badge bg-danger rounded-circle-cus me-2">01</span>
-											<div>
-												<strong><i class="fas fa-play-circle me-2"></i>Bài
-													1: Động từ nguyến mẫu</strong>
-												<p class="text-muted mb-0">1 bài giảng</p>
-											</div>
-										</div>
-									</li>
-									<li class="mb-3">
-										<div class="d-flex align-items-center">
-											<span class="badge bg-danger rounded-circle-cus me-2">02</span>
-											<div>
-												<strong><i class="fas fa-clock me-2"></i>Thi
-													Online: Động từ nguyến mẫu (Đề số 01)</strong>
-												<p class="text-muted mb-0">1 Tài liệu / 30 Câu hỏi</p>
-											</div>
-										</div>
-									</li>
-								</ul>
+								
+							</div>
 							</div>
 						</div>
+						
 
 						<!-- Bình luận Tab -->
 						<div class="tab-pane fade" id="comments" role="tabpanel"
@@ -245,11 +192,12 @@
 								</div>
 							</div>
 						</div>
+						
 					</div>
 				</div>
 
 				<!-- Sidebar with Course Summary -->
-				<div class="col-lg-4">
+				<div class="col-lg-4" th:if="${course != null}">
 					<div class="block mb-5">
 						<div class="block-header">
 							<h6 class="text-uppercase mb-0">Tổng quan khóa học:</h6>
@@ -257,25 +205,18 @@
 						<div class="block-body bg-light pt-2">
 							<ul class="order-summary mb-0 list-unstyled">
 								<li class="order-summary-item d-flex justify-content-between">
-									<span> <i class="fas fa-star text-warning"></i> <i
-										class="fas fa-star text-warning"></i> <i
-										class="fas fa-star text-warning"></i> <i
-										class="fas fa-star text-warning"></i> <i
-										class="fas fa-star text-warning"></i> 5.0 (0)
-								</span>
+									<span>Học phí:</span>
+									<span th:text = "${course.formattedPrice != null ? course.formattedPrice  : 'Chưa có thông tin cụ thể'}">1.500.000 VND</span>
 								</li>
 								<li class="order-summary-item d-flex justify-content-between">
-									<span>Học phí:</span><span>1.500.000 VND</span>
-								</li>
-								<li class="order-summary-item d-flex justify-content-between">
-									<span>Thời hạn khóa học:</span><span>Sau khi kết thúc kỳ
-										thi THPT 2025</span>
+									<span>Thời hạn khóa học:</span>
+									<span th:text="${course.formattedDuration != null ? course.formattedDuration : 'Chưa có thông tin'}">Sau khi kết thúc kỳ thi THPT 2025</span>
 								</li>
 								<li class="d-flex justify-content-center align-items-center">
 									<a class="btn btn-warning mt-4 mb-4 mx-2 text-white"
-									href="checkout1.html">Thêm vào giỏ hàng</a> <a
-									class="btn btn-success mt-4 mb-4 mx-2" href="checkout1.html">Mua
-										ngay</a>
+									 	th:href="@{/course/cart/add/{id}(id=${course.courseID})}">Thêm vào giỏ hàng</a>
+                                    <a class="btn btn-success mt-4 mb-4 mx-2"
+                                     	th:href="@{/course/checkout/{id}(id=${course.courseID})}">Mua ngay</a>
 								</li>
 							</ul>
 						</div>
