@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Online Course</title>
+
+<!-- Google fonts-->
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;700&amp;display=swap">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;800&amp;display=swap">
+
+<!-- CSS files -->
+<link rel="stylesheet"
+	th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+<link rel="stylesheet"
+	th:href="@{/assets/css/style.default.7acfaf01.css}">
+<link rel="stylesheet" th:href="@{/assets/css/custom.0a822280.css}">
+<link rel="stylesheet"
+	th:href="@{/assets/css/templatemo-space-dynamic.css}">
+
+</head>
+<style>
+/* .ps-6 {
+  padding-left: 6rem !important;
+} */
+.bg-white {
+	background-color: #f8f9fa !important;
+}
+
+.avatar {
+	width: 100px;
+	height: 100px;
+	background-color: #001f3f;
+	border-radius: 50%;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	font-size: 50px;
+}
+
+.profile-card {
+	text-align: center;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	padding: 20px;
+	background-color: #f8f9fa;
+}
+
+.tab-content-section {
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	padding: 20px;
+	background-color: #fff;
+	min-height: 200px;
+}
+
+.sidebar-tabs {
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	padding: 15px;
+	background-color: #f8f9fa;
+	margin-top: 20px;
+}
+
+.sidebar-tabs .nav-link {
+	color: #333;
+	padding: 10px 15px;
+	border-radius: 5px;
+	margin-bottom: 5px;
+}
+
+.sidebar-tabs .nav-link.active {
+	background-color: #3494E6;
+	color: white;
+}
+
+.course-card {
+	border: none;
+	border-radius: 8px;
+	overflow: hidden;
+	margin-bottom: 20px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.course-image {
+	position: relative;
+}
+
+.course-image img {
+	width: 100%;
+	height: auto;
+}
+
+.course-hover-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.course-card:hover .course-hover-overlay {
+	opacity: 1;
+}
+
+.course-hover-overlay-buttons a {
+	margin: 0 5px;
+	color: white;
+	background-color: #dc3545;
+	padding: 8px 12px;
+	border-radius: 50%;
+	text-decoration: none;
+}
+
+.course-hover-overlay-buttons a:hover {
+	background-color: #c82333;
+}
+
+.form-control {
+	border-radius: 5px;
+	border: 1px solid #ced4da;
+}
+
+.form-lable-cus {
+	font-weight: bolder;
+	font-size: 1.1rem;
+	color: #333;
+}
+
+.form-select {
+	border-radius: 5px;
+	border: 1px solid #ced4da;
+}
+
+.btn-primary {
+	background-color: #3494E6;
+	border: none;
+	border-radius: 5px;
+}
+
+.btn-primary:hover {
+	background-color: #001f3f;
+}
+
+.btn-secondary {
+	border: none;
+	border-radius: 5px;
+}
+
+.btn-secondary:hover {
+	border: none;
+	border-radius: 5px;
+}
+
+.form-buttons {
+	text-align: right;
+	margin-top: 20px;
+}
+
+.form-buttons .btn {
+	margin-left: 16px;
+}
+</style>
+</head>
+
+<body>
+
+	<!-- SVG Sprite -->
+	<div th:insert="~{fragments/svg-sprite :: svg-sprite}"></div>
+
+	<!-- ***** Preloader Start ***** -->
+	<div id="js-preloader" class="js-preloader">
+		<div class="preloader-inner">
+			<span class="dot"></span>
+			<div class="dots">
+				<span></span> <span></span> <span></span>
+			</div>
+		</div>
+	</div>
+	<!-- ***** Preloader End ***** -->
+
+	<!-- ***** Header Area Start ***** -->
+	<div th:insert="~{decorators/headers :: header}"></div>
+	<!-- ***** Header Area End ***** -->
+
+	<section class="container my-5 pt-7">
+		<div class="row ps-6">
+			<!-- Left Sidebar -->
+			<div class="col-lg-3">
+				<!-- Profile Card -->
+				<div class="profile-card">
+					<div class="avatar mb-4 mt-2">
+						<i class="fas fa-user"></i>
+					</div>
+					<h5 class="" th:text="${userData.fullname}">Truong Thi Anh Thu</h5>
+					<p class="text-muted"
+						th:text="${userData.email} ?: 'user@example.com'">truongthianhthu2011@gmail.com</p>
+				</div>
+
+				<!-- Sidebar Tabs -->
+				<div class="sidebar-tabs">
+					<ul class="nav flex-column" id="sidebarTabs" role="tablist">
+						<li class="nav-item" role="presentation"><a
+							class="nav-link active" id="edit-info-tab" data-bs-toggle="tab"
+							href="#edit-info" role="tab" aria-controls="edit-info"
+							aria-selected="true"> <i class="fas fa-user-edit me-2"></i>Thay
+								đổi thông tin cá nhân
+						</a></li>
+						<li class="nav-item" role="presentation"><a class="nav-link"
+							id="change-password-tab" data-bs-toggle="tab"
+							href="#change-password" role="tab"
+							aria-controls="change-password" aria-selected="true"> <i
+								class="fas fa-key me-2"></i>Thay đổi mật khẩu
+						</a></li>
+						<li class="nav-item" role="presentation"><a class="nav-link"
+							id="enrolled-courses-tab" data-bs-toggle="tab"
+							href="#enrolled-courses" role="tab"
+							aria-controls="enrolled-courses" aria-selected="false"> <i
+								class="fas fa-book me-2"></i> Khóa học đã đăng ký
+						</a></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="col-lg-8">
+				<div class="tab-content tab-content-section" id="mainTabContent">
+					<!-- Edit Personal Information -->
+					<div class="tab-pane fade show active" id="edit-info"
+						role="tabpanel" aria-labelledby="edit-info-tab">
+						<h5 class="text-uppercase mb-4">Thông tin cá nhân</h5>
+						<form id="editProfileForm" th:action="@{/profile/update}"
+							method="post" method="post">
+							<div class="mb-3">
+								<label for="fullName" class="form-lable-cus">Họ và Tên</label> <input
+									type="text" class="form-control" id="fullName" name="fullName"
+									th:value="${user.fullname} ?: ''" required>
+							</div>
+							<div class="mb-3">
+								<label for="email" class="form-lable-cus">Email</label> <input
+									type="email" class="form-control" id="email" name="email"
+									th:value="${user.email} ?: ''" required readonly>
+							</div>
+							<div class="mb-3">
+								<label for="phone" class="form-lable-cus">Số điện thoại</label>
+								<input type="text" class="form-control" id="phone" name="phone"
+									th:value="${user.phone} ?: ''">
+							</div>
+							<div class="mb-3">
+								<label for="address" class="form-lable-cus">Địa chỉ</label> <input
+									type="text" class="form-control" id="address" name="address"
+									th:value="${user.address} ?: ''">
+							</div>
+							<div class="mb-3">
+								<label for="gender" class="form-lable-cus">Giới tính</label> <select
+									class="form-select" id="gender" name="gender">
+									<option value="" th:selected="${user.gender == null}">Chọn
+										giới tính</option>
+									<option value="Nam" th:selected="${user.gender == 'Nam'}">Nam</option>
+									<option value="Nữ" th:selected="${user.gender == 'Nữ'}">Nữ</option>
+									<option value="Khác" th:selected="${user.gender == 'Khác'}">Khác</option>
+								</select>
+							</div>
+							<div class="form-buttons mt-5">
+								<button type="button" class="btn btn-secondary"
+									onclick="cancelEditForm()">Hủy</button>
+								<button type="button" class="btn btn-primary"
+									onclick="submitEditForm()">Lưu thay đổi</button>
+							</div>
+						</form>
+					</div>
+
+					<!-- Change Password -->
+					<div class="tab-pane fade" id="change-password" role="tabpanel"
+						aria-labelledby="change-password-tab">
+						<h5 class="text-uppercase mb-4">Thay đổi mật khẩu</h5>
+						<form id="changePasswordForm"
+							th:action="@{/profile/change-password}" method="post">
+							<div class="mb-3">
+								<label for="currentPassword" class="form-lable-cus">Mật
+									khẩu hiện tại</label> <input type="password" class="form-control"
+									id="currentPassword" name="currentPassword" required>
+							</div>
+							<div class="mb-3">
+								<label for="newPassword" class="form-lable-cus">Mật khẩu
+									mới</label> <input type="password" class="form-control"
+									id="newPassword" name="newPassword" required>
+							</div>
+							<div class="mb-3">
+								<label for="confirmNewPassword" class="form-lable-cus">Xác
+									nhận mật khẩu mới</label> <input type="password" class="form-control"
+									id="confirmNewPassword" name="confirmNewPassword" required>
+							</div>
+							<div class="form-buttons">
+								<button type="button" class="btn btn-secondary"
+									onclick="cancelChangePasswordForm()">Hủy thay đổi</button>
+								<button type="button" class="btn btn-primary"
+									onclick="submitChangePasswordForm()">Lưu thay đổi</button>
+							</div>
+						</form>
+					</div>
+					
+		<!-- Enrolled Courses -->
+<div class="tab-pane fade" id="enrolled-courses" role="tabpanel" aria-labelledby="enrolled-courses-tab">
+    <h5 class="text-uppercase mb-4">Khóa học đã đăng ký</h5>
+    <div class="row">
+        <!-- Course 1 -->
+        <div class="col-xl-4 col-lg-5 col-sm-6">
+            <div class="product shadow-custom">
+                <div class="product-image">
+                    <img class="img-fluid img-custom"
+                        src="https://files.fullstack.edu.vn/f8-prod/courses/19/66aa28194b52b.png"
+                        alt="course image" />
+                    <div class="product-hover-overlay">
+                        <a class="product-hover-overlay-link" href="/course/detail/1"></a>
+                        <div class="product-hover-overlay-buttons">
+                            <a class="btn btn-continue28tech btn-buy" href="/course/detail/1">
+                                <i class="fas fa-play-circle"></i>
+                            </a>
+                            <a class="btn btn-detail28tech btn-buy quick-view-btn"
+                                href="#"
+                                data-bs-toggle="modal"
+                                data-bs-target="#quickViewModal"
+                                data-course-id="1"
+                                data-course-title="Gói học tổng hợp giúp học sinh ôn luyện toàn diện cho kỳ thi THPT Quốc gia 2025"
+                                data-course-description="Khóa học này cung cấp kiến thức toàn diện và các kỹ năng cần thiết để chuẩn bị cho kỳ thi THPT Quốc gia. Bao gồm các môn học chính như Toán, Văn, Anh và các môn tự nhiên, xã hội. Học viên sẽ được hướng dẫn chi tiết về phương pháp học tập hiệu quả và các kỹ thuật làm bài thi."
+                                data-course-price="1500000"
+                                data-course-duration="6 tháng">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-3 py-3">
+                    <h3 class="h6 text-uppercase mb-1">
+                        <a class="text-dark" href="/course/detail/1">
+                            Gói học tổng hợp giúp học sinh ôn luyện toàn diện cho kỳ thi THPT Quốc gia 2025
+                        </a>
+                    </h3>
+                    <span class="text-muted">1,500,000 VNĐ</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Thêm các khóa học khác tương tự ở đây -->
+        
+    </div>
+</div>
+
+<!-- QuickView Modal -->
+<div class="modal fade quickview py-6" id="quickViewModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content border-radius-cus">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Left side: Image -->
+                    <div class="col-lg-5">
+                        <div class="owl-carousel owl-theme owl-dots-modern" data-slider-id="1">
+                            <div>
+                                <img class="img-fluid img-custom" id="quickViewImage"
+                                    src="https://files.fullstack.edu.vn/f8-prod/courses/19/66aa28194b52b.png"
+                                    alt="course" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Right side: Course Details -->
+                    <div class="col-lg-7 d-flex">
+                        <div>
+                            <h3 class="mb-2" id="quickViewTitleCourse"></h3>
+                            <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mb-3">
+                                <ul class="list-inline mb-2 mb-sm-0">
+                                    <li class="list-inline-item h4 fw-light mb-0 mt-4 dark-blue">
+                                        <span id="quickViewPrice"></span> VNĐ
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="mb-2 mt-4">
+                                <span class="text-muted h5">Thời gian hoàn thành khóa học: 
+                                    <span id="quickViewDuration"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span class="text-color-custom mt-3 h4">Mô tả:</span>
+                        <p class="mb-2 mt-2 text-align-justify h5" id="quickViewDescription"></p>
+                        <hr class="m-sm-2"/>
+                        <ul class="list-inline d-flex justify-content-center align-items-center mt-3">
+                            <li class="list-inline-item">
+                                <a href="#" id="quickViewContinue">
+                                    <button class="btn2-custom btn-lg mb-1" type="button">
+                                        Tiếp tục học
+                                    </button>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</di>
+<!-- ***** Footer Area Start ***** -->
+<div th:insert="~{decorators/footers :: footer}"></div>
+<!-- ***** Footer Area End ***** -->
+<!-- Scripts -->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- 
+<script>
+   function submitEditForm() {
+            const form = document.getElementById("editProfileForm");
+            const jwtToken = localStorage.getItem("jwt");
+
+            if (!jwtToken) {
+                alert("Vui lòng đăng nhập để cập nhật thông tin.");
+                window.location.href = "/login";
+                return;
+            }
+
+            // Prepare form data
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // Send data to the server
+            fetch("/profile/update", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${jwtToken}`,
+                },
+                body: JSON.stringify(data),
+            })
+            .then((response) => {
+                if (response.ok) {
+                    alert("Cập nhật thông tin thành công!");
+                    window.location.reload();
+                } else {
+                    throw new Error("Cập nhật thất bại.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error updating profile:", error);
+                alert("Có lỗi xảy ra. Vui lòng thử lại.");
+            });
+        }
+
+        // Quick View Modal Script
+        document.querySelectorAll('.quick-view-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const courseId = this.getAttribute('data-course-id');
+                const courseTitle = this.getAttribute('data-course-title');
+                const courseDescription = this.getAttribute('data-course-description');
+                const coursePrice = this.getAttribute('data-course-price');
+                const courseDuration = this.getAttribute('data-course-duration');
+
+                // Populate the modal with course data
+                document.getElementById('quickViewTitleCourse').textContent = courseTitle;
+                document.getElementById('quickViewDescription').textContent = courseDescription;
+                document.getElementById('quickViewPrice').textContent = coursePrice;
+                document.getElementById('quickViewImage').src = courseImage;
+                document.getElementById('quickViewDuration').textContent = courseDuration;
+
+                // Update Continue Learning link with course ID
+                const continueLink = document.getElementById('quickViewContinue');
+                continueLink.href = `/course/${courseId}`;
+            });
+        });
+    </script>
+     -->
+</body>
+</html>
