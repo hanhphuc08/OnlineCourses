@@ -146,7 +146,7 @@
                                                 th:data-course-id="${course.courseID}"
                                                 th:data-course-title="${course.title}"
                                                 th:data-course-description="${course.description}"
-                                                th:data-course-price="${course.prices}"
+                                                th:data-course-price="${course.formattedPrice}"
                                                 th:data-course-image="${course.image}"
                                                 th:data-course-duration="${course.formattedDuration}">
                                                 <i class="fa fa-search"></i>
@@ -159,7 +159,7 @@
 										<a class="text-dark" href="@{/course/detail/{id}(id=${course.courseID})}" th:text="${course.title}"></a>
 
 									</h3>
-									<span class="text-muted" th:text="${course.prices} + ' VNĐ'"></span>
+									<span class="text-muted" th:text="${course.formattedPrice}"></span>
 								</div>
 							</div>
 						</div>
@@ -201,7 +201,7 @@
                                 <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mb-3">
                                     <ul class="list-inline mb-2 mb-sm-0">
                                         <li class="list-inline-item h4 fw-light mb-0 mt-4 dark-blue">
-                                            <span id="quickViewPrice"></span> VNĐ
+                                            <span id="quickViewPrice"></span>
                                         </li>
                                     </ul>
                                 </div>
