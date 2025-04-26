@@ -156,8 +156,7 @@
 								</div>
 								<div class="px-3 py-3">			
 									<h3 class="h6 text-uppercase mb-1">
-										<a class="text-dark" href="@{/course/detail/{id}(id=${course.courseID})}" th:text="${course.title}"></a>
-
+										<a class="text-dark" th:href="@{/course/detail/{id}(id=${course.courseID})}" th:text="${course.title}"></a>
 									</h3>
 									<span class="text-muted" th:text="${course.formattedPrice}"></span>
 								</div>

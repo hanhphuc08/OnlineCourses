@@ -33,15 +33,25 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
-                .addPathPatterns("/**")  // Áp dụng cho tất cả các request
-                .excludePathPatterns(    // Loại trừ các đường dẫn không cần kiểm tra
+                .addPathPatterns("/**")
+                .excludePathPatterns(
                         "/api/auth/**",
+                        "/",
+                        "/home",
                         "/assets/**",
                         "/vendor/**",
                         "/css/**",
                         "/js/**",
                         "/images/**",
-                        "/course/detail/**"
+                        "/login",
+                        "/register",
+                        "/introduce",
+                        "/schedule",
+                        "/forgot-password",
+                        "/category/**",
+                        "/courses/**",
+                        "/course/detail/**",
+                        "/error"
                 );
     }
 } 
