@@ -69,7 +69,7 @@ public class CartController {
         } catch (RuntimeException e) {
             logger.error("Error fetching cart for user: {}", e.getMessage());
             model.addAttribute("error", "Không thể tải giỏ hàng. Vui lòng thử lại!");
-            return "commons/cart";
+            return "error/500";
         }
 	}
 	
