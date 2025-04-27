@@ -40,7 +40,7 @@
                 <div class="col-xl-5 col-lg-6 col-md-8">
                     <div class="product shadow-custom">
                         <div class="px-4 py-4 text-black">
-                            <form id="registerForm">
+                            <form th:action="@{/api/auth/register}" method="post" id="registerForm">
                                 <!-- Header -->
                                 <div class="text-center mb-3">
                                     <div class="d-flex align-items-center justify-content-center mb-2">
@@ -51,33 +51,33 @@
                                 </div>
 
                                 <!-- Alert messages -->
-                                <div id="alertMessage" class="alert alert-danger d-none" role="alert">
-                                </div>
+                                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
                                 <!-- Form inputs -->
                                 <div class="form-outline mb-2">
                                     <label class="form-label">Họ và tên</label>
-                                    <input type="text" id="fullname" class="form-control border-radius-custom" required />
+                                    <input type="text" name="fullname" class="form-control border-radius-custom" required />
                                 </div>
 
                                 <div class="form-outline mb-2">
                                     <label class="form-label">Email</label>
-                                    <input type="email" id="email" class="form-control border-radius-custom" required />
+                                    <input type="email" name="email" class="form-control border-radius-custom" required />
                                 </div>
 
                                 <div class="form-outline mb-2">
                                     <label class="form-label">Số điện thoại</label>
-                                    <input type="tel" id="phoneNumber" class="form-control border-radius-custom" required />
+                                    <input type="tel" name="phoneNumber" class="form-control border-radius-custom" required />
                                 </div>
 
                                 <div class="form-outline mb-2">
                                     <label class="form-label">Địa chỉ</label>
-                                    <input type="text" id="address" class="form-control border-radius-custom" required />
+                                    <input type="text" name="address" class="form-control border-radius-custom" required />
                                 </div>
 
                                 <div class="form-outline mb-2">
                                     <label class="form-label">Giới tính</label>
-                                    <select id="gender" class="form-control border-radius-custom" required>
+                                    <select name="gender" class="form-control border-radius-custom" required>
                                         <option value="">Chọn giới tính</option>
                                         <option value="MALE">Nam</option>
                                         <option value="FEMALE">Nữ</option>
@@ -87,12 +87,12 @@
 
                                 <div class="form-outline mb-2">
                                     <label class="form-label">Mật khẩu</label>
-                                    <input type="password" id="password" class="form-control border-radius-custom" required />
+                                    <input type="password" name="password" class="form-control border-radius-custom" required />
                                 </div>
 
                                 <div class="form-outline mb-3">
                                     <label class="form-label">Nhập lại mật khẩu</label>
-                                    <input type="password" id="password-confirm" class="form-control border-radius-custom" required />
+                                    <input type="password" name="password-confirm" class="form-control border-radius-custom" required />
                                 </div>
 
                                 <!-- Submit button -->
@@ -112,87 +112,6 @@
                                     </p>
                                 </div>
                             </form>
-
-                            <script>
-                            document.getElementById('registerForm').addEventListener('submit', function(e) {
-                                e.preventDefault();
-                                
-                                // Hide alert message
-                                const alertMessage = document.getElementById('alertMessage');
-                                alertMessage.classList.add('d-none');
-                                
-                                // Validate password match
-                                const password = document.getElementById('password').value;
-                                const confirmPassword = document.getElementById('password-confirm').value;
-                                if (password !== confirmPassword) {
-                                    alertMessage.textContent = 'Mật khẩu không khớp!';
-                                    alertMessage.classList.remove('d-none');
-                                    return;
-                                }
-
-                                // Create user object
-                                const user = {
-                                    fullname: document.getElementById('fullname').value.trim(),
-                                    email: document.getElementById('email').value.trim(),
-                                    phoneNumber: formatPhoneNumber(document.getElementById('phoneNumber').value.trim()),
-                                    address: document.getElementById('address').value.trim(),
-                                    gender: document.getElementById('gender').value,
-                                    password: password
-                                };
-
-                                // Validate required fields
-                                if (!user.fullname || !user.email || !user.phoneNumber || !user.password || !user.address || !user.gender) {
-                                    alertMessage.textContent = 'Vui lòng điền đầy đủ thông tin!';
-                                    alertMessage.classList.remove('d-none');
-                                    return;
-                                }
-
-                                // Format phone number to E.164 format
-                                function formatPhoneNumber(phone) {
-                                    // Remove all non-digit characters
-                                    let cleaned = phone.replace(/\D/g, '');
-                                    
-                                    // If number starts with 0, replace with +84
-                                    if (cleaned.startsWith('0')) {
-                                        cleaned = '84' + cleaned.substring(1);
-                                    }
-                                    
-                                    // Add + prefix
-                                    return '+' + cleaned;
-                                }
-
-                                // Send registration request
-                                fetch('/api/auth/register', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Accept': 'application/json'
-                                    },
-                                    body: JSON.stringify(user)
-                                })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        return response.text().then(text => {
-                                            throw new Error(text || 'Đăng ký thất bại');
-                                        });
-                                    }
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    // Store JWT token
-                                    if (data.jwtToken) {
-                                        localStorage.setItem('jwtToken', data.jwtToken);
-                                    }
-                                    
-                                    // Redirect to home page
-                                    window.location.href = '/';
-                                })
-                                .catch(error => {
-                                    alertMessage.textContent = error.message;
-                                    alertMessage.classList.remove('d-none');
-                                });
-                            });
-                            </script>
                         </div>
                     </div>
                 </div>

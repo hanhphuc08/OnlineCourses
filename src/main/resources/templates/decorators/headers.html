@@ -22,11 +22,28 @@
 					</div>
 					<div class="col-lg-6 text-end">
 						<ul class="list-inline mb-0" id="auth-buttons">
-							<li class="list-inline-item"><a th:href="@{/login}" class="text-muted">Đăng nhập</a></li>
-							<li class="list-inline-item">|</li>
-							<li class="list-inline-item"><a th:href="@{/register}" class="text-muted">Đăng ký</a></li>
-							<li class="list-inline-item">|</li>
-							<li class="list-inline-item"><a th:href="@{/forgot-password}" class="text-muted">Quên mật khẩu</a></li>
+							<li class="list-inline-item" sec:authorize="!isAuthenticated()">
+								<a th:href="@{/login}" class="text-muted">Đăng nhập</a>
+							</li>
+							<li class="list-inline-item" sec:authorize="!isAuthenticated()">|</li>
+							<li class="list-inline-item" sec:authorize="!isAuthenticated()">
+								<a th:href="@{/register}" class="text-muted">Đăng ký</a>
+							</li>
+							<li class="list-inline-item" sec:authorize="!isAuthenticated()">|</li>
+							<li class="list-inline-item" sec:authorize="!isAuthenticated()">
+								<a th:href="@{/forgot-password}" class="text-muted">Quên mật khẩu</a>
+							</li>
+							<li class="list-inline-item" sec:authorize="isAuthenticated()">
+								<a th:href="@{/profile}" class="text-muted">
+									Xin chào, <span sec:authentication="principal.fullname">User</span>
+								</a>
+							</li>
+							<li class="list-inline-item" sec:authorize="isAuthenticated()">|</li>
+							<li class="list-inline-item" sec:authorize="isAuthenticated()">
+								<form th:action="@{/api/auth/logout}" method="post" style="display: inline;">
+									<button type="submit" class="btn btn-link text-muted p-0">Đăng xuất</button>
+								</form>
+                </li>
               </ul>
             </div>
           </div>
@@ -49,13 +66,48 @@
               </button>
 
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<!-- Main navigation links - will be updated dynamically -->
+					<!-- Main navigation links -->
 					<ul class="navbar-nav mx-auto" id="main-nav">
-						<li class="nav-item"><a class="nav-link active" th:href="@{/}">Trang chủ</a></li>
-						<li class="nav-item"><a class="nav-link" th:href="@{/category}">Khóa học</a></li>
-						<li class="nav-item"><a class="nav-link" th:href="@{/schedule}">Lịch học và Live</a></li>
-						<li class="nav-item"><a class="nav-link" th:href="@{/introduce}">Giới thiệu</a></li>
-					</ul>
+						<li class="nav-item" sec:authorize="hasRole('ROLE_Owner')">
+							<a class="nav-link" th:href="@{/}">Trang chủ</a>
+						</li>
+						<li class="nav-item" sec:authorize="hasRole('ROLE_Owner')">
+							<a class="nav-link" th:href="@{/category}">Khóa học</a>
+						</li>
+						<li class="nav-item" sec:authorize="hasRole('ROLE_Owner')">
+							<a class="nav-link" th:href="@{/owner/dashboard}">Quản lý</a>
+						</li>
+						<li class="nav-item" sec:authorize="hasRole('ROLE_Staff')">
+							<a class="nav-link" th:href="@{/}">Trang chủ</a>
+						</li>
+						<li class="nav-item" sec:authorize="hasRole('ROLE_Staff')">
+							<a class="nav-link" th:href="@{/category}">Khóa học</a>
+						</li>
+						<li class="nav-item" sec:authorize="hasRole('ROLE_Staff')">
+							<a class="nav-link" th:href="@{/staff/courses}">Quản lý khóa học</a>
+              </li>
+						<li class="nav-item" sec:authorize="hasRole('ROLE_Customer')">
+							<a class="nav-link" th:href="@{/}">Trang chủ</a>
+                      </li>
+						<li class="nav-item" sec:authorize="hasRole('ROLE_Customer')">
+							<a class="nav-link" th:href="@{/category}">Khóa học</a>
+                      </li>
+						<li class="nav-item" sec:authorize="hasRole('ROLE_Customer')">
+							<a class="nav-link" th:href="@{/schedule}">Lịch học và Live</a>
+                  </li>
+						<li class="nav-item" sec:authorize="hasRole('ROLE_Customer')">
+							<a class="nav-link" th:href="@{/introduce}">Giới thiệu</a>
+                  </li>
+						<li class="nav-item" sec:authorize="!isAuthenticated()">
+							<a class="nav-link" th:href="@{/}">Trang chủ</a>
+              </li>
+						<li class="nav-item" sec:authorize="!isAuthenticated()">
+							<a class="nav-link" th:href="@{/category}">Khóa học</a>
+              </li>
+						<li class="nav-item" sec:authorize="!isAuthenticated()">
+							<a class="nav-link" th:href="@{/introduce}">Giới thiệu</a>
+              </li>
+            </ul>
 
 					<!-- Right aligned nav items -->
 					<ul class="navbar-nav">
@@ -69,208 +121,20 @@
           </form>
 						</li>
 						<li class="py-1 nav-item">
-							<form id="cartForm" method="GET" action="/cart" style="display: inline;">
-								<input type="hidden" name="token" id="cartToken" value="" />
-								<a class="nav-link" href="#" id="cart-link">
-									<i class="fa fa-shopping-cart"></i>
-									<span class="badge bg-primary">0</span>
-								</a>
-							</form>
-						</li>
-						<li class="nav-item" id="user-dropdown-container">
-							<!-- User dropdown will be inserted here -->
+							<a class="nav-link" th:href="@{/cart}" sec:authorize="isAuthenticated()">
+								<i class="fa fa-shopping-cart"></i>
+								<span class="badge bg-primary">0</span>
+							</a>
+							<a class="nav-link" th:href="@{/login}" sec:authorize="!isAuthenticated()">
+								<i class="fa fa-shopping-cart"></i>
+								<span class="badge bg-primary">0</span>
+							</a>
 						</li>
 					</ul>
         </div>
       </div>
 		</nav>
 		<!-- Navbar End -->
-
-		<!-- Auth Check Script -->
-		<script th:inline="javascript">
-			/*<![CDATA[*/
-			// Định nghĩa các hàm ở phạm vi toàn cục
-			window.handleLogout = function() {
-				console.log('=== HANDLING LOGOUT ===');
-				localStorage.removeItem('jwt');
-				localStorage.removeItem('userData');
-				
-				fetch('/api/auth/logout', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				})
-				.then(response => {
-					console.log('Logout response:', response.status);
-					window.location.href = '/';
-				})
-				.catch(error => {
-					console.error('Logout error:', error);
-					window.location.href = '/';
-				});
-				
-				return false;
-			};
-
-			// Hàm xử lý click cart
-			function handleCartClick(e) {
-				if (e) {
-					e.preventDefault();
-				}
-				
-				console.log('=== CART CLICK HANDLER START ===');
-				
-				try {
-					const jwtToken = localStorage.getItem('jwt');
-					console.log('JWT Token exists:', !!jwtToken);
-					
-					if (!jwtToken) {
-						console.log('No token found, redirecting to login');
-						window.location.href = '/login';
-						return false;
-					}
-					
-					// Đặt token vào form
-					document.getElementById('cartToken').value = jwtToken;
-					console.log('Token set in form:', document.getElementById('cartToken').value);
-					
-					// Submit form
-					console.log('Submitting cart form...');
-					document.getElementById('cartForm').submit();
-					
-				} catch (error) {
-					console.error('Error in cart click handler:', error);
-					alert('Có lỗi xảy ra. Vui lòng thử lại.');
-				}
-				
-				return false;
-			}
-
-			// Hàm kiểm tra xác thực
-			function checkAuth() {
-				console.log('=== CHECKING AUTH ===');
-				const jwtToken = localStorage.getItem('jwt');
-				const userDataStr = localStorage.getItem('userData');
-				
-				console.log('Token exists:', !!jwtToken);
-				console.log('User data exists:', !!userDataStr);
-				
-				if (jwtToken && userDataStr) {
-					try {
-						const userData = JSON.parse(userDataStr);
-						console.log('User role:', userData?.role);
-						
-						// Cập nhật navigation
-						updateNavLinks(userData?.role);
-						
-					} catch (error) {
-						console.error('Error:', error);
-						localStorage.removeItem('jwt');
-						localStorage.removeItem('userData');
-					}
-				}
-			}
-
-			// Hàm cập nhật navigation
-			function updateNavLinks(role) {
-				console.log('=== UPDATING NAV LINKS ===');
-				console.log('Role object:', role);
-				
-				const mainNav = document.getElementById('main-nav');
-				const jwtToken = localStorage.getItem('jwt');
-				
-				let navItems = '';
-				
-				if (role?.roleID === 'Owner') {
-					console.log('Setting up Owner navigation');
-					navItems = `
-						<li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
-						<li class="nav-item"><a class="nav-link" href="/category">Khóa học</a></li>
-						<li class="nav-item"><a class="nav-link" href="/owner/dashboard">Quản lý</a></li>
-					`;
-				} else if (role?.roleID === 'Staff') {
-					console.log('Setting up Staff navigation');
-					navItems = `
-						<li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
-						<li class="nav-item"><a class="nav-link" href="/category">Khóa học</a></li>
-						<li class="nav-item"><a class="nav-link" href="/staff/courses">Quản lý khóa học</a></li>
-					`;
-				} else if (role?.roleID === 'Customer') {
-					console.log('Setting up Customer navigation');
-					navItems = `
-						<li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
-						<li class="nav-item"><a class="nav-link" href="/category">Khóa học</a></li>
-						<li class="nav-item"><a class="nav-link" href="/schedule">Lịch học và Live</a></li>
-						<li class="nav-item"><a class="nav-link" href="/introduce">Giới thiệu</a></li>
-					`;
-				} else {
-					console.log('Setting up Guest navigation');
-					navItems = `
-						<li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
-						<li class="nav-item"><a class="nav-link" href="/category">Khóa học</a></li>
-						<li class="nav-item"><a class="nav-link" href="/introduce">Giới thiệu</a></li>
-					`;
-				}
-
-				console.log('Setting mainNav.innerHTML:', navItems);
-				mainNav.innerHTML = navItems;
-
-				// Update auth buttons based on login state
-				const authButtons = document.getElementById('auth-buttons');
-				console.log('Auth buttons element:', authButtons);
-				
-				if (jwtToken) {
-					try {
-						const userData = JSON.parse(localStorage.getItem('userData'));
-						console.log('User data for auth buttons:', userData);
-						
-						const authButtonsHTML = `
-							<li class="list-inline-item">
-								<a href="/profile" class="text-muted">Xin chào, ${userData.fullname || userData.email}</a>
-							</li>
-							<li class="list-inline-item">|</li>
-							<li class="list-inline-item">
-								<a href="#" onclick="handleLogout(); return false;" class="text-muted">Đăng xuất</a>
-							</li>
-						`;
-						console.log('Setting auth buttons HTML:', authButtonsHTML);
-						authButtons.innerHTML = authButtonsHTML;
-					} catch (e) {
-						console.error('Error updating auth buttons:', e);
-					}
-				} else {
-					console.log('Setting guest auth buttons');
-					authButtons.innerHTML = `
-						<li class="list-inline-item"><a href="/login" class="text-muted">Đăng nhập</a></li>
-						<li class="list-inline-item">|</li>
-						<li class="list-inline-item"><a href="/register" class="text-muted">Đăng ký</a></li>
-						<li class="list-inline-item">|</li>
-						<li class="list-inline-item"><a href="/forgot-password" class="text-muted">Quên mật khẩu</a></li>
-					`;
-				}
-			}
-
-			// Thiết lập click handler khi DOM đã sẵn sàng
-			document.addEventListener('DOMContentLoaded', function() {
-				console.log('=== PAGE LOADED ===');
-				
-				// Thiết lập cart click handler
-				const cartLink = document.getElementById('cart-link');
-				if (cartLink) {
-					console.log('Setting up cart click handler');
-					cartLink.addEventListener('click', function(e) {
-						console.log('Cart link clicked');
-						handleCartClick(e);
-					});
-				} else {
-					console.error('Cart link not found');
-				}
-				
-				checkAuth();
-			});
-			/*]]>*/
-		</script>
     </header>
 
     <!-- Scripts -->

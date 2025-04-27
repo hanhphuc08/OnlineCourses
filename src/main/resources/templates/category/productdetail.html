@@ -213,10 +213,12 @@
 									<span th:text="${course.formattedDuration != null ? course.formattedDuration : 'Chưa có thông tin'}">Sau khi kết thúc kỳ thi THPT 2025</span>
 								</li>
 								<li class="d-flex justify-content-center align-items-center">
-									<a class="btn btn-warning mt-4 mb-4 mx-2 text-white"
-									 	th:href="@{/course/cart/add/{id}(id=${course.courseID})}">Thêm vào giỏ hàng</a>
-                                    <a class="btn btn-success mt-4 mb-4 mx-2"
-                                     	th:href="@{/course/checkout/{id}(id=${course.courseID})}">Mua ngay</a>
+									<form th:action="@{/course/cart/add/{id}(id=${course.courseID})}" method="post" style="display: inline;">
+										<button type="submit" class="btn btn-warning mt-4 mb-4 mx-2 text-white">Thêm vào giỏ hàng</button>
+									</form>
+									<form th:action="@{/course/checkout/{id}(id=${course.courseID})}" method="post" style="display: inline;">
+										<button type="submit" class="btn btn-success mt-4 mb-4 mx-2">Mua ngay</button>
+									</form>
 								</li>
 							</ul>
 						</div>
@@ -239,5 +241,56 @@
 	<script th:src="@{/assets/js/animation.js}"></script>
 	<script th:src="@{/assets/js/imagesloaded.js}"></script>
 	<script th:src="@{/assets/js/custom.js}"></script>
+	<script>
+	function addToCart(event, courseId) {
+	    event.preventDefault();
+	    const token = localStorage.getItem('jwt');
+	    if (!token) {
+	        window.location.href = '/login';
+	        return;
+	    }
+
+	    // Tạo form và submit
+	    const form = document.createElement('form');
+	    form.method = 'POST';
+	    form.action = `/course/cart/add/${courseId}`;
+	    
+	    // Thêm token vào form
+	    const tokenInput = document.createElement('input');
+	    tokenInput.type = 'hidden';
+	    tokenInput.name = 'token';
+	    tokenInput.value = token;
+	    form.appendChild(tokenInput);
+	    
+	    // Thêm form vào body và submit
+	    document.body.appendChild(form);
+	    form.submit();
+	}
+
+	function buyNow(event, courseId) {
+	    event.preventDefault();
+	    const token = localStorage.getItem('jwt');
+	    if (!token) {
+	        window.location.href = '/login';
+	        return;
+	    }
+
+	    // Tạo form và submit
+	    const form = document.createElement('form');
+	    form.method = 'POST';
+	    form.action = `/course/checkout/${courseId}`;
+	    
+	    // Thêm token vào form
+	    const tokenInput = document.createElement('input');
+	    tokenInput.type = 'hidden';
+	    tokenInput.name = 'token';
+	    tokenInput.value = token;
+	    form.appendChild(tokenInput);
+	    
+	    // Thêm form vào body và submit
+	    document.body.appendChild(form);
+	    form.submit();
+	}
+	</script>
 </body>
 </html>

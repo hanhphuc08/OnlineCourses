@@ -23,7 +23,7 @@ public class CartRepository {
         cart.setUserID(rs.getInt("userID"));
         cart.setCourseID(rs.getInt("courseID"));
         cart.setQuantity(rs.getInt("quantity"));
-        cart.setCreatedAt(rs.getTimestamp("createdAt").toLocalDateTime());
+        cart.setCreateDate(rs.getTimestamp("createDate").toLocalDateTime());
         return cart;
     }
 	
@@ -40,7 +40,7 @@ public class CartRepository {
 		
 	}
 	public List<cart> findByUserId(int userId) {
-        String sql = "SELECT * FROM cart WHERE userID = ?";
+        String sql = "SELECT cartID, userID, courseID, quantity, createDate FROM cart WHERE userID = ?";
         return jdbcTemplate.query(sql, this::mapRowToCart, userId);
     }
 

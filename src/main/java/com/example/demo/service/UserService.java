@@ -3,16 +3,18 @@ package com.example.demo.service;
 import com.example.demo.model.role;
 import com.example.demo.model.users;
 import com.example.demo.repository.UserRepository;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -32,33 +34,98 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         logger.info("Loading user by username: {}", username);
-        users user = userRepository.findByEmail(username)
-                .orElseGet(() -> userRepository.findByPhoneNumber(username)
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username)));
+        try {
+            users user = findByEmailOrPhone(username);
+            return new CustomUserDetails(user);
+        } catch (UsernameNotFoundException e) {
+            logger.error("User not found: {}", username);
+            throw e;
+        }
+    }
 
-        // Create authorities list with user's role
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        if (user.getRole() != null) {
-            String roleAuthority = "ROLE_" + user.getRole().getRoleID();
-            authorities.add(new SimpleGrantedAuthority(roleAuthority));
-            logger.info("Added authority {} for user {}", roleAuthority, username);
-        } else {
-            logger.warn("No role found for user {}", username);
+    // Custom UserDetails implementation
+    private static class CustomUserDetails implements UserDetails {
+        private final users user;
+
+        public CustomUserDetails(users user) {
+            this.user = user;
         }
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                true, 
-                true, 
-                true, 
-                true, 
-                authorities
-        );
+        @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+            if (user.getRole() != null) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleID()));
+            }
+            return authorities;
+        }
+
+        @Override
+        public String getPassword() {
+            return user.getPassword();
+        }
+
+        @Override
+        public String getUsername() {
+            return user.getEmail();
+        }
+
+        @Override
+        public boolean isAccountNonExpired() {
+            return true;
+        }
+
+        @Override
+        public boolean isAccountNonLocked() {
+            return true;
+        }
+
+        @Override
+        public boolean isCredentialsNonExpired() {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return true;
+        }
+
+        // Custom getters for user information
+        public String getFullname() {
+            return user.getFullname();
+        }
+
+        public String getEmail() {
+            return user.getEmail();
+        }
+
+        public String getPhoneNumber() {
+            return user.getPhoneNumber();
+        }
+
+        public role getRole() {
+            return user.getRole();
+        }
     }
 
     public users registerUser(users user) {
+        logger.info("Registering new user: {}", user.getEmail());
         
+        // Validate required fields
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("Email is required");
+        }
+        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+            throw new RuntimeException("Password is required");
+        }
+        if (user.getFullname() == null || user.getFullname().trim().isEmpty()) {
+            throw new RuntimeException("Full name is required");
+        }
+        if (user.getPhoneNumber() == null || user.getPhoneNumber().trim().isEmpty()) {
+            throw new RuntimeException("Phone number is required");
+        }
+
+        // Check if user already exists
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
@@ -66,46 +133,63 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("Phone number already exists");
         }
 
-        
+        // Set default role for new user
+        if (user.getRole() == null) {
+            role defaultRole = new role();
+            defaultRole.setRoleID("CUSTOMER");
+            user.setRole(defaultRole);
+        }
+
+        // Encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         
-        return userRepository.save(user);
+        // Set creation date
+        user.setCreateDate(LocalDateTime.now());
+        
+        try {
+            users savedUser = userRepository.save(user);
+            logger.info("Successfully registered user: {}", savedUser.getEmail());
+            return savedUser;
+        } catch (Exception e) {
+            logger.error("Failed to register user: {}", e.getMessage());
+            throw new RuntimeException("Failed to register user: " + e.getMessage());
+        }
     }
 
     public users authenticateUser(String emailOrPhone, String password) {
         logger.info("Authenticating user with email/phone: {}", emailOrPhone);
-        users user = findByEmailOrPhone(emailOrPhone);
-        
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            logger.error("Invalid password for user: {}", emailOrPhone);
+        try {
+            users user = findByEmailOrPhone(emailOrPhone);
+            
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                logger.error("Invalid password for user: {}", emailOrPhone);
+                throw new UsernameNotFoundException("Invalid credentials");
+            }
+            
+            logger.info("User {} authenticated successfully with role {}", 
+                emailOrPhone, 
+                user.getRole() != null ? user.getRole().getRoleID() : "no role");
+            
+            return user;
+        } catch (Exception e) {
+            logger.error("Authentication failed for user {}: {}", emailOrPhone, e.getMessage());
             throw new UsernameNotFoundException("Invalid credentials");
         }
-        
-        if (user.getRole() == null) {
-            logger.warn("User {} authenticated but has no role", emailOrPhone);
-        } else {
-            logger.info("User {} authenticated successfully with role {}", emailOrPhone, user.getRole().getRoleID());
-        }
-        
-        return user;
     }
 
     public users findByEmailOrPhone(String emailOrPhone) {
         logger.info("Finding user by email/phone: {}", emailOrPhone);
         
-        // Try finding by email first
         Optional<users> userByEmail = userRepository.findByEmail(emailOrPhone);
         if (userByEmail.isPresent()) {
             return userByEmail.get();
         }
         
-        // If not found by email, try phone number
         Optional<users> userByPhone = userRepository.findByPhoneNumber(emailOrPhone);
         if (userByPhone.isPresent()) {
             return userByPhone.get();
         }
         
-        // If not found by either, throw exception with specific message
         logger.error("User not found with email/phone: {}", emailOrPhone);
         throw new UsernameNotFoundException("Không tìm thấy tài khoản với email hoặc số điện thoại: " + emailOrPhone);
     }
@@ -141,7 +225,7 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("Password is required");
         }
 
-        // Set default role as CUSTOMER for new users
+        
         if (user.getRole() == null) {
             role customerRole = new role();
             customerRole.setRoleID("Customer");

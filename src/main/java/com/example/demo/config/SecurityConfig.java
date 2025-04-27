@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import com.example.demo.security.JwtAuthenticationFilter;
 import com.example.demo.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,15 +9,12 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.web.context.SecurityContextHolderFilter;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Arrays;
@@ -29,12 +25,9 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final UserService userService;
-    private final JwtAuthenticationFilter jwtAuthFilter;
 
-    public SecurityConfig(@Lazy UserService userService, 
-                         @Lazy JwtAuthenticationFilter jwtAuthFilter) {
+    public SecurityConfig(@Lazy UserService userService) {
         this.userService = userService;
-        this.jwtAuthFilter = jwtAuthFilter;
     }
 
     @Bean
@@ -67,16 +60,29 @@ public class SecurityConfig {
                         "/course/detail/**",
                         "/error"
                     ).permitAll()
-                    .requestMatchers("/course/cart/add/**", "/course/checkout/**").authenticated()
-                    .requestMatchers("/cart/**").authenticated()
+                    .requestMatchers("/course/cart/add/**", "/course/checkout/**", "/cart/**").authenticated()
                     .requestMatchers("/staff/**").hasRole("STAFF")
                     .requestMatchers("/owner/**").hasRole("OWNER")
                     .requestMatchers("/customer/**").hasRole("CUSTOMER")
                     .anyRequest().authenticated();
                 System.out.println("Authorization rules configured.");
             })
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/api/auth/login")
+                .usernameParameter("emailOrPhone")
+                .passwordParameter("password")
+                .defaultSuccessUrl("/")
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/api/auth/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .clearAuthentication(true)
+                .permitAll()
             )
             .exceptionHandling(exceptionHandling -> exceptionHandling
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
@@ -93,7 +99,6 @@ public class SecurityConfig {
                 })
             );
 
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         System.out.println("=== SECURITY CONFIGURATION COMPLETE ===");
 
         return http.build();

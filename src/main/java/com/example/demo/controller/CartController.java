@@ -10,8 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.model.cart;
 import com.example.demo.model.course;
@@ -19,7 +18,6 @@ import com.example.demo.model.users;
 import com.example.demo.repository.CartRepository;
 import com.example.demo.service.CourseService;
 import com.example.demo.service.UserService;
-
 
 @Controller
 public class CartController {
@@ -60,12 +58,18 @@ public class CartController {
                 return cart;
             }).collect(Collectors.toList());
 
+            
+            double total = enrichedCartItems.stream()
+                .mapToDouble(item -> item.getCourse().getPrices().doubleValue())
+                .sum();
+
             model.addAttribute("cartItems", enrichedCartItems);
+            model.addAttribute("total", total);
             return "commons/cart";
         } catch (RuntimeException e) {
             logger.error("Error fetching cart for user: {}", e.getMessage());
             model.addAttribute("error", "Không thể tải giỏ hàng. Vui lòng thử lại!");
-            return "error/500";
+            return "commons/cart";
         }
 	}
 	

@@ -258,19 +258,24 @@
                 e.preventDefault();
                 console.log('=== CART CLICK HANDLER START ===');
                 
-                const jwtToken = localStorage.getItem('jwt');
-                console.log('JWT Token exists:', !!jwtToken);
-                
-                if (!jwtToken) {
-                    console.log('No token found, redirecting to login');
+                // Kiểm tra xem người dùng đã đăng nhập chưa bằng cách kiểm tra session
+                fetch('/api/auth/check-auth', {
+                    method: 'GET',
+                    credentials: 'include' // Quan trọng: gửi kèm cookies
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Người dùng đã đăng nhập, chuyển đến trang giỏ hàng
+                        window.location.href = '/cart';
+                    } else {
+                        // Người dùng chưa đăng nhập, chuyển đến trang đăng nhập
+                        window.location.href = '/login';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking auth status:', error);
                     window.location.href = '/login';
-                    return false;
-                }
-                
-                // Chuyển hướng đến cart với token
-                const cartUrl = '/cart?token=' + encodeURIComponent(jwtToken);
-                console.log('Redirecting to:', cartUrl);
-                window.location.href = cartUrl;
+                });
                 
                 return false;
             };

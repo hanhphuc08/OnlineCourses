@@ -7,7 +7,7 @@ public class cart {
     private int userID;
     private int courseID;
     private int quantity;
-    private LocalDateTime createdAt;
+    private LocalDateTime createDate;
     private course course;
 	public course getCourse() {
 		return course;
@@ -42,11 +42,11 @@ public class cart {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
+	public LocalDateTime getCreateDate() {
+		return createDate;
 	}
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
+	public void setCreateDate(LocalDateTime createDate) {
+		this.createDate = createDate;
 	}
     
 
