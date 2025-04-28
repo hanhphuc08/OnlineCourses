@@ -55,12 +55,13 @@ public class SecurityConfig {
                         "/introduce",
                         "/schedule",
                         "/forgot-password",
+                        "/reset-password",
                         "/category/**",
                         "/courses/**",
                         "/course/detail/**",
                         "/error"
                     ).permitAll()
-                    .requestMatchers("/course/cart/add/**", "/course/checkout/**", "/cart/**").authenticated()
+                    .requestMatchers("/profile/**", "/course/cart/add/**", "/course/checkout/**", "/cart/**").authenticated()
                     .requestMatchers("/staff/**").hasRole("STAFF")
                     .requestMatchers("/owner/**").hasRole("OWNER")
                     .requestMatchers("/customer/**").hasRole("CUSTOMER")

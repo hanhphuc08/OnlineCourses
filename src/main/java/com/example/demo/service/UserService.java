@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +25,9 @@ public class UserService implements UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -284,6 +288,47 @@ public class UserService implements UserDetailsService {
         } catch (Exception e) {
             logger.error("Failed to save user: {}", e.getMessage());
             throw new RuntimeException("Failed to save user: " + e.getMessage());
+        }
+    }
+
+    public String generateResetCode() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder code = new StringBuilder();
+        java.util.Random random = new java.util.Random();
+        for (int i = 0; i < 6; i++) {
+            code.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return code.toString();
+    }
+
+    public void saveResetCode(users user, String resetCode) {
+        user.setEmailCode(resetCode);
+        user.setUpdateDate(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
+    public boolean verifyResetCode(String email, String resetCode) {
+        Optional<users> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            users user = userOpt.get();
+            LocalDateTime codeCreationTime = user.getUpdateDate();
+            LocalDateTime now = LocalDateTime.now();        
+            if (codeCreationTime != null && 
+                now.minusMinutes(1).isBefore(codeCreationTime)) {
+                return resetCode.equals(user.getEmailCode());
+            }
+        }
+        return false;
+    }
+
+    public void resetPassword(String email, String newPassword) {
+        Optional<users> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            users user = userOpt.get();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setEmailCode(null); 
+            user.setUpdateDate(LocalDateTime.now());
+            userRepository.save(user);
         }
     }
 } 
