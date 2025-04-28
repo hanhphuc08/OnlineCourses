@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3d5af1;
+            --primary-dark: #2e44bd;
+            --primary-light: #e6eaff;
+            --secondary: #ff7d51;
+            --text-dark: #262c36;
+            --text-light: #7b7f86;
+            --white: #ffffff;
+            --gray-light: #f5f7fa;
+            --gray: #eaedf2;
+            --success: #22c58b;
+            --shadow-sm: 0 2px 8px rgba(61, 90, 241, 0.1);
+            --shadow-md: 0 8px 30px rgba(61, 90, 241, 0.15);
+            --shadow-lg: 0 16px 40px rgba(61, 90, 241, 0.2);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e6eaff 100%);
+            color: var(--text-dark);
+            line-height: 1.7;
+            padding: 40px 20px 80px;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 15px;
+            height: 50px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--secondary);
+            border-radius: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        nav {
+            max-width: 1240px;
+            margin: 0 auto 30px;
+        }
+
+        ol {
+            display: flex;
+            list-style: none;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            justify-content: center;
+        }
+
+        ol li a {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        ol li a:hover {
+            color: var(--primary-dark);
+        }
+
+        .checkout-container {
+            display: flex;
+            gap: 30px;
+            max-width: 1240px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .checkout-form,
+        .order-summary {
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .checkout-form {
+            flex: 2;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .order-summary {
+            flex: 2;
+            min-width: 320px;
+        }
+
+        .checkout-form:hover,
+        .order-summary:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
+        }
+
+        .section-header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-header svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .section-header h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .section-content {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group:last-of-type {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--gray);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--white);
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(61, 90, 241, 0.15);
+        }
+
+        .form-group input::placeholder {
+            color: #b0b4bd;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .payment-method {
+            flex: 1;
+            min-width: 140px;
+            position: relative;
+        }
+
+        .payment-method input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .payment-method label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 15px;
+            background-color: var(--gray-light);
+            border: 2px solid var(--gray);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            height: 100%;
+        }
+
+        .payment-method svg {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .payment-method input:checked+label {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+        }
+
+        .payment-method input:checked+label svg {
+            color: var(--primary);
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            background-color: var(--gray-light);
+            transition: var(--transition);
+        }
+
+        .product-item:hover {
+            background-color: #ebefff;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--white);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: var(--text-dark);
+        }
+
+        .product-meta {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .product-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .product-meta svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .product-price {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .dropdown-toggle {
+            background: none;
+            border: none;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+        }
+
+        .dropdown-toggle:hover {
+            background-color: rgba(61, 90, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .dropdown-content {
+            display: none;
+            margin: -10px 0 20px;
+            padding: 15px 20px;
+            background-color: var(--white);
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            border-top: 1px solid var(--gray);
+            box-shadow: var(--shadow-sm);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-content.active {
+            display: block;
+        }
+
+        .summary-divider {
+            height: 1px;
+            background-color: var(--gray);
+            margin: 20px 0;
+            border: none;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .summary-row.total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--gray);
+        }
+
+        .summary-row.total .amount {
+            color: var(--primary);
+        }
+
+        .coupon-wrapper {
+            position: relative;
+            margin-top: 25px;
+        }
+
+        .coupon-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .coupon-input input {
+            flex: 1;
+        }
+
+        .apply-button {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 14px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .apply-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .checkout-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 16px;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .checkout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .checkout-btn:hover::before {
+            left: 100%;
+        }
+
+        .checkout-btn:hover {
+            box-shadow: 0 8px 25px rgba(61, 90, 241, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .security-info {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .security-info svg {
+            color: var(--success);
+        }
+
+        .security-info a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .security-info a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(38, 44, 54, 0.8);
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: 0;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: modalFadeIn 0.4s ease;
+            overflow: hidden;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 20px 30px;
+            position: relative;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin: 10px 0 30px;
+        }
+
+        .qr-image {
+            width: 200px;
+            height: 200px;
+            padding: 10px;
+            background: var(--white);
+            margin: 0 auto 15px;
+            border: 2px solid var(--gray);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .qr-caption {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-top: 10px;
+        }
+
+        .payment-info {
+            background-color: var(--gray-light);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .payment-info p {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .payment-info strong {
+            color: var(--text-dark);
+        }
+
+        .payment-account {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .close-modal svg {
+            width: 18px;
+            height: 18px;
+            color: var(--white);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .modal-btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .primary-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+        }
+
+        .primary-btn:hover {
+            background-color: var(--primary-dark);
+            box-shadow: 0 8px 15px rgba(61, 90, 241, 0.25);
+        }
+
+        .secondary-btn {
+            background-color: var(--white);
+            color: var(--text-dark);
+            border: 2px solid var(--gray);
+        }
+
+        .secondary-btn:hover {
+            background-color: var(--gray-light);
+            border-color: var(--text-light);
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            box-shadow: 0 6px 20px rgba(34, 197, 139, 0.3);
+            z-index: 1100;
+            animation: notificationFadeIn 0.4s ease;
+            font-size: 0.9rem;
+            font-weight: 526;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            display: none;
+        }
+
+        .notification svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        @keyframes notificationFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Thêm animation cho notification-slide-out */
+        @keyframes notificationFadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        .notification.fade-out {
+            animation: notificationFadeOut 0.4s ease forwards;
+        }
+
+        /* Course Badge */
+        .course-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            background-color: rgba(61, 90, 241, 0.1);
+            color: var(--primary);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 15px 60px;
+            }
+
+            .checkout-container {
+                flex-direction: column-reverse;
+                gap: 25px;
+            }
+
+            .checkout-form,
+            .order-summary {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .section-header {
+                padding: 15px 20px;
+            }
+
+            .section-content {
+                padding: 20px;
+            }
+
+            .product-item {
+                padding: 12px;
+            }
+
+            .product-image {
+                width: 50px;
+                height: 50px;
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
+            .payment-methods {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<nav aria-label="breadcrumb">
+    <ol>
+        <li><a th:href="@{/}">Trang chủ</a></li>
+        <li style="margin: 0 8px;">/</li>
+        <li><a th:href="@{/cart}">Giỏ hàng</a></li>
+        <li style="margin: 0 8px;">/</li>
+        <li style="color: var(--text-light);">Thanh toán</li>
+    </ol>
+</nav>
+
+<div class="checkout-container">
+    <div class="order-summary">
+        <div class="section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <h2>Tóm Tắt Đơn Hàng</h2>
+        </div>
+
+        <div class="section-content">
+            <div th:each="product, iterStat : ${order.products}" class="product-item">
+                <div class="product-info">
+                    <img th:src="${product.imageUrl}" th:alt="${product.title}" class="product-image">
+                    <div class="product-details">
+                        <div class="product-title" th:text="${product.title}">Lập Trình Web Chuyên Sâu</div>
+                        <div class="product-meta">
+                <span>
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                       stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                  </svg>
+                  <span th:text="${product.price} + ' VNĐ'">550,000 VNĐ</span>
+                </span>
+                        </div>
+                    </div>
+                    <button class="dropdown-toggle" th:attr="data-target='dropdown' + ${iterStat.index}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div th:each="product, iterStat : ${order.products}" class="dropdown-content" th:id="'dropdown' + ${iterStat.index}">
+                <p><strong th:text="${product.title}">Lập Trình Web Chuyên Sâu</strong></p>
+                <p th:text="${product.description}">Khóa học chuyên sâu về phát triển web, bao gồm HTML, CSS, JavaScript và các framework hiện đại như React.
+                    Thích hợp cho người học đã có kiến thức cơ bản.</p>
+                <p><strong>Bao gồm:</strong> <span th:text="${product.includes}">42 bài giảng, 12 bài tập thực hành, Chứng chỉ hoàn thành, Hỗ trợ 24/7</span></p>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-row">
+                <span>Tạm tính:</span>
+                <span th:text="${order.subtotal} + ' VNĐ'">900,000 VNĐ</span>
+            </div>
+
+            <div class="form-group">
+                <label for="coupon">Mã Giảm Giá</label>
+                <div class="coupon-input">
+                    <input type="text" id="coupon" name="coupon" placeholder="Nhập mã giảm giá" th:value="${couponCode}">
+                    <button class="apply-button" th:onclick="'applyCoupon()'">Áp dụng</button>
+                </div>
+            </div>
+
+            <div class="summary-row total">
+                <span>Tổng cộng:</span>
+                <span class="amount" th:text="${order.total} + ' VNĐ'">900,000 VNĐ</span>
+            </div>
+
+            <div class="security-info">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>Giao dịch được bảo mật. <a th:href="@{/policy}">Xem chính sách</a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="checkout-form">
+        <div class="section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <h2>Thông Tin Thanh Toán</h2>
+        </div>
+
+        <div class="section-content">
+            <div class="form-group">
+                <label for="fullName">Họ và Tên <span style="color: #ff7d51;">*</span></label>
+                <input type="text" id="fullName" name="fullName" placeholder="Nguyễn Văn A" required th:value="${user.fullName}">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email <span style="color: #ff7d51;">*</span></label>
+                <input type="email" id="email" name="email" placeholder="example@gmail.com" required th:value="${user.email}">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Số Điện Thoại <span style="color: #ff7d51;">*</span></label>
+                <input type="tel" id="phone" name="phone" placeholder="0912 345 678" required th:value="${user.phone}">
+            </div>
+
+            <div class="section-header" style="margin-top: 30px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                </svg>
+                <h2>Phương Thức Thanh Toán</h2>
+            </div>
+
+            <div class="section-content">
+                <div class="payment-methods">
+                    <div class="payment-method">
+                        <input type="radio" id="bank" name="payment" value="bank" th:checked="${paymentMethod == 'bank'}">
+                        <label for="bank">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                            </svg>
+                            Chuyển khoản ngân hàng
+                        </label>
+                    </div>
+
+                    <div class="payment-method">
+                        <input type="radio" id="momo" name="payment" value="momo" th:checked="${paymentMethod == 'momo'}">
+                        <label for="momo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path d="M17 9V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path>
+                                <path d="M9 18h9a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2h-2"></path>
+                                <rect x="9" y="9" width="6" height="6" rx="1"></rect>
+                            </svg>
+                            Ví điện tử MoMo
+                        </label>
+                    </div>
+
+                    <div class="payment-method">
+                        <input type="radio" id="zalopay" name="payment" value="zalopay" th:checked="${paymentMethod == 'zalopay'}">
+                        <label for="zalopay">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                <path d="M2 17l10 5 10-5"></path>
+                                <path d="M2 12l10 5 10-5"></path>
+                            </svg>
+                            ZaloPay
+                        </label>
+                    </div>
+                </div>
+
+                <button class="checkout-btn" id="openModalBtn">
+                    Hoàn Tất Thanh Toán
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Thanh Toán Đơn Hàng</h3>
+            <span class="close-modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+        </div>
+        <div class="modal-body">
+            <div class="qr-container">
+                <img th:src="${payment.qrCodeUrl}" alt="Mã QR Thanh toán" class="qr-image">
+                <div class="qr-caption">Quét mã QR để thanh toán</div>
+            </div>
+            <div class="payment-info">
+                <p><strong>Tên chủ tài khoản:</strong> <span class="payment-account" th:text="${payment.accountName}">CÔNG TY TNHH ĐÀO TẠO PTTT</span></p>
+                <p><strong>Số tài khoản:</strong> <span class="payment-account" th:text="${payment.accountNumber}">1026321xxx</span></p>
+                <p><strong>Ngân hàng:</strong> <span th:text="${payment.bankName}">Vietcombank</span></p>
+                <p><strong>Nội dung chuyển khoản:</strong> <span th:text="${payment.transferNote}">PTTT [Họ tên]</span></p>
+                <p><strong>Số tiền:</strong> <span class="payment-account" th:text="${payment.amount} + ' VNĐ'">900,000 VNĐ</span></p>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn secondary-btn close-modal-btn">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Đóng
+                </button>
+                <button class="modal-btn primary-btn" id="confirmPaymentBtn">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Đã Thanh Toán
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notification -->
+<div id="notification" class="notification">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+         stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span th:text="${notificationMessage}">Thanh toán thành công! Thông tin khóa học đã được gửi đến email của bạn.</span>
+</div>
+
+<script>
+    document.querySelectorAll('.dropdown-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+            const targetId = button.getAttribute('data-target');
+            const dropdown = document.getElementById(targetId);
+            document.querySelectorAll('.dropdown-content.active').forEach(activeDropdown => {
+                if (activeDropdown.id !== targetId) {
+                    activeDropdown.classList.remove('active');
+                }
+            });
+
+            dropdown.classList.toggle('active');
+        });
+    });
+
+    const modal = document.getElementById("paymentModal");
+    const openModalBtn = document.getElementById("openModalBtn");
+    const closeModalBtns = document.querySelectorAll(".close-modal, .close-modal-btn");
+    const confirmPaymentBtn = document.getElementById("confirmPaymentBtn");
+    const notification = document.getElementById("notification");
+    notification.style.display = "none";
+
+    openModalBtn.addEventListener("click", () => {
+        const fullName = document.getElementById("fullName").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+
+        if (!fullName || !email || !phone) {
+            alert("Vui lòng điền đầy đủ thông tin khách hàng!");
+            return;
+        }
+
+        modal.style.display = "flex";
+    });
+
+    closeModalBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
+    confirmPaymentBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+
+        notification.style.display = "flex";
+        setTimeout(() => {
+            notification.classList.add('fade-out');
+            setTimeout(() => {
+                notification.style.display = "none";
+                notification.classList.remove('fade-out');
+            }, 400);
+        }, 5000);
+    });
+    function addCloseButtonToNotification() {
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = '×';
+        closeButton.style.cssText = `
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        margin-left: 8px;
+        cursor: pointer;
+        padding: 0 4px;
+      `;
+        closeButton.addEventListener('click', () => {
+            notification.classList.add('fade-out');
+            setTimeout(() => {
+                notification.style.display = "none";
+                notification.classList.remove('fade-out');
+            }, 400);
+        });
+        notification.appendChild(closeButton);
+    }
+    document.addEventListener('DOMContentLoaded', addCloseButtonToNotification);
+</script>
+</body>
+</html>
