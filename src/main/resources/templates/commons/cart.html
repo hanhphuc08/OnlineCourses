@@ -89,7 +89,7 @@
 									<div>
 										<!-- Cart Items -->
 										<div th:if="${cartItems != null and !cartItems.empty}">
-											<div th:each="item : ${cartItems}" class="cart-item">
+											<div th:each="item : ${cartItems}" class="cart-item" th:id="'cart-item-' + ${item.cartID}">
 												<div class="row d-flex align-items-center text-center">
 													<div class="col-7">
 														<div class="d-flex align-items-center">
@@ -110,9 +110,9 @@
 													</div>
 													<div class="col-2 text-center" th:text="${item.course.formattedPrice}"></div>
 													<div class="col-1 text-center">
-														<a class="cart-remove" th:href="@{/cart/remove/{id}(id=${item.cartID})}">
-															<i class="fa fa-trash" aria-hidden="true"></i>
-														</a>
+														<a class="cart-remove" href="#" th:onclick="|removeFromCart(event, ${item.cartID})|">
+											                <i class="fa fa-trash" aria-hidden="true"></i>
+											            </a>
 													</div>
 												</div>
 											</div>
@@ -133,18 +133,18 @@
 								</div>
 								<div class="block-body bg-light pt-1">
 									<ul class="order-summary mb-0 list-unstyled">
-										<li class="order-summary-item">
-											<span>Giá trị đơn hàng:</span>
-											<span th:text="${#numbers.formatCurrency(total)}"></span>
-										</li>
-										<li class="order-summary-item">
-											<span>Khuyến mãi</span>
-											<span>$0.00</span>
-										</li>
-										<li class="order-summary-item border-0">
-											<span>Tổng tiền:</span>
-											<strong class="order-summary-total" th:text="${#numbers.formatCurrency(total)}"></strong>
-										</li>
+									    <li class="order-summary-item">
+									        <span>Giá trị đơn hàng:</span>
+									        <strong class="order-summary-subtotal" th:text="${#numbers.formatCurrency(total)}"></strong>
+									    </li>
+									    <li class="order-summary-item">
+									        <span>Khuyến mãi</span>
+									        <span>$0.00</span>
+									    </li>
+									    <li class="order-summary-item border-0">
+									        <span>Tổng tiền:</span>
+									        <strong class="order-summary-total" th:text="${#numbers.formatCurrency(total)}"></strong>
+									    </li>
 									</ul>
 
 									<a th:href="@{/checkout}" class="btn btn-dark d-block mt-4 mb-4" th:disabled="${cartItems == null or cartItems.empty}">
@@ -177,6 +177,101 @@
 	<script th:src="@{/assets/js/animation.js}"></script>
 	<script th:src="@{/assets/js/imagesloaded.js}"></script>
 	<script th:src="@{/assets/js/custom.js}"></script>
+	
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	
+	
+	<script>
+		function removeFromCart(event, cartId) {
+		    event.preventDefault();
+		    Swal.fire({
+		        title: 'Bạn có chắc chắn?',
+		        text: 'Bạn muốn xóa khóa học này khỏi giỏ hàng?',
+		        icon: 'warning',
+		        showCancelButton: true,
+		        confirmButtonText: 'Xóa',
+		        cancelButtonText: 'Hủy'
+		    }).then((result) => {
+		        if (result.isConfirmed) {
+		            $.ajax({
+		                url: `/cart/remove/${cartId}`,
+		                type: 'GET',
+		                data: { ajax: true },
+		                success: function (response) {
+		                    console.log('AJAX response:', response);
+		                    if (response.startsWith('success')) {
+		                        Swal.fire({
+		                            icon: 'success',
+		                            title: 'Thành công',
+		                            text: 'Đã xóa sản phẩm khỏi giỏ hàng!',
+		                            timer: 1500,
+		                            showConfirmButton: false
+		                        }).then(() => {
+		                        	console.log('Removing element with ID:', `cart-item-${cartId}`);
+		                            $(`#cart-item-${cartId}`).remove();
+		                            
+		                            updateCartSummary();
+		                        });
+		                    } else {
+		                        Swal.fire({
+		                            icon: 'error',
+		                            title: 'Lỗi',
+		                            text: response.split(': ')[1] || 'Không thể xóa sản phẩm!'
+		                        });
+		                    }
+		                },
+		                error: function (xhr) {
+		                    console.log('AJAX error:', xhr.status, xhr.responseText);
+		                    const message = xhr.responseText.split(': ')[1] || 'Không thể xóa sản phẩm khỏi giỏ hàng!';
+		                    Swal.fire({
+		                        icon: 'error',
+		                        title: 'Lỗi',
+		                        text: message
+		                    });
+		                    if (xhr.status === 401) {
+		                        setTimeout(() => window.location.href = '/login', 2000);
+		                    }
+		                }
+		            });
+		        }
+		    });
+		}
+		
+		function updateCartSummary() {
+		    console.log('Updating cart summary, items left:', $('.cart-item').length);
+		    if ($('.cart-item').length === 0) {
+		        console.log('Cart is empty, resetting summary');
+		        $('.cart-wrapper').html(`
+		            <div class="text-center py-5">
+		                <h4>Giỏ hàng của bạn đang trống</h4>
+		                <a href="/category" class="btn btn-primary mt-3">Tiếp tục mua sắm</a>
+		            </div>
+		        `);
+		        $('.order-summary-subtotal').text('$0.00');
+		        $('.order-summary-total').text('$0.00');
+		        $('.btn-dark').prop('disabled', true);
+		    } else {
+		        console.log('Fetching new total from /cart/total');
+		        $.ajax({
+		            url: '/cart/total',
+		            type: 'GET',
+		            success: function (total) {
+		                
+		                const subtotalElement = $('.order-summary-subtotal');
+		                const totalElement = $('.order-summary-total');
+		                subtotalElement.text(total);
+		                totalElement.text(total);
+		            },
+		            error: function (xhr) {
+		                console.log('Error fetching total:', xhr.status, xhr.responseText);
+		                $('.order-summary-subtotal').text('$0.00');
+		                $('.order-summary-total').text('$0.00');
+		            }
+		        });
+		    }
+		}
+	
+	</script>
 
 </body>
 

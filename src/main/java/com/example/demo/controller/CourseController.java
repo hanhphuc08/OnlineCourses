@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.course;
@@ -50,43 +52,69 @@ public class CourseController {
     }
 
 	@PostMapping("/cart/add/{id}")
-    public String addToCart(@PathVariable("id") int courseId, Model model, RedirectAttributes redirectAttributes) {
-		try {
-			course course = courseService.getCourseById(courseId);
-			if(course == null) {
-				logger.warn("Course with ID {} not found", courseId);
-				return "error/404";
-			}
-			
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			if(authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
-				logger.warn("User not authenticated when adding course ID {} to cart", courseId);
-				redirectAttributes.addFlashAttribute("error", "Vui lòng đăng nhập để thêm khóa học vào giỏ hàng!");
-				return "redirect:/login";
-			}
+    public Object addToCart(@PathVariable("id") int courseId,
+                            @RequestParam(value = "ajax", defaultValue = "false") boolean isAjax,
+                            Model model, RedirectAttributes redirectAttributes) {
+        try {
+            course course = courseService.getCourseById(courseId);
+            if (course == null) {
+                logger.warn("Course with ID {} not found", courseId);
+                if (isAjax) {
+                    return ResponseEntity.badRequest().body("error: Khóa học không tồn tại!");
+                }
+                redirectAttributes.addFlashAttribute("error", "Khóa học không tồn tại!");
+                return "redirect:/course/detail/" + courseId;
+            }
 
-			String username = authentication.getName();
-			users user = userService.findByEmailOrPhone(username);
-			
-			if (user == null) {
-				logger.warn("User not found for username: {}", username);
-				redirectAttributes.addFlashAttribute("error", "Không tìm thấy thông tin người dùng!");
-				return "redirect:/login";
-			}
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+                logger.warn("User not authenticated when adding course ID {} to cart", courseId);
+                if (isAjax) {
+                    return ResponseEntity.status(401).body("error: Vui lòng đăng nhập để thêm khóa học vào giỏ hàng!");
+                }
+                redirectAttributes.addFlashAttribute("error", "Vui lòng đăng nhập để thêm khóa học vào giỏ hàng!");
+                return "redirect:/login";
+            }
 
-			int userId = user.getUserID();
-			cartRepository.addToCart(userId, courseId, 1);
-			logger.info("Added course ID {} to cart for user ID {}", courseId, userId);
-			redirectAttributes.addFlashAttribute("success", "Đã thêm khóa học vào giỏ hàng!");
-			
-			return "redirect:/cart";
-			
-		} catch (RuntimeException e) {
-			logger.error("Error adding course ID {} to cart: {}", courseId, e.getMessage());
-			redirectAttributes.addFlashAttribute("error", e.getMessage());
-			return "redirect:/course/detail/" + courseId;
-		}
-	}
+            String username = authentication.getName();
+            users user = userService.findByEmailOrPhone(username);
+
+            if (user == null) {
+                logger.warn("User not found for username: {}", username);
+                if (isAjax) {
+                    return ResponseEntity.badRequest().body("error: Không tìm thấy thông tin người dùng!");
+                }
+                redirectAttributes.addFlashAttribute("error", "Không tìm thấy thông tin người dùng!");
+                return "redirect:/login";
+            }
+
+            int userId = user.getUserID();
+            try {
+                cartRepository.addToCart(userId, courseId, 1);
+                logger.info("Added course ID {} to cart for user ID {}", courseId, userId);
+                if (isAjax) {
+                    return ResponseEntity.ok("success: Đã thêm khóa học vào giỏ hàng!");
+                }
+                redirectAttributes.addFlashAttribute("success", "Đã thêm khóa học vào giỏ hàng!");
+                return "redirect:/cart";
+            } catch (RuntimeException e) {
+                logger.warn("Course ID {} already in cart for user ID {}", courseId, userId);
+                if (isAjax) {
+                    return ResponseEntity.badRequest().body("error: Khóa học đã có trong giỏ hàng!");
+                }
+                redirectAttributes.addFlashAttribute("error", "Khóa học đã có trong giỏ hàng!");
+                return "redirect:/course/detail/" + courseId;
+            }
+
+        } catch (RuntimeException e) {
+            logger.error("Error adding course ID {} to cart: {}", courseId, e.getMessage());
+            if (isAjax) {
+                return ResponseEntity.badRequest().body("error: " + e.getMessage());
+            }
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/course/detail/" + courseId;
+        }
+    }
 
     @PostMapping("/checkout/{id}")
     public String checkout(@PathVariable("id") int courseId, Model model, RedirectAttributes redirectAttributes) {
@@ -110,6 +138,13 @@ public class CourseController {
             course course = courseService.getCourseById(courseId);
             if (course == null) {
                 return "error/404";
+            }
+            
+            int userId = user.getUserID();
+            if(cartRepository.findByUserId(userId).isEmpty()) {
+            	cartRepository.addToCart(userId, courseId, 1);
+            	logger.info("Added course ID {} to cart for checkout for user ID {}", courseId, userId);
+            	
             }
 
             model.addAttribute("course", course);

@@ -27,6 +27,8 @@
 <link rel="stylesheet" th:href="@{/assets/css/custom.0a822280.css}">
 <link rel="stylesheet"
 	th:href="@{/assets/css/templatemo-space-dynamic.css}">
+	
+<link th:href="@{/vendor/sweetalert2/sweetalert2.min.css}" rel="stylesheet">
 
 </head>
 
@@ -186,7 +188,7 @@
                             <div class="owl-carousel owl-theme owl-dots-modern" data-slider-id="1">
                                 <div>
                                 	<img id="quickViewImage" class="img-fluid img-custom"
-                                     th:src="@{https://cdn-main.28tech.com.vn/media/anh-khoa-hoc/anh_dai_dien_khoa_hoc/new/c%C6%A1%20s%E1%BB%9F%20d%E1%BB%AF%20li%E1%BB%87u%20v%C3%A0%20sql.png}"
+                                     
                                      alt="product" />
                             </div>
                             </div>
@@ -217,14 +219,15 @@
                             <hr class="m-sm-2"></hr>
                             <ul class="list-inline d-flex justify-content-center align-items-center mt-3">
                                 <li class="list-inline-item">
-                                    <button id="quickViewAddToCart" class="btn1-custom btn-lg mb-1" type="button">
-                                        Thêm vào giỏ hàng
-                                    </button>
-                                </li>
+                                <button id="quickViewAddToCart" class="btn1-custom btn-lg mb-1" type="button" data-course-id="">
+                                    Thêm vào giỏ hàng
+                                </button>
+                            </li>
                                 <li class="list-inline-item">
-                                    <a id="quickViewBuyNow" th:href="@{/checkout}">
-                                        <button class="btn2-custom btn-lg mb-1" type="button">Mua Ngay</button>
-                                    </a>
+	                                <form id="quickViewBuyNowForm" method="POST">
+	                                    <input type="hidden" name="id" id="quickViewCourseId" value="">
+	                                    <button type="submit" class="btn2-custom btn-lg mb-1">Mua Ngay</button>
+	                                </form>
                                 </li>
                             </ul>
                         </div>
@@ -246,6 +249,7 @@
 	<script th:src="@{/assets/js/animation.js}"></script>
 	<script th:src="@{/assets/js/imagesloaded.js}"></script>
 	<script th:src="@{/assets/js/custom.js}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	
 	<script>
         // JavaScript để điền dữ liệu vào modal Quick View
@@ -294,6 +298,7 @@
                 return false;
             };
 
+         // Xử lý sự kiện nhấn nút QuickView
             quickViewButtons.forEach(button => {
                 button.addEventListener('click', function () {
                     const courseId = this.getAttribute('data-course-id');
@@ -303,14 +308,57 @@
                     const image = this.getAttribute('data-course-image');
                     const duration = this.getAttribute('data-course-duration');
 
+                    // Cập nhật thông tin vào modal
                     document.getElementById('quickViewTitleCourse').textContent = title;
                     document.getElementById('quickViewDescription').textContent = description;
                     document.getElementById('quickViewPrice').textContent = price;
-                    document.getElementById('quickViewImage').src = image;
+                    document.getElementById('quickViewImage').src = image || '/path/to/default-image.jpg';
                     document.getElementById('quickViewDuration').textContent = duration;
+                    document.getElementById('quickViewCourseId').value = courseId;
 
-                    const buyNowLink = document.getElementById('quickViewBuyNow');
-                    buyNowLink.href = `/checkout?courseId=${courseId}`;
+                    // Cập nhật action của form Mua ngay
+                    const buyNowForm = document.getElementById('quickViewBuyNowForm');
+                    buyNowForm.action = `/course/checkout/${courseId}`;
+
+                    // Cập nhật data-course-id cho nút Thêm vào giỏ hàng
+                    const addToCartButton = document.getElementById('quickViewAddToCart');
+                    addToCartButton.setAttribute('data-course-id', courseId);
+
+                    // Gắn sự kiện cho nút Thêm vào giỏ hàng
+                    addToCartButton.onclick = function() {
+                        const courseId = this.getAttribute('data-course-id');
+                        console.log('Adding course to cart:', courseId); // Debug
+
+                        $.ajax({
+                            url: `/course/cart/add/${courseId}`,
+                            type: 'POST',
+                            data: { ajax: true },
+                            success: function(response) {
+                                console.log('AJAX response:', response); // Debug
+                                if (response.startsWith('success')) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Thành công',
+                                        text: 'Đã thêm khóa học vào giỏ hàng!',
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Thông báo',
+                                        text: response.split(': ')[1],
+                                    });
+                                }
+                            },
+                            error: function(xhr) {
+                                console.log('AJAX error:', xhr.status, xhr.responseText); // Debug
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi',
+                                    text: xhr.responseText.split(': ')[1] || 'Không thể thêm vào giỏ hàng. Vui lòng thử lại!',
+                                });
+                            }
+                        });
+                    };
                 });
             });
 
@@ -320,10 +368,16 @@
                 document.getElementById('quickViewPrice').textContent = '';
                 document.getElementById('quickViewImage').src = '';
                 document.getElementById('quickViewDuration').textContent = '';
+                document.getElementById('quickViewCourseId').value = '';
+                document.getElementById('quickViewAddToCart').setAttribute('data-course-id', '');
                 document.getElementById('quickViewAddToCart').onclick = null;
-                document.getElementById('quickViewBuyNow').href = '/checkout';
+                const buyNowForm = document.getElementById('quickViewBuyNowForm');
+                buyNowForm.action = '';
             });
         });
+        
+        
+        
     </script>
 	
 </body>

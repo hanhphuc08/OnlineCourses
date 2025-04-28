@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,5 +44,33 @@ public class CartRepository {
         String sql = "SELECT cartID, userID, courseID, quantity, createDate FROM cart WHERE userID = ?";
         return jdbcTemplate.query(sql, this::mapRowToCart, userId);
     }
+	
+	public Optional<cart> findById(int cartId) {
+        String sql = "SELECT * FROM cart WHERE cartID = ?";
+        try {
+            cart cart = jdbcTemplate.queryForObject(sql,this::mapRowToCart, cartId);
+            return Optional.ofNullable(cart);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+	
+	
+	public void deleteById(int cartId) {
+        String sql = "DELETE FROM cart WHERE cartID = ?";
+        jdbcTemplate.update(sql, cartId);
+    }
+	
+	
+	public Optional<cart> findByUserIdAndCourseId(int userId, int courseId) {
+	    String sql = "SELECT * FROM cart WHERE userID = ? AND courseID = ?";
+	    try {
+	        cart cart = jdbcTemplate.queryForObject(sql, this::mapRowToCart, userId, courseId);
+	        return Optional.ofNullable(cart);
+	    } catch (Exception e) {
+	        return Optional.empty();
+	    }
+	}
+
 
 }

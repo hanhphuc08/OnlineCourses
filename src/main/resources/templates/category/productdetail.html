@@ -27,6 +27,8 @@
 <link rel="stylesheet" th:href="@{/assets/css/custom.0a822280.css}">
 <link rel="stylesheet"
 	th:href="@{/assets/css/templatemo-space-dynamic.css}">
+	
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 <body>
@@ -63,11 +65,11 @@
 	<section class="hero pt-7">
 		<div class="container">
 				<div th:if="${success}" class="alert alert-success" role="alert">
-		                <span th:text="${success}"></span>
-		            </div>
-		            <div th:if="${error}" class="alert alert-danger" role="alert">
-		                <span th:text="${error}"></span>
-		            </div>
+		            <span th:text="${success}"></span>
+		        </div>
+		        <div th:if="${error}" class="alert alert-danger" role="alert">
+		            <span th:text="${error}"></span>
+		        </div>
 			<!-- Breadcrumbs -->
 			<ol class="breadcrumb justify-content-left">
 				<li class="breadcrumb-item"><i class="fas fa-home pe-sm-2"></i><a
@@ -213,13 +215,13 @@
 									<span th:text="${course.formattedDuration != null ? course.formattedDuration : 'Chưa có thông tin'}">Sau khi kết thúc kỳ thi THPT 2025</span>
 								</li>
 								<li class="d-flex justify-content-center align-items-center">
-									<form th:action="@{/course/cart/add/{id}(id=${course.courseID})}" method="post" style="display: inline;">
-										<button type="submit" class="btn btn-warning mt-4 mb-4 mx-2 text-white">Thêm vào giỏ hàng</button>
-									</form>
-									<form th:action="@{/course/checkout/{id}(id=${course.courseID})}" method="post" style="display: inline;">
-										<button type="submit" class="btn btn-success mt-4 mb-4 mx-2">Mua ngay</button>
-									</form>
-								</li>
+                                    <button th:onclick="addToCart(event, [[${course.courseID}]])"
+                                            class="btn btn-warning mt-4 mb-4 mx-2 text-white">Thêm vào giỏ hàng</button>
+                                    <form th:action="@{/course/checkout/{id}(id=${course.courseID})}" method="post"
+                                          style="display: inline;">
+                                        <button type="submit" class="btn btn-success mt-4 mb-4 mx-2">Mua ngay</button>
+                                    </form>
+                                </li>
 							</ul>
 						</div>
 					</div>
@@ -242,55 +244,53 @@
 	<script th:src="@{/assets/js/imagesloaded.js}"></script>
 	<script th:src="@{/assets/js/custom.js}"></script>
 	<script>
-	function addToCart(event, courseId) {
-	    event.preventDefault();
-	    const token = localStorage.getItem('jwt');
-	    if (!token) {
-	        window.location.href = '/login';
-	        return;
-	    }
+    function addToCart(event, courseId) {
+        event.preventDefault();
+        $.ajax({
+            url: `/course/cart/add/${courseId}`,
+            type: 'POST',
+            data: { ajax: true },
+            success: function (response) {
+                console.log('AJAX response:', response);
+                if (response.startsWith('success')) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công',
+                        text: 'Đã thêm khóa học vào giỏ hàng!',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Thông báo',
+                        text: response.split(': ')[1],
+                    });
+                }
+            },
+            error: function (xhr) {
+                console.log('AJAX error:', xhr.status, xhr.responseText);
+                const message = xhr.responseText.split(': ')[1] || 'Không thể thêm vào giỏ hàng. Vui lòng thử lại!';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: message,
+                });
+                if (xhr.status === 401) {
+                    setTimeout(() => window.location.href = '/login', 2000);
+                }
+            }
+        });
+    }
 
-	    // Tạo form và submit
-	    const form = document.createElement('form');
-	    form.method = 'POST';
-	    form.action = `/course/cart/add/${courseId}`;
-	    
-	    // Thêm token vào form
-	    const tokenInput = document.createElement('input');
-	    tokenInput.type = 'hidden';
-	    tokenInput.name = 'token';
-	    tokenInput.value = token;
-	    form.appendChild(tokenInput);
-	    
-	    // Thêm form vào body và submit
-	    document.body.appendChild(form);
-	    form.submit();
-	}
+    function buyNow(event, courseId) {
+        event.preventDefault();
+        // Submit form for checkout
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/course/checkout/${courseId}`;
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
 
-	function buyNow(event, courseId) {
-	    event.preventDefault();
-	    const token = localStorage.getItem('jwt');
-	    if (!token) {
-	        window.location.href = '/login';
-	        return;
-	    }
-
-	    // Tạo form và submit
-	    const form = document.createElement('form');
-	    form.method = 'POST';
-	    form.action = `/course/checkout/${courseId}`;
-	    
-	    // Thêm token vào form
-	    const tokenInput = document.createElement('input');
-	    tokenInput.type = 'hidden';
-	    tokenInput.name = 'token';
-	    tokenInput.value = token;
-	    form.appendChild(tokenInput);
-	    
-	    // Thêm form vào body và submit
-	    document.body.appendChild(form);
-	    form.submit();
-	}
-	</script>
 </body>
 </html>
