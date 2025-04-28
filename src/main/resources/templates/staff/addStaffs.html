@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Add Staff</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <!-- Price Slider Stylesheets -->
+    <link
+      rel="stylesheet"
+      href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.css"
+    />
+    <!-- Google fonts - Playfair Display-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700"
+    />
+    <link rel="stylesheet" href="fonts/hkgrotesk/stylesheet.2e9c9834.css" />
+    <!-- owl carousel-->
+    <link
+      rel="stylesheet"
+      href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/assets/owl.carousel.css"
+    />
+    <!-- Lightbox -->
+    <link
+      rel="stylesheet"
+      href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/css/glightbox.min.css"
+    />
+    <!-- theme stylesheet-->
+    <link
+      rel="stylesheet"
+      href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/style.default.7acfaf01.css"
+      id="theme-stylesheet"
+    />
+    <!-- Custom stylesheet - for your changes-->
+    <link
+      rel="stylesheet"
+      href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/custom.0a822280.css"
+    />
+    <!-- Favicon-->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.1.0/css/solid.css"
+      integrity="sha384-TbilV5Lbhlwdyc4RuIV/JhD8NR+BfMrvz4BL5QFa2we1hQu6wvREr3v6XSRfCTRp"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.1.0/css/regular.css"
+      integrity="sha384-avJt9MoJH2rB4PKRsJRHZv7yiFZn8LrnXuzvmZoD3fh1aL6aM6s0BBcnCvBe6XSD"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.1.0/css/brands.css"
+      integrity="sha384-7xAnn7Zm3QC1jFjVc1A6v/toepoG3JXboQYzbM0jrPzou9OFXm/fY6Z/XiIebl/k"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.1.0/css/fontawesome.css"
+      integrity="sha384-ozJwkrqb90Oa3ZNb+yKFW2lToAWYdTiF1vt8JiH5ptTGHTGcN7qdoR1F95e0kYyG"
+      crossorigin="anonymous"
+    />
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-blue: #3494e6;
+        --primary-blue-hover: #2c7ec4;
+        --primary-blue-active: #2a76b8;
+        --bs-btn-color: #fff;
+        --bs-btn-bg: var(--primary-blue);
+        --bs-btn-border-color: var(--primary-blue);
+        --bs-btn-hover-color: #fff;
+        --bs-btn-hover-bg: var(--primary-blue-hover);
+        --bs-btn-hover-border-color: var(--primary-blue-active);
+        --bs-btn-focus-shadow-rgb: 82, 164, 234;
+        --bs-btn-active-color: #fff;
+        --bs-btn-active-bg: var(--primary-blue-active);
+        --bs-btn-active-border-color: #276fad;
+        --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+        --bs-btn-disabled-color: #fff;
+        --bs-btn-disabled-bg: var(--primary-blue);
+        --bs-btn-disabled-border-color: var(--primary-blue);
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f5f7fa;
+      }
+      /* Main Content */
+      .main-content {
+        margin-left: 280px;
+        padding: 20px;
+      }
+      /* Header Section */
+      .staff-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .staff-header h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #343a40;
+      }
+      .staff-header .btn-back {
+        background-color: var(--primary-blue);
+        border-color: var(--primary-blue);
+        color: #fff;
+      }
+      .staff-header .btn-back:hover {
+        background-color: var(--primary-blue-hover);
+        border-color: var(--primary-blue-hover);
+      }
+      /* Breadcrumb */
+      .breadcrumb {
+        margin-bottom: 20px;
+      }
+      /* Form Section */
+      .form-section {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .form-section h5 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #343a40;
+        margin-bottom: 15px;
+      }
+      .form-section .btn-save {
+        background-color: var(--primary-blue);
+        border-color: var(--primary-blue);
+        color: #fff;
+      }
+      .form-section .btn-save:hover {
+        background-color: var(--primary-blue-hover);
+        border-color: var(--primary-blue-hover);
+      }
+      .form-section .btn-cancel {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: #fff;
+        margin-right: 10px;
+      }
+      .form-section .btn-cancel:hover {
+        background-color: #5a6268;
+        border-color: #5a6268;
+      }
+      .form-section .button-group {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div th:replace="~{dashboard-sidebar-header :: sidebar}"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header -->
+      <div th:replace="~{dashboard-sidebar-header :: header}"></div>
+
+      <!-- Staff Header -->
+      <div class="staff-header">
+        <h2>Add Staff</h2>
+        <a href="/staff" class="btn btn-back">Back to all staff</a>
+      </div>
+
+      <!-- Breadcrumb -->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <i class="fas fa-home px-2"></i><a href="/dashboard">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/staff">Staff</a>
+        </li>
+        <li class="breadcrumb-item active">Add Staff</li>
+      </ol>
+
+      <!-- Form Section -->
+      <div class="form-section">
+        <h5>Add New Staff</h5>
+        <form>
+          <div class="mb-3">
+            <label for="staffName" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="staffName"
+              placeholder="Enter name"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="staffEmail" class="form-label">Email</label>
+            <input
+              type="email"
+              class="form-control"
+              id="staffEmail"
+              placeholder="Enter email"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="staffPhone" class="form-label">Phone</label>
+            <input
+              type="text"
+              class="form-control"
+              id="staffPhone"
+              placeholder="Enter phone number"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="staffGender" class="form-label">Gender</label>
+            <select class="form-select" id="staffGender" required>
+              <option value="" disabled selected>Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="staffAddress" class="form-label">Address</label>
+            <input
+              type="text"
+              class="form-control"
+              id="staffAddress"
+              placeholder="Enter address"
+              required
+            />
+          </div>
+          <div class="button-group">
+            <a href="/staff" class="btn btn-cancel">Cancel</a>
+            <button type="submit" class="btn btn-save">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- JavaScript files-->
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/object-fit-images/ofi.min.js"></script>
+    <script>
+      var basePath = "";
+    </script>
+    <script src="js/theme.30e7c8f9.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
+    <script src="js/demo.9833433a.js"></script>
+  </body>
+</html>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.springframework.org/security/tags">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>Sidebar</title>
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<!-- Price Slider Stylesheets -->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.css" />
+<!-- Google fonts - Playfair Display-->
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700" />
+<link rel="stylesheet" href="fonts/hkgrotesk/stylesheet.2e9c9834.css" />
+<!-- Owl carousel-->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/assets/owl.carousel.css" />
+<!-- Lightbox -->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/css/glightbox.min.css" />
+<!-- Theme stylesheet-->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/style.default.7acfaf01.css"
+	id="theme-stylesheet" />
+<!-- Custom stylesheet - for your changes-->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/custom.0a822280.css" />
+<!-- Favicon-->
+<link rel="shortcut icon"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/img/favicon.png" />
+<!-- Tweaks for older IEs-->
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<!-- Font Awesome CSS-->
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/solid.css"
+	integrity="sha384-TbilV5Lbhlwdyc4RuIV/JhD8NR+BfMrvz4BL5QFa2we1hQu6wvREr3v6XSRfCTRp"
+	crossorigin="anonymous" />
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/regular.css"
+	integrity="sha384-avJt9MoJH2rB4PKRsJRHZv7yiFZn8LrnXuzvmZoD3fh1aL6aM6s0BBcnCvBe6XSD"
+	crossorigin="anonymous" />
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/brands.css"
+	integrity="sha384-7xAnn7Zm3QC1jFjVc1A6v/toepoG3JXboQYzbM0jrPzou9OFXm/fY6Z/XiIebl/k"
+	crossorigin="anonymous" />
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/fontawesome.css"
+	integrity="sha384-ozJwkrqb90Oa3ZNb+yKFW2lToAWYdTiF1vt8JiH5ptTGHTGcN7qdoR1F95e0kYyG"
+	crossorigin="anonymous" />
+<!-- Bootstrap CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet" />
+<!-- Font Awesome for icons -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<style>
+:root {
+	--bs-btn-color: #fff;
+	--bs-btn-bg: #3494e6;
+	--bs-btn-border-color: #3494e6;
+	--bs-btn-hover-color: #fff;
+	--bs-btn-hover-bg: #2c7ec4;
+	--bs-btn-hover-border-color: #2a76b8;
+	--bs-btn-focus-shadow-rgb: 82, 164, 234;
+	--bs-btn-active-color: #fff;
+	--bs-btn-active-bg: #2a76b8;
+	--bs-btn-active-border-color: #276fad;
+	--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+	--bs-btn-disabled-color: #fff;
+	--bs-btn-disabled-bg: #3494e6;
+	--bs-btn-disabled-border-color: #3494e6;
+}
+
+.btn-cart28tech {
+	--bs-btn-color: #fff;
+	--bs-btn-bg: #001f3f;
+	--bs-btn-border-color: #001f3f;
+	--bs-btn-hover-color: #fff;
+	--bs-btn-hover-bg: #001a35;
+	--bs-btn-hover-border-color: #00152b;
+	--bs-btn-focus-shadow-rgb: 0, 31, 63;
+	--bs-btn-active-color: #fff;
+	--bs-btn-active-bg: #00152b;
+	--bs-btn-active-border-color: #001222;
+	--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2);
+	--bs-btn-disabled-color: #fff;
+	--bs-btn-disabled-bg: #001f3f;
+	--bs-btn-disabled-border-color: #001f3f;
+}
+
+body {
+	font-family: "Poppins", sans-serif;
+	background-color: #f5f7fa;
+}
+
+/* Sidebar */
+.sidebar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 280px;
+	height: 100%;
+	background-color: #fff;
+	border-right: 1px solid #e0e0e0;
+	padding: 20px;
+	box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar .logo {
+	font-size: 24px;
+	font-weight: 700;
+	color: #3494e6;
+	margin-bottom: 30px;
+}
+
+.sidebar .section-title {
+	font-size: 14px;
+	font-weight: 600;
+	color: #6c757d;
+	text-transform: uppercase;
+	margin: 20px 0 10px 15px;
+	letter-spacing: 1px;
+}
+
+.sidebar .nav-link {
+	color: #6c757d;
+	padding: 10px 15px;
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+}
+
+.sidebar .nav-link i {
+	margin-right: 10px;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+	background-color: #e6f0fa;
+	color: #3494e6;
+}
+
+.sidebar .nav-item .nav-sublink {
+	color: #6c757d;
+	padding: 8px 15px 8px 40px;
+	border-radius: 5px;
+	display: block;
+}
+
+/* Main Content */
+.main-content {
+	margin-left: 280px;
+	padding: 20px;
+}
+
+/* Header */
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: #fff;
+	padding: 15px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+	margin-bottom: 20px;
+}
+
+.header .search-bar {
+	width: 300px;
+}
+
+.header .user-info {
+	display: flex;
+	align-items: center;
+}
+
+.header .user-info img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	margin-left: 10px;
+}
+
+.header .notification {
+	position: relative;
+	font-size: 24px;
+	padding: 10px;
+	border-radius: 50%;
+	margin-right: 15px;
+	cursor: pointer;
+	z-index: 1001;
+}
+
+.header .notification .badge {
+	position: absolute;
+	top: 6px;
+	right: 0px;
+	background-color: #dc3545;
+	color: #fff;
+	font-size: 12px;
+	border-radius: 50%;
+	padding: 3px 6px;
+}
+
+/* Notification Dropdown */
+.notification-dropdown {
+	position: absolute;
+	top: 50px;
+	right: 0;
+	width: 350px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	z-index: 1000;
+	display: none;
+	opacity: 0;
+	transform: translateY(-10px);
+	transition: all 0.3s ease;
+	border: none;
+	overflow: hidden;
+}
+
+.notification-dropdown.show {
+	display: block;
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.notifications-container {
+	max-height: 300px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	scrollbar-width: thin;
+	scrollbar-color: #d1d1d1 #f5f5f5;
+}
+
+.notifications-container::-webkit-scrollbar {
+	width: 6px;
+}
+
+.notifications-container::-webkit-scrollbar-track {
+	background: #f5f5f5;
+}
+
+.notifications-container::-webkit-scrollbar-thumb {
+	background: #d1d1d1;
+	border-radius: 3px;
+}
+
+.notifications-container::-webkit-scrollbar-thumb:hover {
+	background: #b0b0b0;
+}
+
+.notification-dropdown .dropdown-header {
+	padding: 12px 16px;
+	background: linear-gradient(90deg, #1890ff, #40c4ff);
+	color: #fff;
+	font-weight: 600;
+	font-size: 14px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	position: sticky;
+	top: 0;
+	z-index: 1;
+}
+
+.notification-dropdown .dropdown-header i {
+	margin-right: 8px;
+}
+
+.notification-dropdown .dropdown-item {
+	padding: 12px 16px;
+	border-bottom: 1px solid #f1f3f5;
+	color: #343a40;
+	display: flex;
+	flex-direction: column;
+	transition: background-color 0.2s ease;
+}
+
+.notification-dropdown .dropdown-item:last-child {
+	border-bottom: none;
+}
+
+.notification-dropdown .dropdown-item.unread {
+	background-color: #e6f0fa;
+}
+
+.notification-dropdown .dropdown-item.read {
+	background-color: #fff;
+}
+
+.notification-dropdown .dropdown-item:hover {
+	background-color: #f8f9fa;
+	color: #1890ff;
+}
+
+.notification-dropdown .dropdown-item i {
+	margin-right: 8px;
+	color: #1890ff;
+	font-size: 14px;
+}
+
+.notification-dropdown .content {
+	text-decoration: none;
+	font-size: 14px;
+	font-weight: 500;
+	color: #343a40;
+	display: inline-flex;
+	align-items: center;
+	word-break: break-word;
+	white-space: normal;
+	max-width: 100%;
+}
+
+.notification-dropdown .content:hover {
+	color: #1890ff;
+	text-decoration: none;
+}
+
+.notification-dropdown .time {
+	padding-top: 4px;
+	font-size: 12px;
+	color: #6c757d;
+	font-style: italic;
+}
+</style>
+</head>
+<body>
+	<!-- Sidebar -->
+	<div th:fragment="sidebar">
+		<div class="sidebar">
+			<div class="logo">P2TS</div>
+			<ul class="nav flex-column">
+				<li class="nav-item"><a class="nav-link active"
+					href="/dashboard"> <i class="fas fa-tachometer-alt"></i>
+						Dashboard
+				</a></li>
+				<hr class="" />
+				<li class="section-title">Management</li>
+				<li class="nav-item"><a class="nav-link" href="/categories">
+						<i class="fas fa-list"></i> Categories
+				</a></li>
+				<li class="nav-item"><a class="nav-link" href="/courses"> <i
+						class="fas fa-book"></i> Courses
+				</a></li>
+				<li class="nav-item"><a class="nav-link" href="/orders"> <i
+						class="fas fa-shopping-cart"></i> Orders
+				</a></li>
+				<li class="nav-item"><a class="nav-link" href="/students">
+						<i class="fas fa-user-graduate"></i> Students
+				</a></li>
+				<li class="nav-item"><a class="nav-link" href="/staffs"> <i
+						class="fas fa-user"></i> Staffs
+				</a></li>
+				<li class="nav-item"><a class="nav-link" href="/reviews"> <i
+						class="fas fa-star"></i> Reviews
+				</a></li>
+				<li class="nav-item"><a class="nav-link" href="/introduction">
+						<i class="fas fa-blog"></i> Introduction
+				</a></li>
+				<li class="nav-item"><a class="nav-link" href="/media"> <i
+						class="fas fa-image"></i> Socials
+				</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- Main Content -->
+	<div th:fragment="header">
+		<div class="main-content">
+			<!-- Header -->
+			<div class="header">
+				<div class="search-bar">
+					<input type="text" class="form-control" placeholder="Search..." />
+				</div>
+				<div class="user-info">
+					<div class="notification">
+						<i class="fas fa-bell" id="notificationBell"></i> <span
+							class="badge">3</span>
+
+						<!-- Updated Notification Dropdown -->
+						<div class="notification-dropdown" id="notificationDropdown">
+							<div class="dropdown-header">
+								<span><i class="fas fa-bell px-2"></i>Notifications</span>
+							</div>
+							<div class="notifications-container">
+								<div class="dropdown-item unread" data-notification-id="001">
+									<a href="/orders/#001" class="content"> <i
+										class="fas fa-book"></i> #001: Nguyễn Văn A đăng ký khóa học
+										"Lập trình Java từ cơ bản đến nâng cao cho người mới bắt đầu"
+									</a> <span class="time">5 phút trước</span>
+								</div>
+								<div class="dropdown-item unread" data-notification-id="002">
+									<a href="/orders/#002" class="content"> <i
+										class="fas fa-book"></i> #002: Trần Thị B đăng ký khóa học
+										"Thiết kế UI/UX chuyên nghiệp với Figma và Adobe XD"
+									</a> <span class="time">10 phút trước</span>
+								</div>
+								<div class="dropdown-item read" data-notification-id="003">
+									<a href="/orders/#003" class="content"> <i
+										class="fas fa-book"></i> #003: Lê Văn C đăng ký khóa học "Phát
+										triển ứng dụng web với ReactJS và NodeJS cho dự án thực tế với
+										thời gian dài và nội dung chi tiết hơn rất nhiều"
+									</a> <span class="time">15 phút trước</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<img
+						src="https://scontent.fhan3-4.fna.fbcdn.net/v/t39.30808-1/430866179_1851445898651333_169273805358911967_n.jpg?stp=cp6_dst-jpg_s40x40_tt6&_nc_cat=104&ccb=1-7&_nc_sid=fe756c&_nc_eui2=AeGMZTEOLNP7QusEQ7KYXZm3ZZqWsBlO8ltlmpawGU7yW4L-ecYhjDAw6lsOCEtYLhlTTnR0iF0W29BxHMEXXBCR&_nc_ohc=1N7YE7N1TAUQ7kNvwE0jb4k&_nc_oc=AdlRY9tPwy3uZ_955OWhVWStBPsOss8hd-jht1kYdFSw5xTfFTHgo1Ox-tZTF3-0RJg&_nc_zt=24&_nc_ht=scontent.fhan3-4.fna&_nc_gid=nRxINm6GO_EISJ3CODeM0A&oh=00_AfG-RiJiozT2KFgTATkmg5s5mDBdF1rT4yDTvKuX4zSx5A&oe=6814F1F9"
+						alt="User" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Scripts -->
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.min.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/js/glightbox.min.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/object-fit-images/ofi.min.js"></script>
+	<script>
+      var basePath = "";
+    </script>
+	<script src="js/theme.30e7c8f9.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
+	<script src="js/demo.9833433a.js"></script>
+	<script>
+      // Toggle notification dropdown
+      document
+        .getElementById("notificationBell")
+        .addEventListener("click", function (event) {
+          event.stopPropagation();
+          const dropdown = document.getElementById("notificationDropdown");
+          dropdown.classList.toggle("show");
+        });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", function (event) {
+        const dropdown = document.getElementById("notificationDropdown");
+        const bell = document.getElementById("notificationBell");
+        if (!dropdown.contains(event.target) && !bell.contains(event.target)) {
+          dropdown.classList.remove("show");
+        }
+      });
+
+      // Handle click on notification items to mark them as read
+      document.addEventListener("DOMContentLoaded", function () {
+        const notificationItems = document.querySelectorAll(".dropdown-item");
+
+        // Load read/unread state from localStorage
+        notificationItems.forEach((item) => {
+          const notificationId = item.getAttribute("data-notification-id");
+          const isRead = localStorage.getItem(
+            `notification_${notificationId}_read`
+          );
+          if (isRead === "true") {
+            item.classList.remove("unread");
+            item.classList.add("read");
+          }
+        });
+
+        // Add click event to mark notification as read
+        notificationItems.forEach((item) => {
+          const link = item.querySelector(".content");
+          link.addEventListener("click", function () {
+            const notificationId = item.getAttribute("data-notification-id");
+            item.classList.remove("unread");
+            item.classList.add("read");
+            localStorage.setItem(`notification_${notificationId}_read`, "true");
+          });
+        });
+      });
+    </script>
+</body>
+</html>

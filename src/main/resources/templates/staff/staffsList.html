@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>Staff</title>
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<!-- Price Slider Stylesheets -->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.css" />
+<!-- Google fonts - Playfair Display-->
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700" />
+<link rel="stylesheet" href="fonts/hkgrotesk/stylesheet.2e9c9834.css" />
+<!-- owl carousel-->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/assets/owl.carousel.css" />
+<!-- Lightbox -->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/css/glightbox.min.css" />
+<!-- theme stylesheet-->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/style.default.7acfaf01.css"
+	id="theme-stylesheet" />
+<!-- Custom stylesheet - for your changes-->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/custom.0a822280.css" />
+<!-- Favicon-->
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/solid.css"
+	integrity="sha384-TbilV5Lbhlwdyc4RuIV/JhD8NR+BfMrvz4BL5QFa2we1hQu6wvREr3v6XSRfCTRp"
+	crossorigin="anonymous" />
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/regular.css"
+	integrity="sha384-avJt9MoJH2rB4PKRsJRHZv7yiFZn8LrnXuzvmZoD3fh1aL6aM6s0BBcnCvBe6XSD"
+	crossorigin="anonymous" />
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/brands.css"
+	integrity="sha384-7xAnn7Zm3QC1jFjVc1A6v/toepoG3JXboQYzbM0jrPzou9OFXm/fY6Z/XiIebl/k"
+	crossorigin="anonymous" />
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/fontawesome.css"
+	integrity="sha384-ozJwkrqb90Oa3ZNb+yKFW2lToAWYdTiF1vt8JiH5ptTGHTGcN7qdoR1F95e0kYyG"
+	crossorigin="anonymous" />
+<!-- Bootstrap 5 CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet" />
+<style>
+:root {
+	--primary-blue: #3494e6;
+	--primary-blue-hover: #2c7ec4;
+	--primary-blue-active: #2a76b8;
+	--primary-green: #28a745;
+	--primary-green-hover: #218838;
+	--primary-red: #dc3545;
+	--primary-red-hover: #c82333;
+	--bs-btn-color: #fff;
+	--bs-btn-bg: var(--primary-blue);
+	--bs-btn-border-color: var(--primary-blue);
+	--bs-btn-hover-color: #fff;
+	--bs-btn-hover-bg: var(--primary-blue-hover);
+	--bs-btn-hover-border-color: var(--primary-blue-active);
+	--bs-btn-focus-shadow-rgb: 82, 164, 234;
+	--bs-btn-active-color: #fff;
+	--bs-btn-active-bg: var(--primary-blue-active);
+	--bs-btn-active-border-color: #276fad;
+	--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+	--bs-btn-disabled-color: #fff;
+	--bs-btn-disabled-bg: var(--primary-blue);
+	--bs-btn-disabled-border-color: var(--primary-blue);
+}
+
+body {
+	font-family: "Poppins", sans-serif;
+	background-color: #f5f7fa;
+}
+/* Main Content */
+.main-content {
+	margin-left: 280px;
+	padding: 20px;
+}
+/* Header Section */
+.staff-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.staff-header h2 {
+	font-size: 24px;
+	font-weight: 600;
+	color: #343a40;
+}
+
+.staff-header .btn-add {
+	background-color: var(--primary-blue);
+	border-color: var(--primary-blue);
+	color: #fff;
+}
+
+.staff-header .btn-add:hover {
+	background-color: var(--primary-blue-hover);
+	border-color: var(--primary-blue-hover);
+}
+/* Breadcrumb */
+.breadcrumb {
+	margin-bottom: 20px;
+}
+/* Filters */
+.filters {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 20px;
+}
+
+.filters .search-bar {
+	width: 300px;
+}
+/* Staff Table */
+.staff-table {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+	overflow-x: auto;
+}
+
+.staff-table table {
+	width: 100%;
+	border-collapse: collapse;
+	min-width: 800px;
+}
+
+.staff-table th, .staff-table td {
+	padding: 12px 15px;
+	text-align: left;
+	border-bottom: none;
+}
+
+.staff-table th {
+	background-color: #f8f9fa;
+	color: #6c757d;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.staff-table td {
+	color: #343a40;
+	white-space: nowrap;
+}
+/* Status */
+.status-active {
+	background-color: #28a745;
+	color: #fff;
+	padding: 5px 10px;
+	border-radius: 5px;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.status-disabled {
+	background-color: #dc3545;
+	color: #fff;
+	padding: 5px 10px;
+	border-radius: 5px;
+	font-size: 14px;
+	font-weight: 500;
+}
+/* Actions */
+.actions-item {
+	display: flex;
+	text-align: center;
+	gap: 10px;
+}
+
+.actions a {
+	display: flex;
+	align-items: center;
+	color: black;
+	text-decoration: none;
+	font-size: 14px;
+}
+
+.actions a.view:hover, .actions a.edit:hover {
+	color: var(--primary-blue);
+}
+/* Pagination */
+.pagination-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 15px;
+}
+
+.pagination-info {
+	font-size: 14px;
+	color: #6c757d;
+}
+
+.pagination-buttons {
+	display: flex;
+	gap: 5px;
+}
+
+.pagination-button {
+	margin: 0 5px;
+	padding: 5px 10px;
+	border: 1px solid #e0e0e0;
+	background-color: #fff;
+	cursor: pointer;
+	font-size: 14px;
+	color: #343a40;
+	text-decoration: none;
+	border-radius: 5px;
+	transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination-button:hover {
+	background-color: #f8f9fa;
+}
+
+.pagination-button.active {
+	background-color: var(--primary-blue);
+	color: #fff;
+	border-color: var(--primary-blue);
+}
+
+.pagination-button.active:hover {
+	background-color: var(--primary-blue-hover);
+}
+/* Modal Styles */
+.modal-content {
+	border-radius: 10px;
+}
+
+.modal-header {
+	border-bottom: none;
+	padding-bottom: 0;
+}
+
+.modal-title {
+	font-size: 20px;
+	font-weight: 600;
+	color: #343a40;
+}
+
+.modal-body {
+	padding: 20px;
+}
+
+.modal-body h5 {
+	font-size: 18px;
+	font-weight: 600;
+	color: #343a40;
+	margin-bottom: 15px;
+}
+
+.modal-body p {
+	margin-bottom: 5px;
+	color: #343a40;
+}
+
+.modal-body .btn-save {
+	background-color: var(--primary-blue);
+	border-color: var(--primary-blue);
+	color: #fff;
+}
+
+.modal-body .btn-save:hover {
+	background-color: var(--primary-blue-hover);
+	border-color: var(--primary-blue-hover);
+}
+</style>
+</head>
+<body>
+	<!-- Sidebar -->
+	<div th:replace="~{dashboard-sidebar-header :: sidebar}"></div>
+
+	<!-- Main Content -->
+	<div class="main-content">
+		<!-- Header -->
+		<div th:replace="~{dashboard-sidebar-header :: header}"></div>
+
+		<!-- Staff Header -->
+		<div class="staff-header">
+			<h2>Staff</h2>
+			<a href="/staff/add" class="btn btn-add">Add Staff</a>
+		</div>
+
+		<!-- Breadcrumb -->
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><i class="fas fa-home px-2"></i><a
+				href="/dashboard">Dashboard</a></li>
+			<li class="breadcrumb-item active">Staff</li>
+		</ol>
+
+		<!-- Filters -->
+		<div class="filters">
+			<div class="search-bar">
+				<input type="text" class="form-control" placeholder="Search Staff" />
+			</div>
+		</div>
+
+		<!-- Staff Table -->
+		<div class="staff-table">
+			<table>
+				<thead>
+					<tr>
+						<th style="width: 5%"><input type="checkbox" /></th>
+						<th class="col-2">Staff ID</th>
+						<th class="col-3">Email</th>
+						<th class="col-2">Phone</th>
+						<th class="col-2">Status</th>
+						<th class="col-2">Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><input type="checkbox" /></td>
+						<td>#S001</td>
+						<td>admin1@example.com</td>
+						<td>+84 912 345 678</td>
+						<td><span class="status-active">Active</span></td>
+						<td class="actions">
+							<div class="actions-item">
+								<a class="view" href="#" data-bs-toggle="modal"
+									data-bs-target="#staffDetailModal" data-staff-id="S001"
+									data-name="Nguyễn Văn A" data-email="admin1@example.com"
+									data-phone="+84 912 345 678" data-gender="Male"
+									data-address="789, Trần Hưng Đạo, Quận 5, TP. Hồ Chí Minh, Việt Nam"
+									data-status="Active"> <i
+									class="fas fa-eye me-1"></i> View Detail
+								</a> <a class="edit" href="#" data-bs-toggle="modal"
+									data-bs-target="#staffEditModal" data-staff-id="S001"
+									data-name="Nguyễn Văn A" data-email="admin1@example.com"
+									data-phone="+84 912 345 678" data-gender="Male"
+									data-address="789, Trần Hưng Đạo, Quận 5, TP. Hồ Chí Minh, Việt Nam"
+									data-status="Active"> <i
+									class="fas fa-edit me-1"></i> Edit
+								</a>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" /></td>
+						<td>#S002</td>
+						<td>admin2@example.com</td>
+						<td>+84 987 654 321</td>
+						<td><span class="status-disabled">Disabled</span></td>
+						<td class="actions">
+							<div class="actions-item">
+								<a class="view" href="#" data-bs-toggle="modal"
+									data-bs-target="#staffDetailModal" data-staff-id="S002"
+									data-name="Trần Thị B" data-email="admin2@example.com"
+									data-phone="+84 987 654 321" data-gender="Female"
+									data-address="456, Lê Lợi, Quận 3, TP. Hồ Chí Minh, Việt Nam"
+									data-status="Disabled"> <i
+									class="fas fa-eye me-1"></i> View Detail
+								</a> <a class="edit" href="#" data-bs-toggle="modal"
+									data-bs-target="#staffEditModal" data-staff-id="S002"
+									data-name="Trần Thị B" data-email="admin2@example.com"
+									data-phone="+84 987 654 321" data-gender="Female"
+									data-address="456, Lê Lợi, Quận 3, TP. Hồ Chí Minh, Việt Nam"
+									data-status="Disabled"> <i
+									class="fas fa-edit me-1"></i> Edit
+								</a>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<hr />
+			<div class="pagination-container">
+				<span class="pagination-info">Showing 1 to 2 of 2 entries</span>
+				<div class="pagination-buttons">
+					<button class="pagination-button">Previous</button>
+					<button class="pagination-button active">1</button>
+					<button class="pagination-button">Next</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Staff Detail Modal -->
+		<div class="modal fade" id="staffDetailModal" tabindex="-1"
+			aria-labelledby="staffDetailModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staffDetailModalLabel">Staff
+							Detail</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3">
+							<h5>
+								Staff ID: <span id="modalStaffId"></span>
+							</h5>
+						</div>
+
+						<!-- Staff Details -->
+						<div class="mb-4">
+							<h5>Staff Details</h5>
+							<p>
+								<strong>Staff ID:</strong> <span id="modalStaffIdDetail"></span>
+							</p>
+							<p>
+								<strong>Name:</strong> <span id="modalName"></span>
+							</p>
+							<p>
+								<strong>Email:</strong> <span id="modalEmail"></span>
+							</p>
+							<p>
+								<strong>Phone:</strong> <span id="modalPhone"></span>
+							</p>
+							<p>
+								<strong>Gender:</strong> <span id="modalGender"></span>
+							</p>
+							<p>
+								<strong>Address:</strong> <span id="modalAddress"></span>
+							</p>
+							<p>
+								<strong>Status:</strong> <span id="modalStatus"></span>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Staff Edit Modal -->
+		<div class="modal fade" id="staffEditModal" tabindex="-1"
+			aria-labelledby="staffEditModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staffEditModalLabel">Edit Staff</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form>
+							<div class="mb-3">
+								<label for="editStaffId" class="form-label">Staff ID</label> <input
+									type="text" class="form-control" id="editStaffId" readonly />
+							</div>
+							<div class="mb-3">
+								<label for="editName" class="form-label">Name</label> <input
+									type="text" class="form-control" id="editName" readonly />
+							</div>
+							<div class="mb-3">
+								<label for="editEmail" class="form-label">Email</label> <input
+									type="email" class="form-control" id="editEmail" readonly />
+							</div>
+							<div class="mb-3">
+								<label for="editPhone" class="form-label">Phone</label> <input
+									type="text" class="form-control" id="editPhone" readonly />
+							</div>
+							<div class="mb-3">
+								<label for="editGender" class="form-label">Gender</label> <select
+									class="form-select" id="editGender" disabled>
+									<option value="Male">Male</option>
+									<option value="Female">Female</option>
+									<option value="Other">Other</option>
+								</select>
+							</div>
+							<div class="mb-3">
+								<label for="editAddress" class="form-label">Address</label> <input
+									type="text" class="form-control" id="editAddress" readonly />
+							</div>
+							<div class="mb-3">
+								<label for="editStatus" class="form-label">Status</label> <select
+									class="form-select" id="editStatus">
+									<option value="Active">Active</option>
+									<option value="Disabled">Disabled</option>
+								</select>
+							</div>
+							<button type="button" class="btn btn-save"
+								data-bs-dismiss="modal">Save</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- JavaScript files-->
+	<script>
+      function injectSvgSprite(path) {
+        var ajax = new XMLHttpRequest();
+        ajax.open("GET", path, true);
+        ajax.send();
+        ajax.onload = function (e) {
+          var div = document.createElement("div");
+          div.className = "d-none";
+          div.innerHTML = ajax.responseText;
+          document.body.insertBefore(div, document.body.childNodes[0]);
+        };
+      }
+      injectSvgSprite(
+        "https://demo.bootstrapious.com/sell/1-2-0/icons/orion-svg-sprite.svg"
+      );
+    </script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.min.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/js/glightbox.min.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/object-fit-images/ofi.min.js"></script>
+	<script>
+      var basePath = "";
+    </script>
+	<script src="js/theme.30e7c8f9.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
+	<script src="js/demo.9833433a.js"></script>
+	<script>
+      // Populate Staff Detail Modal
+      document.querySelectorAll(".view").forEach((button) => {
+        button.addEventListener("click", function () {
+          const staffId = this.getAttribute("data-staff-id");
+          const name = this.getAttribute("data-name");
+          const email = this.getAttribute("data-email");
+          const phone = this.getAttribute("data-phone");
+          const gender = this.getAttribute("data-gender");
+          const address = this.getAttribute("data-address");
+          const status = this.getAttribute("data-status");
+
+          // Populate staff details
+          document.getElementById("modalStaffId").textContent = "#" + staffId;
+          document.getElementById("modalStaffIdDetail").textContent = staffId;
+          document.getElementById("modalName").textContent = name;
+          document.getElementById("modalEmail").textContent = email;
+          document.getElementById("modalPhone").textContent = phone;
+          document.getElementById("modalGender").textContent = gender;
+          document.getElementById("modalAddress").textContent = address;
+          document.getElementById("modalStatus").textContent = status;
+        });
+      });
+
+      // Populate Staff Edit Modal
+      document.querySelectorAll(".edit").forEach((button) => {
+        button.addEventListener("click", function () {
+          const staffId = this.getAttribute("data-staff-id");
+          const name = this.getAttribute("data-name");
+          const email = this.getAttribute("data-email");
+          const phone = this.getAttribute("data-phone");
+          const gender = this.getAttribute("data-gender");
+          const address = this.getAttribute("data-address");
+          const status = this.getAttribute("data-status");
+
+          // Populate edit form
+          document.getElementById("editStaffId").value = staffId;
+          document.getElementById("editName").value = name;
+          document.getElementById("editEmail").value = email;
+          document.getElementById("editPhone").value = phone;
+          document.getElementById("editGender").value = gender;
+          document.getElementById("editAddress").value = address;
+          document.getElementById("editStatus").value = status;
+        });
+      });
+    </script>
+</body>
+</html>

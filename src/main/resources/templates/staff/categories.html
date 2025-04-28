@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>Categories</title>
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<!-- Price Slider Stylesheets -->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.css" />
+<!-- Google fonts - Playfair Display-->
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700" />
+<link rel="stylesheet" href="fonts/hkgrotesk/stylesheet.2e9c9834.css" />
+<!-- owl carousel-->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/assets/owl.carousel.css" />
+<!-- Lightbox -->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/css/glightbox.min.css" />
+<!-- theme stylesheet-->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/style.default.7acfaf01.css"
+	id="theme-stylesheet" />
+<!-- Custom stylesheet - for your changes-->
+<link rel="stylesheet"
+	href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/custom.0a822280.css" />
+<!-- Favicon-->
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/solid.css"
+	integrity="sha384-TbilV5Lbhlwdyc4RuIV/JhD8NR+BfMrvz4BL5QFa2we1hQu6wvREr3v6XSRfCTRp"
+	crossorigin="anonymous" />
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/regular.css"
+	integrity="sha384-avJt9MoJH2rB4PKRsJRHZv7yiFZn8LrnXuzvmZoD3fh1aL6aM6s0BBcnCvBe6XSD"
+	crossorigin="anonymous" />
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/brands.css"
+	integrity="sha384-7xAnn7Zm3QC1jFjVc1A6v/toepoG3JXboQYzbM0jrPzou9OFXm/fY6Z/XiIebl/k"
+	crossorigin="anonymous" />
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.1.0/css/fontawesome.css"
+	integrity="sha384-ozJwkrqb90Oa3ZNb+yKFW2lToAWYdTiF1vt8JiH5ptTGHTGcN7qdoR1F95e0kYyG"
+	crossorigin="anonymous" />
+<!-- Bootstrap 5 CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet" />
+<style>
+:root {
+	--primary-blue: #3494e6;
+	--primary-blue-hover: #2c7ec4;
+	--primary-blue-active: #2a76b8;
+	--bs-btn-color: #fff;
+	--bs-btn-bg: var(--primary-blue);
+	--bs-btn-border-color: var(--primary-blue);
+	--bs-btn-hover-color: #fff;
+	--bs-btn-hover-bg: var(--primary-blue-hover);
+	--bs-btn-hover-border-color: var(--primary-blue-active);
+	--bs-btn-focus-shadow-rgb: 82, 164, 234;
+	--bs-btn-active-color: #fff;
+	--bs-btn-active-bg: var(--primary-blue-active);
+	--bs-btn-active-border-color: #276fad;
+	--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+	--bs-btn-disabled-color: #fff;
+	--bs-btn-disabled-bg: var(--primary-blue);
+	--bs-btn-disabled-border-color: var(--primary-blue);
+}
+
+body {
+	font-family: "Poppins", sans-serif;
+	background-color: #f5f7fa;
+}
+/* Main Content */
+.main-content {
+	margin-left: 280px;
+	padding: 20px;
+}
+/* Header Section */
+.category-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.category-header h2 {
+	font-size: 24px;
+	font-weight: 600;
+	color: #343a40;
+}
+
+.category-header .btn-primary {
+	background-color: var(--primary-blue);
+	border-color: var(--primary-blue);
+}
+
+.category-header .btn-primary:hover {
+	background-color: var(--primary-blue-hover);
+	border-color: var(--primary-blue-hover);
+}
+/* Filters */
+.filters {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 20px;
+}
+
+.filters .search-bar {
+	width: 300px;
+}
+
+.filters .status-filter {
+	width: 150px;
+}
+/* Categories Table */
+.categories-table {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+	overflow: hidden;
+}
+
+.categories-table table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.categories-table tr {
+	cursor: pointer;
+}
+
+.categories-table th, .categories-table td {
+	padding: 12px 15px;
+	text-align: left;
+	border-bottom: none;
+}
+
+.categories-table th {
+	background-color: #f8f9fa;
+	color: #6c757d;
+	font-weight: 600;
+}
+
+.categories-table td {
+	color: #343a40;
+}
+
+.categories-table .status-published {
+	color: #28a745;
+	background-color: #e6f4ea;
+	padding: 5px 10px;
+	border-radius: 12px;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.categories-table .status-unpublished {
+	color: #dc3545;
+	background-color: #f8e7eb;
+	padding: 5px 10px;
+	border-radius: 12px;
+	font-size: 14px;
+	font-weight: 500;
+}
+/* Actions */
+.actions {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+}
+
+.actions-item {
+	display: flex;
+	gap: 10px;
+}
+
+.actions a {
+	display: flex;
+	align-items: center;
+	color: black;
+	text-decoration: none;
+	font-size: 14px;
+}
+
+.actions a.edit:hover {
+	color: #3494e6;
+}
+
+.actions a.delete:hover {
+	color: #dc3545;
+}
+/* Pagination */
+.pagination-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 15px;
+}
+
+.pagination-info {
+	font-size: 14px;
+	color: #6c757d;
+}
+
+.pagination-buttons {
+	display: flex;
+	gap: 5px;
+}
+
+.pagination-button {
+	margin: 0 5px;
+	padding: 5px 10px;
+	border: 1px solid #e0e0e0;
+	background-color: #fff;
+	cursor: pointer;
+	font-size: 14px;
+	color: #343a40;
+	text-decoration: none;
+	border-radius: 5px;
+	transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination-button:hover {
+	background-color: #f8f9fa;
+}
+
+.pagination-button.active {
+	background-color: var(--primary-blue);
+	color: #fff;
+	border-color: var(--primary-blue);
+}
+
+.pagination-button.active:hover {
+	background-color: var(--primary-blue-hover);
+}
+
+.modal-title-cus {
+	text-transform: uppercase;
+	font-weight: 600;
+}
+</style>
+</head>
+<body>
+	<!-- Sidebar -->
+	<div th:replace="~{dashboard-sidebar-header :: sidebar}"></div>
+
+	<!-- Main Content -->
+	<div class="main-content">
+		<!-- Header -->
+		<div th:replace="~{dashboard-sidebar-header :: header}"></div>
+
+		<!-- Category Header -->
+		<div class="category-header">
+			<h2>Categories Management</h2>
+			<button class="btn btn-primary" data-bs-toggle="modal"
+				data-bs-target="#addModal">Add New Category</button>
+		</div>
+
+		<!-- Breadcrumb -->
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><i class="fas fa-home px-2"></i><a
+				href="/dashboard">Dashboard</a></li>
+			<li class="breadcrumb-item active">Categories</li>
+		</ol>
+
+		<!-- Filters -->
+		<div class="filters">
+			<div class="search-bar">
+				<input type="text" class="form-control"
+					placeholder="Search Category" />
+			</div>
+			<div class="status-filter">
+				<select class="form-select">
+					<option selected>Status</option>
+					<option value="published">Published</option>
+					<option value="unpublished">Unpublished</option>
+				</select>
+			</div>
+		</div>
+
+		<!-- Categories Table -->
+		<div class="categories-table">
+			<table>
+				<thead>
+					<tr>
+						<th style="width: 5%"><input type="checkbox" /></th>
+						<th class="col-2">Name</th>
+						<th class="col-4">Description</th>
+						<th class="col-2">Status</th>
+						<th class="col-2 text-center">Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-id="1" data-name="Ngân hàng đề 2025"
+						data-description="Ngân hàng đề 2025 descriptionnnnnnnnnnnnnnnnnnn"
+						data-status="Published" data-created="2025-01-01"
+						data-updated="2025-04-01">
+						<td><input type="checkbox" /></td>
+						<td>Ngân hàng đề 2025</td>
+						<td>Ngân hàng đề 2025 descriptionnnnnnnnnnnnnnnnnnn</td>
+						<td><span class="status-published">Published</span></td>
+						<td class="actions">
+							<div class="actions-item">
+								<a class="delete" href="#" data-bs-toggle="modal"
+									data-bs-target="#deleteModal" data-category-id="1"> <i
+									class="fas fa-trash me-1"></i> Delete
+								</a> <a class="edit" href="#" data-bs-toggle="modal"
+									data-bs-target="#editModal" data-category-id="1"> <i
+									class="fas fa-edit me-1"></i> Edit
+								</a>
+							</div>
+						</td>
+					</tr>
+					<tr data-id="2" data-name="Ngân hàng đề 2025"
+						data-description="Ngân hàng đề 2025 descriptionnnnnnnnnnnnnnnnnnn"
+						data-status="Unpublished" data-created="2025-02-01"
+						data-updated="2025-03-01">
+						<td><input type="checkbox" /></td>
+						<td>Ngân hàng đề 2025</td>
+						<td>Ngân hàng đề 2025 descriptionnnnnnnnnnnnnnnnnnn</td>
+						<td><span class="status-unpublished">Unpublished</span></td>
+						<td class="actions">
+							<div class="actions-item">
+								<a class="delete" href="#" data-bs-toggle="modal"
+									data-bs-target="#deleteModal" data-category-id="2"> <i
+									class="fas fa-trash me-1"></i> Delete
+								</a> <a class="edit" href="#" data-bs-toggle="modal"
+									data-bs-target="#editModal" data-category-id="2"> <i
+									class="fas fa-edit me-1"></i> Edit
+								</a>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<hr />
+			<div class="pagination-container">
+				<span class="pagination-info">Showing 1 to 10 of 14 entries</span>
+				<div class="pagination-buttons">
+					<button class="pagination-button">Previous</button>
+					<button class="pagination-button active">1</button>
+					<button class="pagination-button">2</button>
+					<button class="pagination-button">Next</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Delete Modal -->
+		<div class="modal fade quickview py-6" id="deleteModal" tabindex="-1"
+			aria-labelledby="deleteModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title-cus" id="deleteModalLabel">Xác nhận
+							xóa</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">Bạn chắc chắn muốn xóa chứ?</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Hủy</button>
+						<button type="button" class="btn btn-danger" id="confirmDelete">
+							Xóa đi má</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Edit Modal -->
+		<div class="modal fade quickview" id="editModal" tabindex="-1"
+			aria-labelledby="editModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title-cus" id="editModalLabel">Edit Category</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3">
+							<label for="editId" class="form-label">ID</label> <input
+								type="text" class="form-control" id="editId" disabled />
+						</div>
+						<div class="mb-3">
+							<label for="editName" class="form-label">Category Name</label> <input
+								type="text" class="form-control" id="editName" />
+						</div>
+						<div class="mb-3">
+							<label for="editDescription" class="form-label">Description</label>
+							<textarea class="form-control" id="editDescription" rows="3"></textarea>
+						</div>
+						<div class="mb-3">
+							<label for="editStatus" class="form-label">Status</label> <select
+								class="form-select" id="editStatus">
+								<option value="Published">Published</option>
+								<option value="Unpublished">Unpublished</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label for="editCreated" class="form-label">Created At</label> <input
+								type="text" class="form-control" id="editCreated" disabled />
+						</div>
+						<div class="mb-3">
+							<label for="editUpdated" class="form-label">Updated At</label> <input
+								type="text" class="form-control" id="editUpdated" disabled />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Hủy</button>
+						<button type="button" class="btn btn-primary" id="saveChanges">
+							Lưu thay đổi</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Add Modal -->
+		<div class="modal fade quickview" id="addModal" tabindex="-1"
+			aria-labelledby="addModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title-cus" id="addModalLabel">Add new
+							category</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3">
+							<label for="addName" class="form-label">Category Name</label> <input
+								type="text" class="form-control" id="addName" />
+						</div>
+						<div class="mb-3">
+							<label for="addDescription" class="form-label">Description</label>
+							<textarea class="form-control" id="addDescription" rows="3"></textarea>
+						</div>
+						<div class="mb-3">
+							<label for="addStatus" class="form-label">Status</label> <select
+								class="form-select" id="addStatus">
+								<option value="Published">Published</option>
+								<option value="Unpublished">Unpublished</option>
+							</select>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Hủy</button>
+						<button type="button" class="btn btn-primary" id="saveNewCategory">
+							Lưu</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- JavaScript files-->
+	<script>
+      // ------------------------------------------------------- //
+      //   Inject SVG Sprite -
+      //   see more here
+      //   https://css-tricks.com/ajaxing-svg-sprite/
+      // ------------------------------------------------------ //
+      function injectSvgSprite(path) {
+        var ajax = new XMLHttpRequest();
+        ajax.open("GET", path, true);
+        ajax.send();
+        ajax.onload = function (e) {
+          var div = document.createElement("div");
+          div.className = "d-none";
+          div.innerHTML = ajax.responseText;
+          document.body.insertBefore(div, document.body.childNodes[0]);
+        };
+      }
+      injectSvgSprite(
+        "https://demo.bootstrapious.com/sell/1-2-0/icons/orion-svg-sprite.svg"
+      );
+    </script>
+	<!-- jQuery-->
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
+	<!-- Bootstrap 5 JavaScript Bundle (Popper.js included)-->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- Owl Carousel-->
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
+	<!-- NoUI Slider (price slider)-->
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.min.js"></script>
+	<!-- Smooth scrolling-->
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
+	<!-- Lightbox gallery-->
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/js/glightbox.min.js"></script>
+	<!-- Object Fit Images - Fallback for browsers that don't support object-fit-->
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/object-fit-images/ofi.min.js"></script>
+	<script>
+      var basePath = "";
+    </script>
+	<script src="js/theme.30e7c8f9.js"></script>
+	<script
+		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
+	<script src="js/demo.9833433a.js"></script>
+	<script>
+      // Handle Delete Modal
+
+      // Handle Edit Modal
+      document
+        .querySelectorAll(
+          '[data-bs-toggle="modal"][data-bs-target="#editModal"]'
+        )
+        .forEach((button) => {
+          button.addEventListener("click", function (e) {
+            e.preventDefault();
+            const categoryId = this.getAttribute("data-category-id");
+            const editModalElement = document.getElementById("editModal");
+            const editModal = new bootstrap.Modal(editModalElement);
+
+            // Populate modal with category data
+            const row = this.closest("tr");
+            const name = row.getAttribute("data-name");
+            const description = row.getAttribute("data-description");
+            const status = row.getAttribute("data-status");
+            const created = row.getAttribute("data-created");
+            const updated = row.getAttribute("data-updated");
+
+            document.getElementById("editId").value = categoryId;
+            document.getElementById("editName").value = name;
+            document.getElementById("editDescription").value = description;
+            document.getElementById("editStatus").value = status;
+            document.getElementById("editCreated").value = created;
+            document.getElementById("editUpdated").value = updated;
+
+            editModal.show();
+
+            // Handle save changes
+
+
+            // Ensure backdrop is removed when modal is hidden
+            editModalElement.addEventListener("hidden.bs.modal", function () {
+              document
+                .querySelectorAll(".modal-backdrop")
+                .forEach((backdrop) => backdrop.remove());
+              document.body.classList.remove("modal-open");
+              document.body.style.overflow = "auto";
+            });
+          });
+        });
+      
+   // Handle Add Modal
+
+    </script>
+</body>
+</html>

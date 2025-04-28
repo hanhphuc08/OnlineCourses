@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Add New Course</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <!-- Price Slider Stylesheets -->
+    <link
+      rel="stylesheet"
+      href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.css"
+    />
+    <!-- Google fonts - Playfair Display-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700"
+    />
+    <link rel="stylesheet" href="fonts/hkgrotesk/stylesheet.2e9c9834.css" />
+    <!-- owl carousel-->
+    <link
+      rel="stylesheet"
+      href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/assets/owl.carousel.css"
+    />
+    <!-- Lightbox -->
+    <link
+      rel="stylesheet"
+      href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/css/glightbox.min.css"
+    />
+    <!-- theme stylesheet-->
+    <link
+      rel="stylesheet"
+      href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/style.default.7acfaf01.css"
+      id="theme-stylesheet"
+    />
+    <!-- Custom stylesheet - for your changes-->
+    <link
+      rel="stylesheet"
+      href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/custom.0a822280.css"
+    />
+    <!-- FontAwesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.1.0/css/solid.css"
+      integrity="sha384-TbilV5Lbhlwdyc4RuIV/JhD8NR+BfMrvz4BL5QFa2we1hQu6wvREr3v6XSRfCTRp"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.1.0/css/regular.css"
+      integrity="sha384-avJt9MoJH2rB4PKRsJRHZv7yiFZn8LrnXuzvmZoD3fh1aL6aM6s0BBcnCvBe6XSD"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.1.0/css/brands.css"
+      integrity="sha384-7xAnn7Zm3QC1jFjVc1A6v/toepoG3JXboQYzbM0jrPzou9OFXm/fY6Z/XiIebl/k"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.1.0/css/fontawesome.css"
+      integrity="sha384-ozJwkrqb90Oa3ZNb+yKFW2lToAWYdTiF1vt8JiH5ptTGHTGcN7qdoR1F95e0kYyG"
+      crossorigin="anonymous"
+    />
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-blue: #3494e6;
+        --primary-blue-hover: #2c7ec4;
+        --primary-blue-active: #2a76b8;
+        --bs-btn-color: #fff;
+        --bs-btn-bg: var(--primary-blue);
+        --bs-btn-border-color: var(--primary-blue);
+        --bs-btn-hover-color: #fff;
+        --bs-btn-hover-bg: var(--primary-blue-hover);
+        --bs-btn-hover-border-color: var(--primary-blue-active);
+        --bs-btn-focus-shadow-rgb: 82, 164, 234;
+        --bs-btn-active-color: #fff;
+        --bs-btn-active-bg: var(--primary-blue-active);
+        --bs-btn-active-border-color: #276fad;
+        --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+        --bs-btn-disabled-color: #fff;
+        --bs-btn-disabled-bg: var(--primary-blue);
+        --bs-btn-disabled-border-color: var(--primary-blue);
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f5f7fa;
+      }
+      /* Main Content */
+      .main-content {
+        margin-left: 280px;
+        padding: 20px;
+      }
+      /* Header Section */
+      .course-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .course-header h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #343a40;
+      }
+      .course-header .btn-primary {
+        background-color: var(--primary-blue);
+        border-color: var(--primary-blue);
+      }
+      .course-header .btn-primary:hover {
+        background-color: var(--primary-blue-hover);
+        border-color: var(--primary-blue-hover);
+      }
+      .course-header .btn-link {
+        background-color: #f8f9fa;
+        color: var(--primary-blue-hover);
+        text-decoration: none;
+        font-size: 16px;
+        padding: 8px 16px;
+        border: 1px solid var(--primary-blue);
+        border-radius: 5px;
+      }
+      .course-header .btn-link:hover {
+        background-color: var(--primary-blue);
+        color: #f8f9fa;
+      }
+      /* Breadcrumb */
+      .breadcrumb {
+        margin-bottom: 20px;
+      }
+      /* Form Sections */
+      .form-section {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .form-section h5 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #343a40;
+        margin-bottom: 20px;
+      }
+      .form-section .form-group {
+        margin-bottom: 15px;
+      }
+      .form-section .form-group label {
+        font-weight: 500;
+        color: #343a40;
+        margin-bottom: 5px;
+      }
+      .form-section .form-control,
+      .form-section .form-select {
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        padding: 8px;
+        font-size: 14px;
+      }
+      .form-section .form-control:focus,
+      .form-section .form-select:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 5px rgba(52, 148, 230, 0.2);
+      }
+      /* Image Upload */
+      .image-upload {
+        border: 2px dashed #ced4da;
+        border-radius: 10px;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        font-size: 14px;
+        background-color: #f8f9fa;
+      }
+      /* Two Columns Layout */
+      .form-two-columns {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .form-two-columns .col {
+        flex: 1;
+        min-width: 300px;
+      }
+      /* Status Radio Buttons */
+      .status-radio label {
+        margin-right: 20px;
+        font-size: 14px;
+        color: #343a40;
+      }
+      /* Submit Button */
+      .submit-section {
+        text-align: right;
+      }
+      /* Image Input Options */
+      .image-options {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .image-options input[type="radio"] {
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div th:replace="~{dashboard-sidebar-header :: sidebar}"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header -->
+      <div th:replace="~{dashboard-sidebar-header :: header}"></div>
+
+      <!-- Course Header -->
+      <div class="course-header">
+        <h2>Add New Course</h2>
+        <a href="/courses" class="btn btn-link">Back to Courses List</a>
+      </div>
+
+      <!-- Breadcrumb -->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <i class="fas fa-home px-2"></i><a href="/dashboard">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/courses">Courses</a>
+        </li>
+        <li class="breadcrumb-item active">Add Course</li>
+      </ol>
+
+      <!-- Form -->
+      <form method="POST" action="/courses/add" enctype="multipart/form-data">
+        <!-- Course Information -->
+        <div class="form-section">
+          <h5>Course Information</h5>
+          <div class="form-two-columns">
+            <div class="col">
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  name="title"
+                  placeholder="Enter Course Title"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="description">Description</label>
+                <textarea
+                  class="form-control"
+                  id="description"
+                  name="description"
+                  rows="3"
+                  placeholder="Enter Course Description"
+                  required
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="prices">Price</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  class="form-control"
+                  id="prices"
+                  name="prices"
+                  placeholder="Enter Course Price"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group">
+                <label for="categoryID">Course Category</label>
+                <select
+                  class="form-select"
+                  id="categoryID"
+                  name="categoryid"
+                  required
+                >
+                  <option value="" disabled selected>Select Category</option>
+                  <option value="Programming">Programming</option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="Design">Design</option>
+                  <option value="Business">Business</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="status">Status</label>
+                <div class="status-radio">
+                  <input
+                    type="radio"
+                    id="statusActive"
+                    name="status"
+                    value="Active"
+                  />
+                  <label for="statusActive">Active</label>
+                  <input
+                    type="radio"
+                    id="statusDisabled"
+                    name="status"
+                    value="Disabled"
+                    checked
+                  />
+                  <label for="statusDisabled">Disabled</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="duration">Duration</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="duration"
+                  name="duration"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="createAt">Created At</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="createAt"
+                  name="createat"
+                  value="2025-04-28"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course Images -->
+        <div class="form-section">
+          <h5>Course Images</h5>
+          <div class="image-options">
+            <div>
+              <input
+                type="radio"
+                id="imageUpload"
+                name="imageType"
+                value="upload"
+                checked
+                onchange="toggleImageInput()"
+              />
+              <label for="imageUpload">Upload File</label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                id="imageUrl"
+                name="imageType"
+                value="url"
+                onchange="toggleImageInput()"
+              />
+              <label for="imageUrl">Enter URL</label>
+            </div>
+          </div>
+          <div id="imageUploadSection">
+            <div class="image-upload">
+              <input
+                type="file"
+                id="imageFile"
+                name="imageFile"
+                accept="image/*"
+                style="display: none"
+                onchange="this.nextElementSibling.innerText = this.files[0] ? this.files[0].name : 'Drop files here to upload';"
+              />
+              <label for="imageFile" style="cursor: pointer">
+                Drop files here to upload
+              </label>
+            </div>
+          </div>
+          <div id="imageUrlSection" style="display: none">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                id="imageUrlInput"
+                name="imageUrl"
+                placeholder="Enter Image URL"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="submit-section">
+          <button type="submit" class="btn btn-primary">Add Course</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- JavaScript files-->
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/object-fit-images/ofi.min.js"></script>
+    <script>
+      var basePath = "";
+    </script>
+    <script src="js/theme.30e7c8f9.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
+    <script src="js/demo.9833433a.js"></script>
+    <script>
+      function toggleImageInput() {
+        const uploadSection = document.getElementById("imageUploadSection");
+        const urlSection = document.getElementById("imageUrlSection");
+        const imageUploadRadio = document.getElementById("imageUpload");
+
+        if (imageUploadRadio.checked) {
+          uploadSection.style.display = "block";
+          urlSection.style.display = "none";
+          document.getElementById("imageUrlInput").removeAttribute("required");
+          document
+            .getElementById("imageFile")
+            .setAttribute("required", "required");
+        } else {
+          uploadSection.style.display = "none";
+          urlSection.style.display = "block";
+          document.getElementById("imageFile").removeAttribute("required");
+          document
+            .getElementById("imageUrlInput")
+            .setAttribute("required", "required");
+        }
+      }
+    </script>
+  </body>
+</html>
