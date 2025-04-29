@@ -22,9 +22,9 @@ public class StaffController {
         return "staff/dashboard";
     }
 
-    @GetMapping("/courses")
+    @GetMapping("/categories")
     public String courses(Model model) {
         // TODO: Add course management logic
-        return "staff/courses";
+        return "staff/categories";
     }
 } 

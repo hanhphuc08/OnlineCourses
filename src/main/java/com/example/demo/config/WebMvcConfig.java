@@ -21,5 +21,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/forgot-password").setViewName("commons/forgotpassword");
         registry.addViewController("/reset-password").setViewName("commons/resetpassword");
         registry.addViewController("/course/detail/**").setViewName("category/productdetail");
+        registry.addViewController("/staff/addProducts").setViewName("staff/addProducts");
+        registry.addViewController("/staff/addStaffs").setViewName("staff/addStaffs");
+        registry.addViewController("/staff/categories").setViewName("staff/categories");
+        registry.addViewController("/staff/mngcustomer").setViewName("staff/customer");
+        registry.addViewController("/staff/dashboard").setViewName("staff/dashboard");
+        registry.addViewController("/staff/orderDetail").setViewName("staff/orderDetail");
+        registry.addViewController("/staff/ordersList").setViewName("staff/orderList");
+        registry.addViewController("/staff/productsList").setViewName("staff/productsList");
+        registry.addViewController("/staff/staffsList").setViewName("staff/staffsList");
     }
 } 

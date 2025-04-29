@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -245,12 +245,12 @@ body {
 </head>
 <body>
 	<!-- Sidebar -->
-	<div th:replace="~{dashboard-sidebar-header :: sidebar}"></div>
+	<div th:replace="~{staff/sidebar :: sidebar}"></div>
 
 	<!-- Main Content -->
 	<div class="main-content">
 		<!-- Header -->
-		<div th:replace="~{dashboard-sidebar-header :: header}"></div>
+		<div th:replace="~{staff/sidebar :: header}"></div>
 
 		<!-- Category Header -->
 		<div class="category-header">

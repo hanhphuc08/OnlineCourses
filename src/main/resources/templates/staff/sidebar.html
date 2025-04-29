@@ -341,24 +341,24 @@ body {
 			<div class="logo">P2TS</div>
 			<ul class="nav flex-column">
 				<li class="nav-item"><a class="nav-link active"
-					href="/dashboard"> <i class="fas fa-tachometer-alt"></i>
+					href="/staff/dashboard"> <i class="fas fa-tachometer-alt"></i>
 						Dashboard
 				</a></li>
 				<hr class="" />
 				<li class="section-title">Management</li>
-				<li class="nav-item"><a class="nav-link" href="/categories">
+				<li class="nav-item"><a class="nav-link" th:href="@{/staff/categories}">
 						<i class="fas fa-list"></i> Categories
 				</a></li>
-				<li class="nav-item"><a class="nav-link" href="/courses"> <i
+				<li class="nav-item"><a class="nav-link" th:href="@{/staff/productsList}"> <i
 						class="fas fa-book"></i> Courses
 				</a></li>
-				<li class="nav-item"><a class="nav-link" href="/orders"> <i
+				<li class="nav-item"><a class="nav-link" th:href="@{/staff/orderDetail}"> <i
 						class="fas fa-shopping-cart"></i> Orders
 				</a></li>
-				<li class="nav-item"><a class="nav-link" href="/students">
+				<li class="nav-item"><a class="nav-link" th:href="@{/staff/mngcustomer}">
 						<i class="fas fa-user-graduate"></i> Students
 				</a></li>
-				<li class="nav-item"><a class="nav-link" href="/staffs"> <i
+				<li class="nav-item"><a class="nav-link" th:href="@{/staff/staffsList}"> <i
 						class="fas fa-user"></i> Staffs
 				</a></li>
 				<li class="nav-item"><a class="nav-link" href="/reviews"> <i

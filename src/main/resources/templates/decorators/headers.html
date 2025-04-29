@@ -84,7 +84,7 @@
 							<a class="nav-link" th:href="@{/category}">Khóa học</a>
 						</li>
 						<li class="nav-item" sec:authorize="hasRole('ROLE_Staff')">
-							<a class="nav-link" th:href="@{/staff/courses}">Quản lý khóa học</a>
+							<a class="nav-link" th:href="@{/staff/dashboard}">Quản lý khóa học</a>
               </li>
 						<li class="nav-item" sec:authorize="hasRole('ROLE_Customer')">
 							<a class="nav-link" th:href="@{/}">Trang chủ</a>

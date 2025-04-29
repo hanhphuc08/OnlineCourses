@@ -62,9 +62,9 @@ public class SecurityConfig {
                         "/error"
                     ).permitAll()
                     .requestMatchers("/profile/**", "/course/cart/add/**", "/course/checkout/**", "/cart/**").authenticated()
-                    .requestMatchers("/staff/**").hasRole("STAFF")
-                    .requestMatchers("/owner/**").hasRole("OWNER")
-                    .requestMatchers("/customer/**").hasRole("CUSTOMER")
+                    .requestMatchers("/staff/**").hasRole("Staff")
+                    .requestMatchers("/owner/**").hasRole("Owner")
+                    .requestMatchers("/customer/**").hasRole("Customer")
                     .anyRequest().authenticated();
                 System.out.println("Authorization rules configured.");
             })
