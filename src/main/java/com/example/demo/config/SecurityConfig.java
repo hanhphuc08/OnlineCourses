@@ -61,7 +61,7 @@ public class SecurityConfig {
                         "/course/detail/**",
                         "/error"
                     ).permitAll()
-                    .requestMatchers("/profile/**", "/course/cart/add/**", "/course/checkout/**", "/cart/**").authenticated()
+                    .requestMatchers("/profile/**", "/course/cart/add/**", "/course/checkout/**", "/cart/**", "/checkout/vnpay-return").authenticated()
                     .requestMatchers("/staff/**").hasRole("Staff")
                     .requestMatchers("/owner/**").hasRole("Owner")
                     .requestMatchers("/customer/**").hasRole("Customer")

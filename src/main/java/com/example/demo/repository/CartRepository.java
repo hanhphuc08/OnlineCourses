@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,6 +16,7 @@ import com.example.demo.model.cart;
 
 @Repository
 public class CartRepository {
+	private static final Logger logger = LoggerFactory.getLogger(CartRepository.class);
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -63,14 +66,18 @@ public class CartRepository {
 	
 	
 	public Optional<cart> findByUserIdAndCourseId(int userId, int courseId) {
-	    String sql = "SELECT * FROM cart WHERE userID = ? AND courseID = ?";
-	    try {
-	        cart cart = jdbcTemplate.queryForObject(sql, this::mapRowToCart, userId, courseId);
-	        return Optional.ofNullable(cart);
-	    } catch (Exception e) {
-	        return Optional.empty();
-	    }
-	}
+		String sql = "SELECT c.cartID, c.userID, c.courseID, c.quantity, c.createDate, " +
+                "co.Title, co.Prices, co.Image " +
+                "FROM cart c JOIN course co ON c.courseID = co.CourseID " +
+                "WHERE c.userID = ? AND c.courseID = ?";
+    try {
+        cart cart = jdbcTemplate.queryForObject(sql, this::mapRowToCart, userId, courseId);
+        return Optional.ofNullable(cart);
+    } catch (Exception e) {
+        logger.warn("Không tìm thấy cart với userId: {} và courseId: {}", userId, courseId);
+        return Optional.empty();
+    }
+}
 
 
 }

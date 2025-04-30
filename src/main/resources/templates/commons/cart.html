@@ -182,6 +182,18 @@
 	
 	
 	<script>
+	document.addEventListener("DOMContentLoaded", function() {
+        const errorMessage = /*[[${error}]]*/ null;
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: errorMessage,
+                timer: 5000,
+                showConfirmButton: false
+            });
+        }
+    });
 		function removeFromCart(event, cartId) {
 		    event.preventDefault();
 		    Swal.fire({

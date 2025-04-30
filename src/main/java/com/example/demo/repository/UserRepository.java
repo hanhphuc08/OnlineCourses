@@ -184,4 +184,14 @@ public class UserRepository {
             throw e;
         }
     }
+    public void updateUserProfile(int userId, String fullname, String email, String phoneNumber) {
+        String sql = "UPDATE users SET Fullname = ?, Email = ?, PhoneNumber = ?, UpdateDate = ? WHERE UserID = ?";
+        try {
+            jdbcTemplate.update(sql, fullname, email, phoneNumber, LocalDateTime.now(), userId);
+            logger.info("Cập nhật hồ sơ người dùng thành công cho userId: {}", userId);
+        } catch (Exception e) {
+            logger.error("Lỗi khi cập nhật hồ sơ người dùng cho userId {}: {}", userId, e.getMessage());
+            throw new RuntimeException("Không thể cập nhật hồ sơ người dùng: " + e.getMessage());
+        }
+    }
 } 

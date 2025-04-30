@@ -132,4 +132,14 @@ public class CourseRepository {
         }
     }
     
+    public void decrementQuantity(int courseId) {
+    	
+        String sql = "UPDATE course SET Quantity = Quantity - 1 WHERE CourseID = ? AND Quantity > 0";
+        int rowsAffected = jdbcTemplate.update(sql, courseId);
+        if (rowsAffected == 0) {
+        	
+            throw new RuntimeException("Không thể giảm số lượng khóa học: Khóa học không tồn tại hoặc đã hết!");
+        }
+    }
+    
 }
