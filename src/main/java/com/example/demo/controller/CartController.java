@@ -41,7 +41,7 @@ public class CartController {
 	
 	
 	@GetMapping("/cart")
-	public String viewCart(Model model) {
+	public String viewCart(Model model,@RequestParam(required = false) String success, @RequestParam(required = false) String error) {
 		try {
            
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -74,6 +74,9 @@ public class CartController {
 
             model.addAttribute("cartItems", enrichedCartItems);
             model.addAttribute("total", total);
+            
+            model.addAttribute("success", success);
+            model.addAttribute("error", error);
             return "commons/cart";
         } catch (RuntimeException e) {
             logger.error("Error fetching cart for user: {}", e.getMessage());

@@ -96,9 +96,9 @@ public class OrderRepository {
     
     public void saveOrderDetail(orderDetail detail, int orderId) {
     	logger.info("Lưu orderDetail cho OrderID: {}, CourseID: {}", orderId, detail.getCourseID());
-        String sqlDetail = "INSERT INTO orderDetail (OrderID, CourseID, Price) VALUES (?, ?, ?)";
+        String sqlDetail = "INSERT INTO orderDetail (OrderID, CourseID, Price, PromotionID) VALUES (?, ?, ?, ?)";
         try {
-            jdbcTemplate.update(sqlDetail, orderId, detail.getCourseID(), detail.getPrice());
+            jdbcTemplate.update(sqlDetail, orderId, detail.getCourseID(), detail.getPrice(), detail.getPromotionID());
         } catch (Exception e) {
             logger.error("Lỗi khi lưu orderDetail cho OrderID {}: {}", orderId, e.getMessage());
             throw new RuntimeException("Không thể lưu chi tiết đơn hàng: " + e.getMessage());

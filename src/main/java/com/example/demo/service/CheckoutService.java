@@ -86,22 +86,31 @@ public class CheckoutService {
             logger.warn("Mã giảm giá {} không hợp lệ hoặc đã hết hạn cho courseId {}", couponCode, courseId);
             return "error:Mã giảm giá không hợp lệ hoặc đã hết hạn.";
         }
+        
+        orderDetail targetDetail = order.getOrderDetails().stream()
+                .filter(detail -> detail.getCourseID() == courseId)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy khóa học trong đơn hàng!"));
 
-        try {
-            promotionRepository.saveUserPromotion(promotion.getPromotionID(), userId);
-        } catch (RuntimeException e) {
-            logger.warn("Lỗi khi lưu userPromotion: {}", e.getMessage());
-            return "error:" + e.getMessage();
+        
+        targetDetail.setPromotionID(promotion.getPromotionID());
+
+       
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        for (orderDetail detail : order.getOrderDetails()) {
+            BigDecimal price = detail.getPrice();
+            if (detail.getPromotionID() != null) {
+                promotion appliedPromo = promotionRepository.findById(detail.getPromotionID());
+                BigDecimal discountPercentage = appliedPromo.getDiscountPercentage();
+                BigDecimal discount = price.multiply(discountPercentage).divide(BigDecimal.valueOf(100));
+                price = price.subtract(discount);
+            }
+            totalAmount = totalAmount.add(price);
         }
+        order.setTotalAmount(totalAmount);
 
-        order.setPromotionID(promotion.getPromotionID());
-        BigDecimal discountPercentage = promotion.getDiscountPercentage();
-        BigDecimal discount = order.getTotalAmount().multiply(discountPercentage).divide(BigDecimal.valueOf(100));
-        BigDecimal newTotal = order.getTotalAmount().subtract(discount);
-        order.setTotalAmount(newTotal);
-
-        logger.info("Áp dụng mã giảm giá thành công, newTotal: {}", newTotal);
-        return "success:" + newTotal;
+        logger.info("Áp dụng mã giảm giá thành công, newTotal: {}", totalAmount);
+        return "success:" + totalAmount;
     }
 
     public order completeCheckout(order order, users user, HttpServletRequest request, HttpSession session) {
@@ -138,13 +147,21 @@ public class CheckoutService {
             order.setOrderStatus("PENDING");
             order = orderRepository.save(order);
             logger.info("Đã lưu đơn hàng với OrderID: {}", order.getOrderID());
+            
+            // Lưu mã giảm giá vào userPromotion
+            if (order.getPromotionID() != null) {
+                promotionRepository.saveUserPromotion(order.getPromotionID(), user.getUserID());
+                logger.info("Lưu userPromotion cho PromotionID: {} và UserID: {}", order.getPromotionID(), user.getUserID());
+            }
+            
 
-            // Lưu chi tiết đơn hàng và giảm số lượng khóa học
             for (orderDetail detail : details) {
-                detail.setOrderID(order.getOrderID());
-                orderRepository.saveOrderDetail(detail, order.getOrderID());
-                logger.info("Lưu orderDetail cho OrderID: {}, CourseID: {}", order.getOrderID(), detail.getCourseID());
+                if (detail.getPromotionID() != null) {
+                    promotionRepository.saveUserPromotion(detail.getPromotionID(), user.getUserID());
+                    logger.info("Lưu userPromotion cho PromotionID: {} và UserID: {}", detail.getPromotionID(), user.getUserID());
+                }
                 courseRepository.decrementQuantity(detail.getCourseID());
+                logger.info("Giảm số lượng khóa học CourseID: {}", detail.getCourseID());
             }
 
             // Tạo thanh toán

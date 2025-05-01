@@ -8,9 +8,18 @@ public class orderDetail {
     private int courseID;
     private BigDecimal price;
     private course course;
+    private Integer promotionID;
     
     
     
+    
+    
+	public Integer getPromotionID() {
+		return promotionID;
+	}
+	public void setPromotionID(Integer promotionID) {
+		this.promotionID = promotionID;
+	}
 	public int getOrderDetailID() {
 		return orderDetailID;
 	}

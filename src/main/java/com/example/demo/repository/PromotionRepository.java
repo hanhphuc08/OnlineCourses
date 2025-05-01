@@ -40,6 +40,16 @@ public class PromotionRepository {
             return null;
         }
     }
+	
+	public promotion findById(Integer promotionId) {
+        String sql = "SELECT * FROM promotion WHERE PromotionID = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{promotionId}, this::mapRowToPromotion);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+	
 	public String validateCoupon(String code, int courseId, int userId) {
 		
 		String sql = "SELECT * FROM promotion WHERE Code = ? AND CourseID = ? AND Status = 'ACTIVE' AND ExpirationDate > NOW()";

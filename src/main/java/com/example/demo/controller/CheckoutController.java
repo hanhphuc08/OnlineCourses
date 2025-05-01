@@ -177,6 +177,8 @@ public class CheckoutController {
         try {
             user.setUserID(currentUser.getUserID());
             session.setAttribute("checkoutUser", user);
+            order.setOrderStatus("TEMP");
+            
             String paymentUrl = checkoutService.createPaymentUrl(order, user, request);
             if (paymentUrl == null) {
                 logger.error("Không thể tạo URL thanh toán!");
@@ -204,7 +206,7 @@ public class CheckoutController {
                 if (order == null || user == null) {
                     logger.warn("Không tìm thấy thông tin đơn hàng hoặc người dùng trong session");
                     session.setAttribute("error", "Phiên thanh toán không hợp lệ!");
-                    return "redirect:/checkout?error=true";
+                    return "redirect:/category?error=true";
                 }
                 order = checkoutService.completeCheckout(order, user, null, session);
                 checkoutService.confirmPayment(order.getOrderID(), -1);
@@ -213,16 +215,16 @@ public class CheckoutController {
                 session.removeAttribute("checkoutOrder");
                 session.removeAttribute("checkoutUser");
                 session.removeAttribute("paymentUrl");
-                return "redirect:/checkout?success=true";
+                return "redirect:/category?success=true";
             } else {
                 logger.warn("Thanh toán thất bại: Mã lỗi {}", vnp_ResponseCode);
                 session.setAttribute("error", "Thanh toán thất bại: Mã lỗi " + vnp_ResponseCode);
-                return "redirect:/checkout?error=true";
+                return "redirect:/category?error=true";
             }
         } catch (Exception e) {
             logger.error("Lỗi xử lý callback VNPAY: {}", e.getMessage(), e);
             session.setAttribute("error", "Lỗi xử lý callback VNPAY: " + e.getMessage());
-            return "redirect:/checkout?error=true";
+            return "redirect:/category?error=true";
         }
     }
 
@@ -244,13 +246,21 @@ public class CheckoutController {
             return "error:Lỗi xác nhận thanh toán: " + e.getMessage();
         }
     }
+    
+    
 	
     @PostMapping("/checkout/clear-payment-url")
     @ResponseBody
     public void clearPaymentUrl(HttpSession session) {
         session.removeAttribute("paymentUrl");
     }
-	
-	
+
+    @PostMapping("/checkout/clear-session")
+    @ResponseBody
+    public void clearSession(HttpSession session) {
+        session.removeAttribute("notificationMessage");
+        session.removeAttribute("error");
+        session.removeAttribute("paymentUrl");
+    }
 
 }

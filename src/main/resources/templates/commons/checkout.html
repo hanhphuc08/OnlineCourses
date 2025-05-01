@@ -876,7 +876,7 @@
 		        <label for="coupon">Mã Giảm Giá</label>
 		        <div class="coupon-input">
 		            <input type="text" id="coupon" name="coupon" placeholder="Nhập mã giảm giá">
-		            <button class="apply-button" onclick="applyCoupon()">Áp dụng</button>
+		            <button class="apply-button" >Áp dụng</button>
 		        </div>
 		    </div>
 		    <div class="summary-row total">
@@ -946,30 +946,30 @@
     document.addEventListener("DOMContentLoaded", function() {
         // Hiển thị thông báo lỗi
         const errorMessage = /*[[${error}]]*/ null;
-        if (errorMessage) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Lỗi',
-                text: errorMessage,
-                timer: 5000,
-                showConfirmButton: false
-            });
-        }
+            if (errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: errorMessage,
+                    timer: 5000,
+                    showConfirmButton: false
+                });
+            }
 
-        // Hiển thị thông báo thành công
-        const successMessage = /*[[${param.success} ? ${notificationMessage} : null]]*/ null;
-        if (successMessage) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Thành công',
-                text: successMessage,
-                timer: 5000,
-                showConfirmButton: false
-            });
-        }
+            // Hiển thị thông báo thành công
+            const successMessage = /*[[${param.success} ? ${notificationMessage} : null]]*/ null;
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công',
+                    text: successMessage,
+                    timer: 5000,
+                    showConfirmButton: false
+                });
+            }
 
-        // Xử lý mã giảm giá
-        function applyCoupon() {
+     // Gắn sự kiện cho nút "Áp dụng"
+        document.querySelector(".apply-button").addEventListener("click", function() {
             const couponCode = document.getElementById("coupon").value;
             const courseSelect = document.getElementById("courseSelect");
             const courseId = courseSelect ? courseSelect.value : /*[[${order.orderDetails.size() > 0 ? order.orderDetails[0].courseID : 0}]]*/ 0;
@@ -1025,7 +1025,7 @@
                     showConfirmButton: false
                 });
             });
-        }
+        });
     });
 </script>
 </body>

@@ -254,6 +254,51 @@
 	<script>
         // JavaScript để điền dữ liệu vào modal Quick View
         document.addEventListener('DOMContentLoaded', function () {
+console.log('=== Category Page Loaded ===');
+            
+            // Debug session attributes
+            const success = /*[[${param.success}]]*/ null;
+            const successMessage = /*[[${session.notificationMessage}]]*/ null;
+            const error = /*[[${param.error}]]*/ null;
+            const errorMessage = /*[[${session.error}]]*/ null;
+            console.log('Success:', success);
+            console.log('Success Message:', successMessage);
+            console.log('Error:', error);
+            console.log('Error Message:', errorMessage);
+
+            // Hiển thị thông báo thành công
+            if (success === 'true' && successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công',
+                    text: successMessage,
+                    timer: 5000,
+                    showConfirmButton: false
+                }).then(() => {
+                    // Xóa session attribute sau khi hiển thị
+                    fetch('/checkout/clear-session', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    }).catch(error => console.error('Error clearing session:', error));
+                });
+            }
+
+            // Hiển thị thông báo lỗi
+            if (error === 'true' && errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: errorMessage,
+                    timer: 5000,
+                    showConfirmButton: false
+                }).then(() => {
+                    // Xóa session attribute sau khi hiển thị
+                    fetch('/checkout/clear-session', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    }).catch(error => console.error('Error clearing session:', error));
+                });
+            }
             const quickViewButtons = document.querySelectorAll('.quick-view-btn');
             const modal = document.getElementById('quickViewModal');
 
@@ -283,6 +328,7 @@
                 
                 return false;
             };
+         
 
             // Hàm xử lý click chi tiết sản phẩm
             window.handleProductDetailClick = function(e, courseId) {
