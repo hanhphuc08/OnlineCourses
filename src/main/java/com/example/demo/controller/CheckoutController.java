@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -56,7 +57,7 @@ public class CheckoutController {
     
     
 	@GetMapping("/checkout")
-	public String showCheckoutPage(Model model, HttpSession session, Authentication authentication) {
+	public String showCheckoutPage(Model model, HttpSession session, Authentication authentication,@RequestParam(required = false) String source) {
 		
 		if (authentication == null) {
             logger.info("Chưa đăng nhập, chuyển hướng đến /login");
@@ -68,45 +69,83 @@ public class CheckoutController {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với email: " + email));
         try {
             logger.info("Chuẩn bị checkout cho userId: {}", user.getUserID());
-            order order = checkoutService.prepareCheckout(user.getUserID(), session);
-            List<cart> cartItems = cartRepository.findByUserId(user.getUserID());
-            logger.info("Số lượng cartItems: {}", cartItems.size());
-            if (cartItems.isEmpty()) {
-                logger.warn("Giỏ hàng trống cho userId: {}", user.getUserID());
-                session.setAttribute("error", "Giỏ hàng của bạn trống!");
-                return "redirect:/cart";
-            }
+            order order;
 
-            // Làm giàu cartItems với thông tin course
-            List<cart> enrichedCartItems = cartItems.stream().map(cart -> {
-                course course = courseService.getCourseById(cart.getCourseID());
-                if (course != null) {
-                    cart.setCourse(course);
-                } else {
-                    logger.warn("Course với ID {} không tồn tại cho cartId {}", cart.getCourseID(), cart.getCartID());
+            // Nếu source=cart, xóa checkoutOrder và tạo từ giỏ hàng
+            if ("cart".equals(source)) {
+                session.removeAttribute("checkoutOrder");
+                List<cart> cartItems = cartRepository.findByUserId(user.getUserID());
+                logger.info("Số lượng cartItems: {}", cartItems.size());
+                if (cartItems.isEmpty()) {
+                    logger.warn("Giỏ hàng trống cho userId: {}", user.getUserID());
+                    session.setAttribute("error", "Giỏ hàng của bạn trống!");
+                    return "redirect:/cart";
                 }
-                return cart;
-            }).collect(Collectors.toList());
 
-            // Kiểm tra nếu có cartItem thiếu course
-            if (enrichedCartItems.stream().anyMatch(cart -> cart.getCourse() == null)) {
-                logger.error("Một hoặc nhiều khóa học không hợp lệ trong giỏ hàng của userId: {}", user.getUserID());
-                throw new RuntimeException("Dữ liệu khóa học không hợp lệ!");
-            }
+                // Làm giàu cartItems với thông tin course
+                List<cart> enrichedCartItems = cartItems.stream().map(cart -> {
+                    course course = courseService.getCourseById(cart.getCourseID());
+                    if (course != null) {
+                        cart.setCourse(course);
+                    } else {
+                        logger.warn("Course với ID {} không tồn tại cho cartId {}", cart.getCourseID(), cart.getCartID());
+                    }
+                    return cart;
+                }).collect(Collectors.toList());
 
-            BigDecimal totalAmount = BigDecimal.ZERO;
-            List<orderDetail> orderDetails = new ArrayList<>();
-            for (cart cart : enrichedCartItems) {
-                orderDetail detail = new orderDetail();
-                detail.setCourseID(cart.getCourseID());
-                detail.setPrice(cart.getCourse().getPrices());
-                detail.setCourse(cart.getCourse());
-                orderDetails.add(detail);
-                totalAmount = totalAmount.add(cart.getCourse().getPrices().multiply(BigDecimal.valueOf(cart.getQuantity())));
+                // Kiểm tra nếu có cartItem thiếu course
+                if (enrichedCartItems.stream().anyMatch(cart -> cart.getCourse() == null)) {
+                    logger.error("Một hoặc nhiều khóa học không hợp lệ trong giỏ hàng của userId: {}", user.getUserID());
+                    throw new RuntimeException("Dữ liệu khóa học không hợp lệ!");
+                }
+
+                order = new order();
+                order.setUserID(user.getUserID());
+                order.setOrderDate(java.time.LocalDateTime.now());
+                order.setOrderStatus("PENDING");
+
+                BigDecimal totalAmount = BigDecimal.ZERO;
+                List<orderDetail> orderDetails = new ArrayList<>();
+                for (cart cart : enrichedCartItems) {
+                    orderDetail detail = new orderDetail();
+                    detail.setCourseID(cart.getCourseID());
+                    detail.setPrice(cart.getCourse().getPrices());
+                    detail.setCourse(cart.getCourse());
+                    orderDetails.add(detail);
+                    totalAmount = totalAmount.add(cart.getCourse().getPrices().multiply(BigDecimal.valueOf(cart.getQuantity())));
+                }
+                order.setOrderDetails(orderDetails);
+                order.setTotalAmount(totalAmount);
+                session.setAttribute("checkoutOrder", order);
+            } else {
+                // Sử dụng order từ "Mua Ngay" hoặc tạo mới nếu không có
+                order = (order) session.getAttribute("checkoutOrder");
+                if (order != null && "TEMP".equals(order.getOrderStatus())) {
+                    // Sử dụng order từ "Mua Ngay"
+                    List<orderDetail> orderDetails = order.getOrderDetails();
+                    if (orderDetails == null || orderDetails.isEmpty()) {
+                        logger.warn("Đơn hàng trống cho userId: {}", user.getUserID());
+                        session.setAttribute("error", "Đơn hàng của bạn trống!");
+                        return "redirect:/category";
+                    }
+
+                    // Enrich order details với thông tin course
+                    for (orderDetail detail : orderDetails) {
+                        course course = courseService.getCourseById(detail.getCourseID());
+                        if (course != null) {
+                            detail.setCourse(course);
+                        } else {
+                            logger.warn("Khóa học với ID {} không tồn tại", detail.getCourseID());
+                            throw new RuntimeException("Khóa học không hợp lệ!");
+                        }
+                    }
+                } else {
+                    // Nếu không có order hợp lệ, chuyển về giỏ hàng
+                    logger.warn("Phiên thanh toán không hợp lệ cho userId: {}", user.getUserID());
+                    session.setAttribute("error", "Phiên thanh toán không hợp lệ!");
+                    return "redirect:/cart";
+                }
             }
-            order.setOrderDetails(orderDetails);
-            order.setTotalAmount(totalAmount);
-            session.setAttribute("checkoutOrder", order);
 
             payment payment = new payment();
             paymentMethod paymentMethod = new paymentMethod();
@@ -118,9 +157,9 @@ public class CheckoutController {
             model.addAttribute("order", order);
             model.addAttribute("user", user);
             model.addAttribute("payment", payment);
-            model.addAttribute("notificationMessage", "Thanh toán thành công! Thông tin khóa học đã được gửi đến email của bạn.");
+            model.addAttribute("notificationMessage", session.getAttribute("notificationMessage"));
+            model.addAttribute("error", session.getAttribute("error"));
             if (session.getAttribute("error") != null) {
-                model.addAttribute("error", session.getAttribute("error"));
                 session.removeAttribute("error");
             }
 
@@ -134,6 +173,50 @@ public class CheckoutController {
             return "redirect:/cart";
         }
     }
+	@PostMapping("/course/buy-now")
+	public String buyNow(@RequestParam("courseId") int courseId, HttpSession session, Authentication authentication) {
+		if(authentication == null) {
+			return "redirect:/login";
+		}
+		String email = authentication.getName();
+		users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với email: " + email));
+		
+		try {
+			course course = courseService.getCourseById(courseId);
+			if(course == null) {
+				logger.warn("Khóa học với ID {} không tồn tại", courseId);
+                session.setAttribute("error", "Khóa học không tồn tại!");
+                return "redirect:/category";
+			}
+			
+			order order = new order();
+			order.setUserID(user.getUserID());
+			order.setOrderDate(java.time.LocalDateTime.now());
+			order.setOrderStatus("TEMP");
+			
+			orderDetail detail = new orderDetail();
+            detail.setCourseID(courseId);
+            detail.setPrice(course.getPrices());
+            detail.setCourse(course);
+            List<orderDetail> orderDetails = new ArrayList<>();
+            orderDetails.add(detail);
+            order.setOrderDetails(orderDetails);
+            order.setTotalAmount(course.getPrices());
+            
+            
+            session.setAttribute("checkoutOrder", order);
+            logger.info("Đã tạo order tạm thời cho userId: {}, courseId: {}", user.getUserID(), courseId);
+            return "redirect:/checkout";
+			
+		}catch (Exception e) {
+			logger.error("Lỗi khi tiến hành thanh toán: {}", e.getMessage(), e);
+            session.setAttribute("error", "Lỗi khi tiến hành thanh toán: " + e.getMessage());
+            return "redirect:/checkout";
+			
+		}
+	}
+	
 	
 	@PostMapping("/checkout/apply-coupon")
     @ResponseBody

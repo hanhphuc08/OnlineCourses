@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -117,6 +118,64 @@ public class OrderRepository {
         order.setOrderDetails(details);
 
         return order;
+    }
+    
+    public List<order> findByUserIdAndStatus(int userId, String status) {
+        String sql = "SELECT o.orderID, o.userID, o.orderDate, o.orderStatus, o.totalAmount, o.promotionID, " +
+                     "od.orderDetailID, od.orderID, od.courseID, od.price, od.promotionID AS od_promotionID, " +
+                     "c.courseID AS course_id, c.title, c.description, c.prices, c.image, c.duration " +
+                     "FROM orders o " +
+                     "JOIN orderDetail od ON o.orderID = od.orderID " +
+                     "JOIN course c ON od.courseID = c.courseID " +
+                     "WHERE o.userID = ? AND o.orderStatus = ?";
+
+        try {
+            List<order> orders = new ArrayList<>();
+            jdbcTemplate.query(sql, new Object[]{userId, status}, (ResultSet rs) -> {
+                order currentOrder = null;
+                int currentOrderId = -1;
+
+                while (rs.next()) {
+                    int orderId = rs.getInt("orderID");
+                    if (orderId != currentOrderId) {
+                        currentOrder = new order();
+                        currentOrder.setOrderID(orderId);
+                        currentOrder.setUserID(rs.getInt("userID"));
+                        currentOrder.setOrderDate(rs.getTimestamp("orderDate").toLocalDateTime());
+                        currentOrder.setOrderStatus(rs.getString("orderStatus"));
+                        currentOrder.setTotalAmount(rs.getBigDecimal("totalAmount"));
+                        currentOrder.setPromotionID(rs.getInt("promotionID") == 0 ? null : rs.getInt("promotionID"));
+                        currentOrder.setOrderDetails(new ArrayList<>());
+                        orders.add(currentOrder);
+                        currentOrderId = orderId;
+                    }
+
+                    orderDetail detail = new orderDetail();
+                    detail.setOrderDetailID(rs.getInt("orderDetailID"));
+                    detail.setOrderID(rs.getInt("orderID"));
+                    detail.setCourseID(rs.getInt("courseID"));
+                    detail.setPrice(rs.getBigDecimal("price"));
+                    detail.setPromotionID(rs.getInt("od_promotionID") == 0 ? null : rs.getInt("od_promotionID"));
+
+                    course course = new course();
+                    course.setCourseID(rs.getInt("course_id"));
+                    course.setTitle(rs.getString("title"));
+                    course.setDescription(rs.getString("description"));
+                    course.setPrices(rs.getBigDecimal("prices"));
+                    course.setImage(rs.getString("image"));
+                    course.setFormattedDuration(rs.getString("duration"));
+                    detail.setCourse(course);
+
+                    currentOrder.getOrderDetails().add(detail);
+                }
+                return orders;
+            });
+            logger.info("Tìm thấy {} đơn hàng cho userId {} với trạng thái {}", orders.size(), userId, status);
+            return orders;
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy đơn hàng cho userId {}: {}", userId, e.getMessage());
+            throw new RuntimeException("Không thể lấy danh sách đơn hàng: " + e.getMessage());
+        }
     }
 
 }

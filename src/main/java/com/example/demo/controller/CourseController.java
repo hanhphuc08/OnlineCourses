@@ -1,4 +1,7 @@
-package com.example.demo.controller;
+	package com.example.demo.controller;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.course;
+import com.example.demo.model.order;
+import com.example.demo.model.orderDetail;
 import com.example.demo.model.users;
 import com.example.demo.repository.CartRepository;
 import com.example.demo.service.CourseService;
 import com.example.demo.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("course")
@@ -117,10 +124,9 @@ public class CourseController {
     }
 
     @PostMapping("/checkout/{id}")
-    public String checkout(@PathVariable("id") int courseId, Model model, RedirectAttributes redirectAttributes) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if(authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+    public String checkout(@PathVariable("id") int courseId, HttpSession session, Authentication authentication, RedirectAttributes redirectAttributes) {
+    	try {
+            if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
                 logger.warn("User not authenticated when checking out course ID {}", courseId);
                 redirectAttributes.addFlashAttribute("error", "Vui lòng đăng nhập để thanh toán!");
                 return "redirect:/login";
@@ -128,7 +134,7 @@ public class CourseController {
 
             String username = authentication.getName();
             users user = userService.findByEmailOrPhone(username);
-            
+
             if (user == null) {
                 logger.warn("User not found for username: {}", username);
                 redirectAttributes.addFlashAttribute("error", "Không tìm thấy thông tin người dùng!");
@@ -137,22 +143,30 @@ public class CourseController {
 
             course course = courseService.getCourseById(courseId);
             if (course == null) {
-                return "error/404";
-            }
-            
-            int userId = user.getUserID();
-            if(cartRepository.findByUserId(userId).isEmpty()) {
-            	cartRepository.addToCart(userId, courseId, 1);
-            	logger.info("Added course ID {} to cart for checkout for user ID {}", courseId, userId);
-            	
+                logger.warn("Khóa học với ID {} không tồn tại", courseId);
+                redirectAttributes.addFlashAttribute("error", "Khóa học không tồn tại!");
+                return "redirect:/course/detail/" + courseId;
             }
 
-            model.addAttribute("course", course);
-            model.addAttribute("user", user);
-            return "checkout";
-            
+            order order = new order();
+            order.setUserID(user.getUserID());
+            order.setOrderDate(java.time.LocalDateTime.now());
+            order.setOrderStatus("TEMP");
+
+            orderDetail detail = new orderDetail();
+            detail.setCourseID(courseId);
+            detail.setPrice(course.getPrices());
+            detail.setCourse(course);
+            List<orderDetail> orderDetails = new ArrayList<>();
+            orderDetails.add(detail);
+            order.setOrderDetails(orderDetails);
+            order.setTotalAmount(course.getPrices());
+
+            session.setAttribute("checkoutOrder", order);
+            logger.info("Đã tạo order tạm thời cho userId: {}, courseId: {} từ trang chi tiết khóa học", user.getUserID(), courseId);
+            return "redirect:/checkout";
         } catch (RuntimeException e) {
-            logger.error("Error during checkout for course ID {}: {}", courseId, e.getMessage());
+            logger.error("Lỗi khi xử lý mua ngay từ trang chi tiết khóa học: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/course/detail/" + courseId;
         }

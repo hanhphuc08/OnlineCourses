@@ -318,42 +318,48 @@
 					
 					<!-- Enrolled Courses -->
 					<div class="tab-pane fade" id="enrolled-courses" role="tabpanel" aria-labelledby="enrolled-courses-tab">
-						<h5 class="text-uppercase mb-4">Khóa học đã đăng ký</h5>
-						<div class="row">
-							<!-- Course 1 -->
-							<div class="col-xl-4 col-lg-5 col-sm-6">
-								<div class="product shadow-custom">
-									<div class="product-image">
-										<img class="img-fluid img-custom"
-											src="https://files.fullstack.edu.vn/f8-prod/courses/19/66aa28194b52b.png"
-											alt="course image" />
-										<div class="product-hover-overlay">
-											<a class="product-hover-overlay-link" href="/course/detail/1"></a>
-											<div class="product-hover-overlay-buttons">
-												<a class="btn btn-continue28tech btn-buy" href="/course/detail/1">
-													<i class="fas fa-play-circle"></i>
-												</a>
-												<a class="btn btn-detail28tech btn-buy quick-view-btn"
-													href="#"
-													data-bs-toggle="modal"
-													data-bs-target="#quickViewModal"
-													data-course-id="1"
-													data-course-title="Gói học tổng hợp giúp học sinh ôn luyện toàn diện cho kỳ thi THPT Quốc gia 2025"
-													data-course-description="Khóa học này cung cấp kiến thức toàn diện và các kỹ năng cần thiết để chuẩn bị cho kỳ thi THPT Quốc gia. Bao gồm các môn học chính như Toán, Văn, Anh và các môn tự nhiên, xã hội. Học viên sẽ được hướng dẫn chi tiết về phương pháp học tập hiệu quả và các kỹ thuật làm bài thi."
-													data-course-price="1500000"
-													data-course-duration="6 tháng">
-													<i class="fa fa-search"></i>
-												</a>
+                        <h5 class="text-uppercase mb-4">Khóa học đã đăng ký</h5>
+                        <div class="row">
+                            <div th:if="${enrolledCourses == null or enrolledCourses.isEmpty()}" class="col-12 text-center">
+                                <p>Bạn chưa đăng ký khóa học nào.</p>
+                            </div>
+                            <div class="col-xl-4 col-lg-5 col-sm-6" th:each="course : ${enrolledCourses}">
+                                <div class="product shadow-custom">
+                                    <div class="product-image">
+                                        <img class="img-fluid img-custom"
+                                            th:src="${course.image != null ? course.image : '/path/to/default-image.jpg'}"
+                                            alt="course image" />
+                                        <div class="product-hover-overlay">
+                                            <a class="product-hover-overlay-link" th:href="@{/course/detail/{id}(id=${course.courseID})}"></a>
+                                            <div class="product-hover-overlay-buttons">
+                                                <a class="btn btn-continue28tech btn-buy" th:href="@{/course/detail/{id}(id=${course.courseID})}">
+                                                    <i class="fas fa-play-circle"></i>
+                                                </a>
+                                                <a class="btn btn-detail28tech btn-buy quick-view-btn"
+                                                    href="#"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#quickViewModal"
+                                                    th:data-course-id="${course.courseID}"
+                                                    th:data-course-title="${course.title}"
+                                                    th:data-course-description="${course.description}"
+                                                    th:data-course-price="${course.formattedPrice}"
+                                                    th:data-course-image="${course.image != null ? course.image : '/path/to/default-image.jpg'}"
+                                                    th:data-course-duration="${course.formattedDuration}">
+                                                    <i class="fa fa-search"></i>
+                                                </a>
 											</div>
 										</div>
 									</div>
 									<div class="px-3 py-3">
 										<h3 class="h6 text-uppercase mb-1">
-											<a class="text-dark" href="/course/detail/1">
-												Gói học tổng hợp giúp học sinh ôn luyện toàn diện cho kỳ thi THPT Quốc gia 2025
-											</a>
-										</h3>
-										<span class="text-muted">1,500,000 VNĐ</span>
+                                            <a class="text-dark" th:href="@{/course/detail/{id}(id=${course.courseID})}" th:text="${course.title}"></a>
+                                        </h3>
+                                        <span class="text-muted" th:text="${course.formattedPrice}"></span>
+                                        <div th:if="${course.orderDate != null}" class="mt-2">
+                                            <small class="text-muted">Ngày đăng ký: 
+                                                <span th:text="${#temporals.format(course.orderDate, 'dd/MM/yyyy')}"></span>
+                                            </small>
+                                        </div>
 									</div>
 								</div>
 							</div>
@@ -366,60 +372,58 @@
 
 	<!-- QuickView Modal -->
 	<div class="modal fade quickview py-6" id="quickViewModal" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content border-radius-cus">
-				<div class="modal-header">
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<!-- Left side: Image -->
-						<div class="col-lg-5">
-							<div class="owl-carousel owl-theme owl-dots-modern" data-slider-id="1">
-								<div>
-									<img class="img-fluid img-custom" id="quickViewImage"
-										src="https://files.fullstack.edu.vn/f8-prod/courses/19/66aa28194b52b.png"
-										alt="course" />
-								</div>
-							</div>
-						</div>
-						<!-- Right side: Course Details -->
-						<div class="col-lg-7 d-flex">
-							<div>
-								<h3 class="mb-2" id="quickViewTitleCourse"></h3>
-								<div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mb-3">
-									<ul class="list-inline mb-2 mb-sm-0">
-										<li class="list-inline-item h4 fw-light mb-0 mt-4 dark-blue">
-											<span id="quickViewPrice"></span> VNĐ
-										</li>
-									</ul>
-								</div>
-								<div class="mb-2 mt-4">
-									<span class="text-muted h5">Thời gian hoàn thành khóa học: 
-										<span id="quickViewDuration"></span>
-									</span>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<span class="text-color-custom mt-3 h4">Mô tả:</span>
-							<p class="mb-2 mt-2 text-align-justify h5" id="quickViewDescription"></p>
-							<hr class="m-sm-2"/>
-							<ul class="list-inline d-flex justify-content-center align-items-center mt-3">
-								<li class="list-inline-item">
-									<a href="#" id="quickViewContinue">
-										<button class="btn2-custom btn-lg mb-1" type="button">
-											Tiếp tục học
-										</button>
-									</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content border-radius-cus">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Left side: Image -->
+                        <div class="col-lg-5">
+                            <div class="owl-carousel owl-theme owl-dots-modern" data-slider-id="1">
+                                <div>
+                                    <img class="img-fluid img-custom" id="quickViewImage" alt="course" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Right side: Course Details -->
+                        <div class="col-lg-7 d-flex">
+                            <div>
+                                <h3 class="mb-2" id="quickViewTitleCourse"></h3>
+                                <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mb-3">
+                                    <ul class="list-inline mb-2 mb-sm-0">
+                                        <li class="list-inline-item h4 fw-light mb-0 mt-4 dark-blue">
+                                            <span id="quickViewPrice"></span> VNĐ
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="mb-2 mt-4">
+                                    <span class="text-muted h5">Thời gian hoàn thành khóa học: 
+                                        <span id="quickViewDuration"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span class="text-color-custom mt-3 h4">Mô tả:</span>
+                            <p class="mb-2 mt-2 text-align-justify h5" id="quickViewDescription"></p>
+                            <hr class="m-sm-2"/>
+                            <ul class="list-inline d-flex justify-content-center align-items-center mt-3">
+                                <li class="list-inline-item">
+                                    <a id="quickViewContinue" href="#">
+                                        <button class="btn2-custom btn-lg mb-1" type="button">
+                                            Tiếp tục học
+                                        </button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 	<!-- ***** Footer Area Start ***** -->
 	<div th:insert="~{decorators/footers :: footer}"></div>
@@ -431,88 +435,59 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" type="application/javascript"></script>
 
 	<script>
-		// Xử lý preloader
-		$(window).on('load', function() {
-			$('#js-preloader').addClass('loaded');
-			setTimeout(function() {
-				$('#js-preloader').fadeOut('slow');
-			}, 500);
-		});
+	// Xử lý preloader
+    $(window).on('load', function() {
+        $('#js-preloader').addClass('loaded');
+        setTimeout(function() {
+            $('#js-preloader').fadeOut('slow');
+        }, 500);
+    });
 
-		// Nếu trang đã load xong, ẩn preloader ngay lập tức
-		if (document.readyState === 'complete') {
-			$('#js-preloader').addClass('loaded');
-			setTimeout(function() {
-				$('#js-preloader').fadeOut('slow');
-			}, 500);
-		}
-	</script>
+    // Nếu trang đã load xong, ẩn preloader ngay lập tức
+    if (document.readyState === 'complete') {
+        $('#js-preloader').addClass('loaded');
+        setTimeout(function() {
+            $('#js-preloader').fadeOut('slow');
+        }, 500);
+    }
 
-	<!-- 
-	<script>
-	function submitEditForm() {
-		const form = document.getElementById("editProfileForm");
-		const jwtToken = localStorage.getItem("jwt");
+    // Quick View Modal Script
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.quick-view-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const courseId = this.getAttribute('data-course-id');
+                const courseTitle = this.getAttribute('data-course-title');
+                const courseDescription = this.getAttribute('data-course-description');
+                const coursePrice = this.getAttribute('data-course-price');
+                const courseImage = this.getAttribute('data-course-image');
+                const courseDuration = this.getAttribute('data-course-duration');
 
-		if (!jwtToken) {
-			alert("Vui lòng đăng nhập để cập nhật thông tin.");
-			window.location.href = "/login";
-			return;
-		}
+                // Populate the modal with course data
+                document.getElementById('quickViewTitleCourse').textContent = courseTitle;
+                document.getElementById('quickViewDescription').textContent = courseDescription;
+                document.getElementById('quickViewPrice').textContent = coursePrice;
+                document.getElementById('quickViewImage').src = courseImage || '/path/to/default-image.jpg';
+                document.getElementById('quickViewDuration').textContent = courseDuration;
 
-		// Prepare form data
-		const formData = new FormData(form);
-		const data = {};
-		formData.forEach((value, key) => {
-			data[key] = value;
-		});
+                // Update Continue Learning link with course ID
+                const continueLink = document.getElementById('quickViewContinue');
+                continueLink.href = `/course/detail/${courseId}`;
+            });
+        });
 
-		// Send data to the server
-		fetch("/profile/update", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"Authorization": `Bearer ${jwtToken}`,
-			},
-			body: JSON.stringify(data),
-		})
-		.then((response) => {
-			if (response.ok) {
-				alert("Cập nhật thông tin thành công!");
-				window.location.reload();
-			} else {
-				throw new Error("Cập nhật thất bại.");
-			}
-		})
-		.catch((error) => {
-			console.error("Error updating profile:", error);
-			alert("Có lỗi xảy ra. Vui lòng thử lại.");
-		});
-	}
-
-	// Quick View Modal Script
-	document.querySelectorAll('.quick-view-btn').forEach(button => {
-		button.addEventListener('click', function() {
-			const courseId = this.getAttribute('data-course-id');
-			const courseTitle = this.getAttribute('data-course-title');
-			const courseDescription = this.getAttribute('data-course-description');
-			const coursePrice = this.getAttribute('data-course-price');
-			const courseDuration = this.getAttribute('data-course-duration');
-
-			// Populate the modal with course data
-			document.getElementById('quickViewTitleCourse').textContent = courseTitle;
-			document.getElementById('quickViewDescription').textContent = courseDescription;
-			document.getElementById('quickViewPrice').textContent = coursePrice;
-			document.getElementById('quickViewImage').src = courseImage;
-			document.getElementById('quickViewDuration').textContent = courseDuration;
-
-			// Update Continue Learning link with course ID
-			const continueLink = document.getElementById('quickViewContinue');
-			continueLink.href = `/course/${courseId}`;
-		});
-	});
-	</script>
-	-->
+        // Clear modal data when hidden
+        const modal = document.getElementById('quickViewModal');
+        modal.addEventListener('hidden.bs.modal', function () {
+            document.getElementById('quickViewTitleCourse').textContent = '';
+            document.getElementById('quickViewDescription').textContent = '';
+            document.getElementById('quickViewPrice').textContent = '';
+            document.getElementById('quickViewImage').src = '';
+            document.getElementById('quickViewDuration').textContent = '';
+            document.getElementById('quickViewContinue').href = '#';
+        });
+    });
+</script>
+	
 
 </body>
 </html>

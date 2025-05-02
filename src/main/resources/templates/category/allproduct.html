@@ -224,10 +224,10 @@
                                 </button>
                             </li>
                                 <li class="list-inline-item">
-	                                <form id="quickViewBuyNowForm" method="POST">
-	                                    <input type="hidden" name="id" id="quickViewCourseId" value="">
-	                                    <button type="submit" class="btn2-custom btn-lg mb-1">Mua Ngay</button>
-	                                </form>
+                                    <form id="quickViewBuyNowForm" method="POST" th:action="@{/course/buy-now}">
+                                        <input type="hidden" name="courseId" id="quickViewCourseId" value="">
+                                        <button type="submit" class="btn2-custom btn-lg mb-1">Mua Ngay</button>
+                                    </form>
                                 </li>
                             </ul>
                         </div>
@@ -254,51 +254,6 @@
 	<script>
         // JavaScript để điền dữ liệu vào modal Quick View
         document.addEventListener('DOMContentLoaded', function () {
-console.log('=== Category Page Loaded ===');
-            
-            // Debug session attributes
-            const success = /*[[${param.success}]]*/ null;
-            const successMessage = /*[[${session.notificationMessage}]]*/ null;
-            const error = /*[[${param.error}]]*/ null;
-            const errorMessage = /*[[${session.error}]]*/ null;
-            console.log('Success:', success);
-            console.log('Success Message:', successMessage);
-            console.log('Error:', error);
-            console.log('Error Message:', errorMessage);
-
-            // Hiển thị thông báo thành công
-            if (success === 'true' && successMessage) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Thành công',
-                    text: successMessage,
-                    timer: 5000,
-                    showConfirmButton: false
-                }).then(() => {
-                    // Xóa session attribute sau khi hiển thị
-                    fetch('/checkout/clear-session', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                    }).catch(error => console.error('Error clearing session:', error));
-                });
-            }
-
-            // Hiển thị thông báo lỗi
-            if (error === 'true' && errorMessage) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi',
-                    text: errorMessage,
-                    timer: 5000,
-                    showConfirmButton: false
-                }).then(() => {
-                    // Xóa session attribute sau khi hiển thị
-                    fetch('/checkout/clear-session', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                    }).catch(error => console.error('Error clearing session:', error));
-                });
-            }
             const quickViewButtons = document.querySelectorAll('.quick-view-btn');
             const modal = document.getElementById('quickViewModal');
 
@@ -364,7 +319,7 @@ console.log('=== Category Page Loaded ===');
 
                     // Cập nhật action của form Mua ngay
                     const buyNowForm = document.getElementById('quickViewBuyNowForm');
-                    buyNowForm.action = `/course/checkout/${courseId}`;
+                    buyNowForm.action = `/course/buy-now`;
 
                     // Cập nhật data-course-id cho nút Thêm vào giỏ hàng
                     const addToCartButton = document.getElementById('quickViewAddToCart');

@@ -147,7 +147,7 @@
 									    </li>
 									</ul>
 
-									<a th:href="@{/checkout}" class="btn btn-dark d-block mt-4 mb-4" th:disabled="${cartItems == null or cartItems.empty}">
+									<a th:href="@{/checkout(source='cart')}" class="btn btn-dark d-block mt-4 mb-4" th:disabled="${cartItems == null or cartItems.empty}">
 										Tiến hành thanh toán<i class="fa fa-chevron-right"></i>
 									</a>
 								</div>
