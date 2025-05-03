@@ -242,49 +242,40 @@
 			<div class="col-lg-8">
 				<div class="tab-content tab-content-section" id="mainTabContent">
 					<!-- Edit Personal Information -->
-					<div class="tab-pane fade show active" id="edit-info"
-						role="tabpanel" aria-labelledby="edit-info-tab">
-						<h5 class="text-uppercase mb-4">Thông tin cá nhân</h5>
-						<form id="editProfileForm" th:action="@{/profile/update}"
-							method="post">
-							<div class="mb-3">
-								<label for="fullName" class="form-lable-cus">Họ và Tên</label> <input
-									type="text" class="form-control" id="fullName" name="fullName"
-									th:value="${user != null ? user.fullname : ''}" required>
-							</div>
-							<div class="mb-3">
-								<label for="email" class="form-lable-cus">Email</label> <input
-									type="email" class="form-control" id="email" name="email"
-									th:value="${user != null ? user.email : ''}" required readonly>
-							</div>
-							<div class="mb-3">
-								<label for="phone" class="form-lable-cus">Số điện thoại</label>
-								<input type="text" class="form-control" id="phone" name="phone"
-									th:value="${user != null ? user.phoneNumber : ''}">
-							</div>
-							<div class="mb-3">
-								<label for="address" class="form-lable-cus">Địa chỉ</label> <input
-									type="text" class="form-control" id="address" name="address"
-									th:value="${user != null ? user.address : ''}">
-							</div>
-							<div class="mb-3">
-								<label for="gender" class="form-lable-cus">Giới tính</label> <select
-									class="form-select" id="gender" name="gender">
-									<option value="" th:selected="${user == null || user.gender == null}">Chọn
-										giới tính</option>
-									<option value="Nam" th:selected="${user != null && user.gender == 'Nam'}">Nam</option>
-									<option value="Nữ" th:selected="${user != null && user.gender == 'Nữ'}">Nữ</option>
-									<option value="Khác" th:selected="${user != null && user.gender == 'Khác'}">Khác</option>
-								</select>
-							</div>
-							<div class="form-buttons mt-5">
-								<button type="button" class="btn btn-secondary"
-									onclick="cancelEditForm()">Hủy</button>
-								<button type="button" class="btn btn-primary"
-									onclick="submitEditForm()">Lưu thay đổi</button>
-							</div>
-						</form>
-					</div>
+					 <div class="tab-pane fade show active" id="edit-info" role="tabpanel" aria-labelledby="edit-info-tab">
+                        <h5 class="text-uppercase mb-4">Thông tin cá nhân</h5>
+                        <form id="editProfileForm" th:action="@{/profile/update}" method="post">
+                            <input type="hidden" name="userID" th:value="${user != null ? user.userID : ''}">
+                            <div class="mb-3">
+                                <label for="fullName" class="form-lable-cus">Họ và Tên</label>
+                                <input type="text" class="form-control" id="fullName" name="fullName" th:value="${user != null ? user.fullname : ''}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-lable-cus">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" th:value="${user != null ? user.email : ''}" required readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-lable-cus">Số điện thoại</label>
+                                <input type="text" class="form-control" id="phone" name="phone" th:value="${user != null ? user.phoneNumber : ''}" pattern="0[0-9]{9}" title="Số điện thoại phải bắt đầu bằng 0 và có 10 chữ số">
+                            </div>
+                            <div class="mb-3">
+                                <label for="address" class="form-lable-cus">Địa chỉ</label>
+                                <input type="text" class="form-control" id="address" name="address" th:value="${user != null ? user.address : ''}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="gender" class="form-lable-cus">Giới tính</label>
+                                <select class="form-select" id="gender" name="gender" required>
+                                    <option value="MALE" th:selected="${user != null && user.gender == 'MALE'}">Nam</option>
+                                    <option value="FEMALE" th:selected="${user != null && user.gender == 'FEMALE'}">Nữ</option>
+                                    <option value="OTHER" th:selected="${user != null && user.gender == 'OTHER'}">Khác</option>
+                                </select>
+                            </div>
+                            <div class="form-buttons mt-5">
+                                <button type="button" class="btn btn-secondary" onclick="cancelEditForm()">Hủy</button>
+                                <button type="button" class="btn btn-primary" onclick="submitEditForm()">Lưu thay đổi</button>
+                            </div>
+                        </form>
+                    </div>
 
 					<!-- Change Password -->
 					<div class="tab-pane fade" id="change-password" role="tabpanel"
@@ -320,50 +311,66 @@
 					<div class="tab-pane fade" id="enrolled-courses" role="tabpanel" aria-labelledby="enrolled-courses-tab">
                         <h5 class="text-uppercase mb-4">Khóa học đã đăng ký</h5>
                         <div class="row">
-                            <div th:if="${enrolledCourses == null or enrolledCourses.isEmpty()}" class="col-12 text-center">
-                                <p>Bạn chưa đăng ký khóa học nào.</p>
-                            </div>
-                            <div class="col-xl-4 col-lg-5 col-sm-6" th:each="course : ${enrolledCourses}">
-                                <div class="product shadow-custom">
-                                    <div class="product-image">
-                                        <img class="img-fluid img-custom"
-                                            th:src="${course.image != null ? course.image : '/path/to/default-image.jpg'}"
-                                            alt="course image" />
-                                        <div class="product-hover-overlay">
-                                            <a class="product-hover-overlay-link" th:href="@{/course/detail/{id}(id=${course.courseID})}"></a>
-                                            <div class="product-hover-overlay-buttons">
-                                                <a class="btn btn-continue28tech btn-buy" th:href="@{/course/detail/{id}(id=${course.courseID})}">
-                                                    <i class="fas fa-play-circle"></i>
-                                                </a>
-                                                <a class="btn btn-detail28tech btn-buy quick-view-btn"
-                                                    href="#"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#quickViewModal"
-                                                    th:data-course-id="${course.courseID}"
-                                                    th:data-course-title="${course.title}"
-                                                    th:data-course-description="${course.description}"
-                                                    th:data-course-price="${course.formattedPrice}"
-                                                    th:data-course-image="${course.image != null ? course.image : '/path/to/default-image.jpg'}"
-                                                    th:data-course-duration="${course.formattedDuration}">
-                                                    <i class="fa fa-search"></i>
-                                                </a>
-											</div>
-										</div>
-									</div>
-									<div class="px-3 py-3">
-										<h3 class="h6 text-uppercase mb-1">
-                                            <a class="text-dark" th:href="@{/course/detail/{id}(id=${course.courseID})}" th:text="${course.title}"></a>
-                                        </h3>
-                                        <span class="text-muted" th:text="${course.formattedPrice}"></span>
-                                        <div th:if="${course.orderDate != null}" class="mt-2">
-                                            <small class="text-muted">Ngày đăng ký: 
-                                                <span th:text="${#temporals.format(course.orderDate, 'dd/MM/yyyy')}"></span>
-                                            </small>
+					        <div th:if="${orders == null or orders.isEmpty()}" class="col-12 text-center">
+					            <p>Bạn chưa có đơn hàng nào.</p>
+					        </div>
+					        <div class="col-12" th:each="order : ${orders}">
+					            <div class="card mb-3 shadow-custom">
+					                <div class="card-header">
+					                    <h6 class="mb-0">
+					                        Đơn hàng #<span th:text="${order.orderID}"></span> - 
+					                        Ngày đặt: <span th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}"></span> - 
+					                        Tổng tiền: <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span> - 
+					                        Trạng thái: <span th:switch="${order.orderStatus}">
+					                            <span th:case="'CONFIRM'">Đã xác nhận</span>
+					                            <span th:case="'PENDING'">Đang chờ xác nhận</span>
+					                            <span th:case="'CANCEL'">Đã hủy</span>
+					                            <span th:case="*">Không xác định</span>
+					                        </span>
+					                    </h6>
+					                </div>
+					                <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-xl-4 col-lg-5 col-sm-6" th:each="detail : ${order.orderDetails}">
+                                                <div class="product shadow-custom">
+                                                    <div class="product-image">
+                                                        <img class="img-fluid img-custom"
+                                                             th:src="${detail.course.image != null ? detail.course.image : '/path/to/default-image.jpg'}"
+                                                             alt="course image" />
+                                                        <div class="product-hover-overlay">
+                                                            <a class="product-hover-overlay-link" th:href="@{/course/detail/{id}(id=${detail.course.courseID})}"></a>
+                                                            <div class="product-hover-overlay-buttons">
+                                                                <a class="btn btn-continue28tech btn-buy" th:href="@{/course/detail/{id}(id=${detail.course.courseID})}">
+                                                                    <i class="fas fa-play-circle"></i>
+                                                                </a>
+                                                                <a class="btn btn-detail28tech btn-buy quick-view-btn"
+                                                                   href="#"
+                                                                   data-bs-toggle="modal"
+                                                                   data-bs-target="#quickViewModal"
+                                                                   th:data-course-id="${detail.course.courseID}"
+                                                                   th:data-course-title="${detail.course.title}"
+                                                                   th:data-course-description="${detail.course.description}"
+                                                                   th:data-course-price="${detail.course.formattedPrice}"
+                                                                   th:data-course-image="${detail.course.image != null ? detail.course.image : '/path/to/default-image.jpg'}"
+                                                                   th:data-course-duration="${detail.course.formattedDuration}">
+                                                                    <i class="fa fa-search"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="px-3 py-3">
+                                                        <h3 class="h6 text-uppercase mb-1">
+                                                          	<a class="text-dark" th:href="@{/course/detail/{id}(id=${detail.course.courseID})}" th:text="${detail.course.title}"></a>
+                                                        </h3>
+                                                        <span class="text-muted" th:text="${detail.course.formattedPrice}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-									</div>
-								</div>
-							</div>
-						</div>
+                                    </div>
+					            </div>
+					        </div>
+    					</div>
 					</div>
 				</div>
 			</div>
@@ -394,7 +401,7 @@
                                 <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mb-3">
                                     <ul class="list-inline mb-2 mb-sm-0">
                                         <li class="list-inline-item h4 fw-light mb-0 mt-4 dark-blue">
-                                            <span id="quickViewPrice"></span> VNĐ
+                                            <span id="quickViewPrice"></span>
                                         </li>
                                     </ul>
                                 </div>
@@ -435,58 +442,157 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" type="application/javascript"></script>
 
 	<script>
-	// Xử lý preloader
-    $(window).on('load', function() {
-        $('#js-preloader').addClass('loaded');
-        setTimeout(function() {
-            $('#js-preloader').fadeOut('slow');
-        }, 500);
-    });
+        // Xử lý preloader
+        $(window).on('load', function() {
+            $('#js-preloader').addClass('loaded');
+            setTimeout(function() {
+                $('#js-preloader').fadeOut('slow');
+            }, 500);
+        });
 
-    // Nếu trang đã load xong, ẩn preloader ngay lập tức
-    if (document.readyState === 'complete') {
-        $('#js-preloader').addClass('loaded');
-        setTimeout(function() {
-            $('#js-preloader').fadeOut('slow');
-        }, 500);
-    }
+        // Nếu trang đã load xong, ẩn preloader ngay lập tức
+        if (document.readyState === 'complete') {
+            $('#js-preloader').addClass('loaded');
+            setTimeout(function() {
+                $('#js-preloader').fadeOut('slow');
+            }, 500);
+        }
 
-    // Quick View Modal Script
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.quick-view-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const courseId = this.getAttribute('data-course-id');
-                const courseTitle = this.getAttribute('data-course-title');
-                const courseDescription = this.getAttribute('data-course-description');
-                const coursePrice = this.getAttribute('data-course-price');
-                const courseImage = this.getAttribute('data-course-image');
-                const courseDuration = this.getAttribute('data-course-duration');
+        // Quick View Modal Script
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.quick-view-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const courseId = this.getAttribute('data-course-id');
+                    const courseTitle = this.getAttribute('data-course-title');
+                    const courseDescription = this.getAttribute('data-course-description');
+                    const coursePrice = this.getAttribute('data-course-price');
+                    const courseImage = this.getAttribute('data-course-image');
+                    let courseDuration = this.getAttribute('data-course-duration');
 
-                // Populate the modal with course data
-                document.getElementById('quickViewTitleCourse').textContent = courseTitle;
-                document.getElementById('quickViewDescription').textContent = courseDescription;
-                document.getElementById('quickViewPrice').textContent = coursePrice;
-                document.getElementById('quickViewImage').src = courseImage || '/path/to/default-image.jpg';
-                document.getElementById('quickViewDuration').textContent = courseDuration;
+                    if (!courseDuration || courseDuration === 'Không xác định') {
+                        courseDuration = 'Không xác định';
+                    }
 
-                // Update Continue Learning link with course ID
-                const continueLink = document.getElementById('quickViewContinue');
-                continueLink.href = `/course/detail/${courseId}`;
+                    document.getElementById('quickViewTitleCourse').textContent = courseTitle;
+                    document.getElementById('quickViewDescription').textContent = courseDescription;
+                    document.getElementById('quickViewPrice').textContent = coursePrice;
+                    document.getElementById('quickViewImage').src = courseImage || '/assets/images/default-course.jpg';
+                    document.getElementById('quickViewDuration').textContent = courseDuration;
+
+                    const continueLink = document.getElementById('quickViewContinue');
+                    continueLink.href = `/course/detail/${courseId}`;
+                });
+            });
+
+            const modal = document.getElementById('quickViewModal');
+            modal.addEventListener('hidden.bs.modal', function () {
+                document.getElementById('quickViewTitleCourse').textContent = '';
+                document.getElementById('quickViewDescription').textContent = '';
+                document.getElementById('quickViewPrice').textContent = '';
+                document.getElementById('quickViewImage').src = '';
+                document.getElementById('quickViewDuration').textContent = '';
+                document.getElementById('quickViewContinue').href = '#';
             });
         });
 
-        // Clear modal data when hidden
-        const modal = document.getElementById('quickViewModal');
-        modal.addEventListener('hidden.bs.modal', function () {
-            document.getElementById('quickViewTitleCourse').textContent = '';
-            document.getElementById('quickViewDescription').textContent = '';
-            document.getElementById('quickViewPrice').textContent = '';
-            document.getElementById('quickViewImage').src = '';
-            document.getElementById('quickViewDuration').textContent = '';
-            document.getElementById('quickViewContinue').href = '#';
-        });
-    });
-</script>
+        // Hàm xử lý nút Hủy trong form thông tin cá nhân
+        function cancelEditForm() {
+            document.getElementById('editProfileForm').reset();
+            Swal.fire({
+                icon: 'info',
+                title: 'Hủy chỉnh sửa',
+                text: 'Các thay đổi đã bị hủy.',
+                confirmButtonText: 'OK'
+            });
+        }
+
+        // Hàm xử lý nút Lưu thay đổi trong form thông tin cá nhân
+        function submitEditForm() {
+            const form = document.getElementById('editProfileForm');
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const gender = document.getElementById('gender').value;
+
+            // Kiểm tra họ và tên
+            if (!fullName) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Họ và tên không được để trống!',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Kiểm tra số điện thoại (nếu có)
+            if (phone && !/^0[0-9]{9}$/.test(phone)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Số điện thoại phải bắt đầu bằng 0 và có 10 chữ số!',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Kiểm tra giới tính
+            if (!gender) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Vui lòng chọn giới tính!',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Gửi form qua AJAX
+            $.ajax({
+                url: form.action,
+                type: 'POST',
+                data: $(form).serialize(),
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công',
+                        text: 'Thông tin cá nhân đã được cập nhật!',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '/profile';
+                    });
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: xhr.responseText || 'Đã xảy ra lỗi khi cập nhật thông tin!',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        }
+
+        // Hàm xử lý nút Hủy trong form đổi mật khẩu
+        function cancelChangePasswordForm() {
+            document.getElementById('changePasswordForm').reset();
+            Swal.fire({
+                icon: 'info',
+                title: 'Hủy chỉnh sửa',
+                text: 'Các thay đổi mật khẩu đã bị hủy.',
+                confirmButtonText: 'OK'
+            });
+        }
+
+        // Hàm xử lý nút Lưu thay đổi trong form đổi mật khẩu
+        function submitChangePasswordForm() {
+            Swal.fire({
+                icon: 'info',
+                title: 'Chưa triển khai',
+                text: 'Chức năng đổi mật khẩu chưa được triển khai!',
+                confirmButtonText: 'OK'
+            });
+        }
+    </script>
 	
 
 </body>

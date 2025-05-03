@@ -184,14 +184,26 @@ public class UserRepository {
             throw e;
         }
     }
-    public void updateUserProfile(int userId, String fullname, String email, String phoneNumber) {
-        String sql = "UPDATE users SET Fullname = ?, Email = ?, PhoneNumber = ?, UpdateDate = ? WHERE UserID = ?";
+    public void updateUser(users user) {
+        String sql = "UPDATE users SET fullname = ?, phoneNumber = ?, address = ?, gender = ?, updateDate = ? WHERE userID = ?";
         try {
-            jdbcTemplate.update(sql, fullname, email, phoneNumber, LocalDateTime.now(), userId);
-            logger.info("Cập nhật hồ sơ người dùng thành công cho userId: {}", userId);
+            int rows = jdbcTemplate.update(sql, 
+                user.getFullname(),
+                user.getPhoneNumber(),
+                user.getAddress(),
+                user.getGender(),
+                LocalDateTime.now(),
+                user.getUserID()
+            );
+            if (rows > 0) {
+                logger.info("Cập nhật thông tin người dùng thành công: userID={}", user.getUserID());
+            } else {
+                logger.warn("Không tìm thấy người dùng để cập nhật: userID={}", user.getUserID());
+                throw new RuntimeException("Không tìm thấy người dùng để cập nhật");
+            }
         } catch (Exception e) {
-            logger.error("Lỗi khi cập nhật hồ sơ người dùng cho userId {}: {}", userId, e.getMessage());
-            throw new RuntimeException("Không thể cập nhật hồ sơ người dùng: " + e.getMessage());
+            logger.error("Lỗi khi cập nhật thông tin người dùng: userID={}, lỗi: {}", user.getUserID(), e.getMessage());
+            throw new RuntimeException("Lỗi khi cập nhật thông tin: " + e.getMessage());
         }
     }
 } 

@@ -23,8 +23,28 @@ public class course {
     
     private String categoryName;
     
+    private LocalDateTime orderDate;
+    private String orderStatus;
     
-    public String getFormattedPrice() {
+    
+    
+    public LocalDateTime getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(LocalDateTime orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+
+	public String getFormattedPrice() {
 		return formattedPrice;
 	}
 
