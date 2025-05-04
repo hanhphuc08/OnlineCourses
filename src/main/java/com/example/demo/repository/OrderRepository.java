@@ -51,8 +51,7 @@ public class OrderRepository {
         course.setDescription(rs.getString("Description"));
         course.setPrices(rs.getBigDecimal("Prices"));
         course.setImage(rs.getString("Image"));
-        Timestamp durationTimestamp = rs.getTimestamp("Duration");
-        course.setDuration(durationTimestamp != null ? durationTimestamp.toLocalDateTime() : null);
+        
         detail.setCourse(course);
 
         return detail;
@@ -113,9 +112,9 @@ public class OrderRepository {
         String sql = "SELECT * FROM orders WHERE OrderID = ?";
         order order = jdbcTemplate.queryForObject(sql, new Object[]{orderId}, this::mapRowToOrder);
 
-        String detailSql = "SELECT od.*, c.CourseID, c.Title, c.Description, c.Prices, c.Image " +
-                          "FROM orderDetail od JOIN course c ON od.CourseID = c.CourseID " +
-                          "WHERE od.OrderID = ?";
+        String detailSql = "SELECT od.*, c.CourseID, c.Title, c.Description, c.Prices, c.Image, c.Duration " +
+                "FROM orderDetail od JOIN course c ON od.CourseID = c.CourseID " +
+                "WHERE od.OrderID = ?";
         List<orderDetail> details = jdbcTemplate.query(detailSql, new Object[]{orderId}, this::mapRowToOrderDetail);
         order.setOrderDetails(details);
 
