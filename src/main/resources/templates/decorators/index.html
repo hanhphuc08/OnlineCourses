@@ -196,7 +196,9 @@
 			</div>
 		</div>
 
-		<div id="blog" class="our-blog section">
+	index
+
+<div id="blog" class="our-blog section">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-6 wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.25s">
@@ -217,54 +219,35 @@
 							<div class="info">
 								<div class="inner-content">
 									<ul>
-										<li><i class="fa fa-calendar"></i> 18 Nov 2024</li>
-										<li><i class="fa fa-users"></i>100 Học Viên</li></br>
-										<li><i class="fa fa-folder"></i> 6 Tháng</li>
-									</ul>
-									<a href="#">
-										<h4>Ngữ pháp Tiếng Anh tinh gọn (2025)</h4>
-									</a>
-									<p>Ngữ pháp Tiếng Anh tinh gọn (2025): Bao gồm những chủ điểm Ngữ pháp quan trọng nhất, đã xuất hiện trong đề thi minh họa môn Tiếng Anh năm 2025 (Công bố ngày 18/10/2024). Khóa học giúp em nhanh chóng làm chủ và dành trọn điểm các câu hỏi Ngữ pháp trong đề thi chính thức năm 2025</p>
-									<div class="main-blue-button">
-										<a href="#">Tìm hiểu thêm</a>
-									</div>
+                                        <li><i class="fa fa-calendar"></i> <span th:text="${#temporals.format(courses[0].createAt, 'dd MMM yyyy')}">18 Nov 2024</span></li>
+                                        <li><i class="fa fa-users"></i> <span th:text="${courses[0].quantity != null ? courses[0].quantity : 0}">100 Học Viên</span></li>
+                                        <li><i class="fa fa-folder"></i> <span th:text="${courses[0].formattedDuration != null ? courses[0].formattedDuration : 'Không xác định'}">6 Tháng</span></li>
+                                    </ul>
+									<a th:href="@{/course/detail/{id}(id=${courses[0].courseID})}">
+                                        <h4 th:text="${courses[0].title != null ? courses[0].title : 'Khóa học không tên'}">Ngữ pháp Tiếng Anh tinh gọn (2025)</h4>
+                                    </a>
+                                    <p th:text="${courses[0].description != null ? courses[0].description : 'Mô tả không có'}">Ngữ pháp Tiếng Anh tinh gọn (2025): Bao gồm những chủ điểm Ngữ pháp quan trọng nhất...</p>
+                                    <div class="main-blue-button">
+                                        <a th:href="@{/course/detail/{id}(id=${courses[0].courseID})}">Tìm hiểu thêm</a>
+                                    </div>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.25s">
-						<div class="right-list">
-							<ul>
-								<li>
-									<div class="left-content align-self-center">
-										<span><i class="fa fa-calendar"></i>01 Jan 2025</span>
-										<a href="#">
-											<h4>Luyện thi đánh giá năng lực môn Tiếng Anh 2025 (Combo Cấp tốc)</h4>
-										</a>
-										<p>Luyện thi đánh giá năng lực môn Tiếng Anh (2025): Chinh phục bài thi Tiếng Anh trong đề thi Đánh giá năng lực của Đại học Quốc Gia TP.HCM theo chuẩn cấu trúc - mức độ đề thi minh họa năm 2025.</p>
-									</div>
-								</li>
-								<li>
-									<div class="left-content align-self-center">
-										<span><i class="fa fa-calendar"></i> 20 Mar 2025</span>
-										<a href="#">
-											<h4>Luyện toàn diện các dạng câu hỏi trong đề thi (2025)</h4>
-										</a>
-										<p>Nâng cấp vốn từ vựng trọng điểm theo chủ đề quan trọng nhất và tự tin giải quyết các dạng bài trong đề thi thông qua các bài giảng kĩ lưỡng cung cấp kiến thức, kĩ năng, mẹo làm bài hiệu quả nhất.</p>
-									</div>
-								</li>
-								<li>
-									<div class="left-content align-self-center">
-										<span><i class="fa fa-calendar"></i> 01 May 2025</span>
-										<a href="#">
-											<h4>Ngân hàng tốt nghiệp THPT 2025</h4>
-										</a>
-										<p>Khóa học cung cấp các Bộ đề thi kiểm tra định kì trên lớp: Bộ đề thi thử tốt nghiệp THPT 2025 theo chuẩn cấu trúc đề minh họa. Tất cả đề thi trong khóa học đều được có lời giải chi tiết 100%.</p>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
+                        <div class="right-list">
+                            <ul>
+                                <li th:each="course, iterStat : ${courses}" th:if="${iterStat.index > 0 and iterStat.index <= 3}">
+                                    <div class="left-content align-self-center">
+                                        <span><i class="fa fa-calendar"></i> <span th:text="${#temporals.format(course.createAt, 'dd MMM yyyy')}">01 Jan 2025</span></span>
+                                        <a th:href="@{/course/detail/{id}(id=${course.courseID})}">
+                                            <h4 th:text="${course.title != null ? course.title : 'Khóa học không tên'}">Luyện thi đánh giá năng lực môn Tiếng Anh 2025</h4>
+                                        </a>
+                                        <p th:text="${course.description != null ? course.description : 'Mô tả không có'}">Luyện thi đánh giá năng lực môn Tiếng Anh (2025): Chinh phục bài thi...</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
 				</div>
 			</div>
 		</div>

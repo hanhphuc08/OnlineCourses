@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,5 +142,67 @@ public class CourseRepository {
             throw new RuntimeException("Không thể giảm số lượng khóa học: Khóa học không tồn tại hoặc đã hết!");
         }
     }
+
+	// search by keyword, split and search in title/description
+		public List<course> searchByKeyword(String keyword) {
+		    // Tách từ khóa thành các từ riêng lẻ và chuẩn bị mẫu tìm kiếm
+		    String[] keywords = keyword.trim().toLowerCase().split("\\s+");
+		    List<String> params = new ArrayList<>();
+		    StringBuilder whereClause = new StringBuilder();
+
+		    // Xây dựng điều kiện WHERE động
+		    for (int i = 0; i < keywords.length; i++) {
+		        if (i > 0) {
+		            whereClause.append(" AND ");
+		        }
+		        whereClause.append("(LOWER(c.Title) LIKE ? OR LOWER(c.Description) LIKE ?)");
+		        params.add("%" + keywords[i] + "%");
+		        params.add("%" + keywords[i] + "%");
+		    }
+		    String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, " +
+		             "cat.CreateDate, cat.UpdateDate " +
+		             "FROM course c " +
+		             "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
+		             "WHERE " + whereClause.toString() + " " +
+		             "ORDER BY c.CreateAt DESC";
+
+		    try {
+		        return jdbcTemplate.query(sql, params.toArray(), this::mapRowToCourse);
+		    } catch (Exception e) {
+		        throw new RuntimeException("Error searching courses with keyword '" + keyword + "': " + e.getMessage());
+		    }
+		}
+		
+		// Get latest courses, sorted by CreateAt descending, limited to a specific number
+		public List<course> findLatestCourses(int limit) {
+		    String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, cat.CreateDate, cat.UpdateDate " +
+		                 "FROM course c " +
+		                 "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
+		                 "ORDER BY c.CreateAt DESC " +
+		                 "LIMIT ?";
+		    try {
+		        return jdbcTemplate.query(sql, new Object[]{limit}, this::mapRowToCourse);
+		    } catch (Exception e) {
+		        throw new RuntimeException("Error fetching latest courses: " + e.getMessage());
+		    }
+		}
+		
+		 // get courses CategoryTypeId
+	    public List<course> findCoursesByCategoryTypeId(int categoryTypeId) {
+	        String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, " +
+	                    "cat.CreateDate, cat.UpdateDate " +
+	                    "FROM course c " +
+	                    "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
+	                    "LEFT JOIN category_type ct ON cat.CategoryTypeID = ct.CategoryTypeID " +
+	                    "WHERE ct.CategoryTypeID = ?";
+	        
+	        try {
+	            return jdbcTemplate.query(sql, new Object[]{categoryTypeId}, this::mapRowToCourse);
+	        } catch (Exception e) {
+	            throw new RuntimeException("Error fetching courses for CategoryTypeID " + 
+	                                     categoryTypeId + ": " + e.getMessage());
+	        }
+	    }
+
     
 }

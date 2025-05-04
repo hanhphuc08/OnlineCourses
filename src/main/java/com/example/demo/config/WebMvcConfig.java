@@ -10,7 +10,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         // Map các URL đến các view tương ứng
-        registry.addViewController("/").setViewName("decorators/index");
+        // registry.addViewController("/").setViewName("decorators/index");
         registry.addViewController("/home").setViewName("decorators/index");
         registry.addViewController("/login").setViewName("commons/login");
         registry.addViewController("/profile").setViewName("commons/profile");

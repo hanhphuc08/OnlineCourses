@@ -116,9 +116,12 @@
 								class="py-2 navbar-search-form d-flex align-items-center">
 								<input type="text" name="keyword"
 									class="form-control form-control-sm me-3"
-									placeholder="Tìm kiếm..." aria-label="Search" autocomplete="off"> <i
-									class="fa fa-search nav-link"></i>
-          </form>
+									placeholder="Tìm kiếm..." aria-label="Search"
+									autocomplete="off">
+								<button type="submit" class="btn p-0">
+									<i class="fa fa-search nav-link"></i>
+								</button>
+							</form>
 						</li>
 						<li class="py-1 nav-item">
 							<a class="nav-link" th:href="@{/cart}" sec:authorize="isAuthenticated()">

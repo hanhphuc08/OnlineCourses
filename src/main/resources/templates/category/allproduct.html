@@ -27,9 +27,15 @@
 <link rel="stylesheet" th:href="@{/assets/css/custom.0a822280.css}">
 <link rel="stylesheet"
 	th:href="@{/assets/css/templatemo-space-dynamic.css}">
-	
-<link th:href="@{/vendor/sweetalert2/sweetalert2.min.css}" rel="stylesheet">
 
+<link th:href="@{/vendor/sweetalert2/sweetalert2.min.css}"
+	rel="stylesheet">
+
+<style>
+.width-cus {
+	min-height: 160px
+}
+</style>
 </head>
 
 
@@ -67,50 +73,58 @@
 		<div class="px-xl-3">
 			<div class="row">
 				<!-- Sidebar -->
-                <div class="sidebar col-xl-3 col-lg-4 pr-xl-5 order-lg-1">
-                    <div class="sidebar-block">
-                        <div class="expand-lg collapse show" id="categoriesMenu">
-                            <div class="nav nav-pills flex-column mt-4 mt-lg-0">
-                                <a class="nav-link d-flex justify-content-between mb-2 hover-custom" th:classappend="${selectedTypeId == 0 && selectedCategoryId == 0} ? 'active'" th:href="@{/category}">
-                                    <span><i class="fa-solid fa-house"></i> Trang chủ</span>
-                                </a>
+				<div class="sidebar col-xl-3 col-lg-4 pr-xl-5 order-lg-1">
+					<div class="sidebar-block">
+						<div class="expand-lg collapse show" id="categoriesMenu">
+							<div class="nav nav-pills flex-column mt-4 mt-lg-0">
+								<a
+									class="nav-link d-flex justify-content-between mb-2 hover-custom"
+									th:classappend="${selectedTypeId == 0 && selectedCategoryId == 0} ? 'active'"
+									th:href="@{/category}"> <span><i
+										class="fa-solid fa-house"></i> Trang chủ</span>
+								</a>
 
-                                <!-- Lặp qua danh sách categoryTypes -->
-                                <div th:each="type : ${categoryTypes}">
-                                    <a class="nav-link d-flex justify-content-between mb-2 hover-custom" 
-                                       th:classappend="${selectedTypeId == type.categoryTypeID} ? 'active'" 
-                                       th:href="@{/category/type/{id}(id=${type.categoryTypeID})}">
-                                        <span th:text="${type.categoryTypeName}">Category Type</span>
-                                    </a>
-                                    <div class="nav nav-pills flex-column ms-3">
-                                        <!-- Lặp qua danh sách categories của mỗi categoryType -->
-                                        <a th:each="category : ${type.categories}" 
-                                           class="nav-link mb-2 hover-custom" 
-                                           th:classappend="${selectedCategoryId == category.categoryID} ? 'active'" 
-                                           th:href="@{/category/{id}(id=${category.categoryID})}"
-                                           th:text="${category.categoryName}">Category</a>
-                                    </div>
-                                </div>
+								<!-- Lặp qua danh sách categoryTypes -->
+								<div th:each="type : ${categoryTypes}">
+									<a
+										class="nav-link d-flex justify-content-between mb-2 hover-custom"
+										th:classappend="${selectedTypeId == type.categoryTypeID} ? 'active'"
+										th:href="@{/category/type/{id}(id=${type.categoryTypeID})}">
+										<span th:text="${type.categoryTypeName}">Category Type</span>
+									</a>
+									<div class="nav nav-pills flex-column ms-3">
+										<!-- Lặp qua danh sách categories của mỗi categoryType -->
+										<a th:each="category : ${type.categories}"
+											class="nav-link mb-2 hover-custom"
+											th:classappend="${selectedCategoryId == category.categoryID} ? 'active'"
+											th:href="@{/category/{id}(id=${category.categoryID})}"
+											th:text="${category.categoryName}">Category</a>
+									</div>
+								</div>
 
-                                <a class="nav-link d-flex justify-content-between mb-2 hover-custom" href="#">
-                                    <span>Cộng đồng</span>
-                                </a>
-                                <div class="nav nav-pills flex-column ms-3">
-                                    <a class="nav-link mb-2 hover-custom" href="#">Link group Facebook</a>
-                                    <a class="nav-link mb-2 hover-custom" href="#">Link group Facebook</a>
-                                </div>
-                                <a class="nav-link d-flex justify-content-between mb-2 hover-custom" href="#">
-                                    <span>Các chính sách</span>
-                                </a>
-                                <div class="nav nav-pills flex-column ms-3">
-                                    <a class="nav-link mb-2 hover-custom" href="#">Hướng dẫn mua hàng</a>
-                                    <a class="nav-link mb-2 hover-custom" href="#">Hướng dẫn kích hoạt khoá học</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Sidebar end -->
+								<a
+									class="nav-link d-flex justify-content-between mb-2 hover-custom"
+									href="#"> <span>Cộng đồng</span>
+								</a>
+								<div class="nav nav-pills flex-column ms-3">
+									<a class="nav-link mb-2 hover-custom" href="#">Link group
+										Facebook</a> <a class="nav-link mb-2 hover-custom" href="#">Link
+										group Facebook</a>
+								</div>
+								<a
+									class="nav-link d-flex justify-content-between mb-2 hover-custom"
+									href="#"> <span>Các chính sách</span>
+								</a>
+								<div class="nav nav-pills flex-column ms-3">
+									<a class="nav-link mb-2 hover-custom" href="#">Hướng dẫn
+										mua hàng</a> <a class="nav-link mb-2 hover-custom" href="#">Hướng
+										dẫn kích hoạt khoá học</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Sidebar end -->
 
 				<div class="products-grid col-xl-9 col-lg-8 order-lg-2">
 					<!-- Hero Content-->
@@ -119,46 +133,77 @@
 							<li class="breadcrumb-item"><a th:href="@{/}"></i>Trang chủ</a></li>
 							<li class="breadcrumb-item active">Khóa học</li>
 						</ol>
-						<h3 class="">
-							COMBO LUYỆN THI 2025 <span class="text-color-custom">DÀNH
-								CHO 2007</span>
+						<h3 th:if="${keyword != null}">
+							Kết quả tìm kiếm cho: <span th:text="${keyword}"></span>
+						</h3>
+						<h3 th:if="${keyword == null}" class="text-uppercase">
+							<!-- Nếu đang xem theo category -->
+							<th:block th:if="${selectedCategoryId > 0}"
+								th:each="type : ${categoryTypes}">
+								<th:block th:each="category : ${type.categories}"
+									th:if="${category.categoryID == selectedCategoryId}">
+									<span th:text="${category.categoryName}"></span>
+								</th:block>
+							</th:block>
+							<!-- Nếu đang xem theo category type -->
+							<th:block th:if="${selectedTypeId > 0}"
+								th:each="type : ${categoryTypes}">
+								<th:block th:if="${type.categoryTypeID == selectedTypeId}">
+									<span th:text="${type.categoryTypeName}"></span>
+								</th:block>
+							</th:block>
+							<!-- Nếu đang ở trang chính -->
+							<th:block
+								th:if="${selectedCategoryId == 0 && selectedTypeId == 0}">
+            TẤT CẢ <span class="text-color-custom">KHÓA HỌC</span>
+							</th:block>
 						</h3>
 					</div>
 					<div class="row">
 						<div th:if="${courses.isEmpty()}" class="col-12 text-center">
-							<p>Không có khóa học nào để hiển thị.</p>
+							<p th:if="${keyword != null}">
+								Không tìm thấy khóa học nào phù hợp với từ khóa "<span
+									th:text="${keyword}"></span>".
+							</p>
+							<p th:if="${keyword == null}">Không có khóa học nào để hiển
+								thị.</p>
+							<a th:if="${keyword != null}" th:href="@{/category}"
+								class="btn btn-primary">Xem tất cả khóa học</a>
 						</div>
 						<!-- product-->
-						<div class="col-xl-3 col-lg-5 col-sm-6" th:each="course : ${courses}">
+						<div class="col-xl-3 col-lg-5 col-sm-6"
+							th:each="course : ${courses}">
 							<div class="product shadow-custom">
 								<div class="product-image">
 									<img class="img-fluid img-custom"
 										th:src="@{https://cdn-main.28tech.com.vn/media/anh-khoa-hoc/anh_dai_dien_khoa_hoc/new/c%C6%A1%20s%E1%BB%9F%20d%E1%BB%AF%20li%E1%BB%87u%20v%C3%A0%20sql.png}"
 										alt="product" />
 									<div class="product-hover-overlay">
-                                        <a class="product-hover-overlay-link" th:href="@{/course/detail/{id}(id=${course.courseID})}"></a>
-                                        <div class="product-hover-overlay-buttons">
-                                           <a class="btn btn-cart28tech btn-buy cart-link" href="#" onclick="handleCartClick(event)">
-                                                <i class="fa fa-shopping-cart"></i>
-                                            </a>
-                                            <a class="btn btn-detail28tech btn-buy quick-view-btn"
-                                                href="#"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#quickViewModal"
-                                                th:data-course-id="${course.courseID}"
-                                                th:data-course-title="${course.title}"
-                                                th:data-course-description="${course.description}"
-                                                th:data-course-price="${course.formattedPrice}"
-                                                th:data-course-image="${course.image}"
-                                                th:data-course-duration="${course.formattedDuration}">
-                                                <i class="fa fa-search"></i>
-                                            </a>
-                                        </div>
-                                    </div>
+										<a class="product-hover-overlay-link"
+											th:href="@{/course/detail/{id}(id=${course.courseID})}"></a>
+										<div class="product-hover-overlay-buttons">
+											<a class="btn btn-cart28tech btn-buy cart-link" href="#"
+												onclick="handleCartClick(event)"> <i
+												class="fa fa-shopping-cart"></i>
+											</a> <a class="btn btn-detail28tech btn-buy quick-view-btn"
+												href="#" data-bs-toggle="modal"
+												data-bs-target="#quickViewModal"
+												th:data-course-id="${course.courseID}"
+												th:data-course-title="${course.title}"
+												th:data-course-description="${course.description}"
+												th:data-course-price="${course.formattedPrice}"
+												th:data-course-image="${course.image}"
+												th:data-course-duration="${course.formattedDuration}"> <i
+												class="fa fa-search"></i>
+											</a>
+										</div>
+									</div>
 								</div>
-								<div class="px-3 py-3">			
+								<div class="px-3 py-3 width-cus">
 									<h3 class="h6 text-uppercase mb-1">
-										<a class="text-dark" th:href="@{/course/detail/{id}(id=${course.courseID})}" th:text="${course.title}"></a>
+										<a class="text-dark"
+											th:href="@{/course/detail/{id}(id=${course.courseID})}"
+											th:text="${course.title}"></a>
 									</h3>
 									<span class="text-muted" th:text="${course.formattedPrice}"></span>
 								</div>
@@ -174,68 +219,78 @@
 
 
 	<!-- QuickView Modal -->
-    <div class="modal fade quickview py-6" id="quickViewModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content border-radius-cus">
-                <div class="modal-header">
-                    
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <!-- Left side: Image or Banner -->
-                        <div class="col-lg-5">
-                            <div class="owl-carousel owl-theme owl-dots-modern" data-slider-id="1">
-                                <div>
-                                	<img id="quickViewImage" class="img-fluid img-custom"
-                                     
-                                     alt="product" />
-                            </div>
-                            </div>
-                        </div>
-                        <!-- Right side: Product Details -->
-                        <div class="col-lg-7 d-flex">
-                            <div>
-                               
-                                <h3 class="mb-2" id="quickViewTitleCourse"></h3>
-                               
-                                <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mb-3">
-                                    <ul class="list-inline mb-2 mb-sm-0">
-                                        <li class="list-inline-item h4 fw-light mb-0 mt-4 dark-blue">
-                                            <span id="quickViewPrice"></span>
-                                        </li>
-                                    </ul>
-                                </div>
-                             
-                                <div class="mb-2 mt-4">
-                                    <span class="text-muted h5">Thời gian hoàn thành khoá hoc: <span id="quickViewDuration"></span></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <span class="text-color-custom mt-3 h4">Mô tả:</span>
-                            <p class="mb-2 mt-2 text-align-justify h5"><span id="quickViewDescription"></span></p>
-                         
-                            <hr class="m-sm-2"></hr>
-                            <ul class="list-inline d-flex justify-content-center align-items-center mt-3">
-                                <li class="list-inline-item">
-                                <button id="quickViewAddToCart" class="btn1-custom btn-lg mb-1" type="button" data-course-id="">
-                                    Thêm vào giỏ hàng
-                                </button>
-                            </li>
-                                <li class="list-inline-item">
-                                    <form id="quickViewBuyNowForm" method="POST" th:action="@{/course/buy-now}">
-                                        <input type="hidden" name="courseId" id="quickViewCourseId" value="">
-                                        <button type="submit" class="btn2-custom btn-lg mb-1">Mua Ngay</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade quickview py-6" id="quickViewModal"
+		tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content border-radius-cus">
+				<div class="modal-header">
+
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<!-- Left side: Image or Banner -->
+						<div class="col-lg-5">
+							<div class="owl-carousel owl-theme owl-dots-modern"
+								data-slider-id="1">
+								<div>
+									<img id="quickViewImage" class="img-fluid img-custom"
+										alt="product" />
+								</div>
+							</div>
+						</div>
+						<!-- Right side: Product Details -->
+						<div class="col-lg-7 d-flex">
+							<div>
+
+								<h3 class="mb-2" id="quickViewTitleCourse"></h3>
+
+								<div
+									class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mb-3">
+									<ul class="list-inline mb-2 mb-sm-0">
+										<li class="list-inline-item h4 fw-light mb-0 mt-4 dark-blue">
+											<span id="quickViewPrice"></span>
+										</li>
+									</ul>
+								</div>
+
+								<div class="mb-2 mt-4">
+									<span class="text-muted h5">Thời gian hoàn thành khoá
+										hoc: <span id="quickViewDuration"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<span class="text-color-custom mt-3 h4">Mô tả:</span>
+							<p class="mb-2 mt-2 text-align-justify h5">
+								<span id="quickViewDescription"></span>
+							</p>
+
+							<hr class="m-sm-2"></hr>
+							<ul
+								class="list-inline d-flex justify-content-center align-items-center mt-3">
+								<li class="list-inline-item">
+									<button id="quickViewAddToCart" class="btn1-custom btn-lg mb-1"
+										type="button" data-course-id="">Thêm vào giỏ hàng</button>
+								</li>
+								<li class="list-inline-item">
+									<form id="quickViewBuyNowForm" method="POST"
+										th:action="@{/course/buy-now}">
+										<input type="hidden" name="courseId" id="quickViewCourseId"
+											value="">
+										<button type="submit" class="btn2-custom btn-lg mb-1">Mua
+											Ngay</button>
+									</form>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!-- ***** Footer Area Start ***** -->
 	<!-- <div th:insert="~{decorators/footers :: footer}"></div> -->
@@ -250,7 +305,7 @@
 	<script th:src="@{/assets/js/imagesloaded.js}"></script>
 	<script th:src="@{/assets/js/custom.js}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	
+
 	<script>
         // JavaScript để điền dữ liệu vào modal Quick View
         document.addEventListener('DOMContentLoaded', function () {
@@ -380,7 +435,7 @@
         
         
     </script>
-	
+
 </body>
 
 </html>

@@ -108,6 +108,7 @@
 					</ul>
 
 					<!-- Tabs Content -->
+					<!-- Tabs Content -->
 					<div class="tab-content mt-3" id="courseTabsContent">
 						<!-- Nội dung Tab -->
 						<div class="tab-pane fade show active" id="content"
@@ -115,7 +116,7 @@
 							<div class="mt-4">
 								<p th:text="${course.description ?: 'Chưa có mô tả khóa học'}">Mô tả khóa học</p>
 								<div th:each="learningPath, iterStat : ${course.learningPaths}">
-								<h5 class="text-danger" th:text="${learningPath.title}">Chuyên đề</h5>
+								<!--  <h5 class="text-danger" th:text="${learningPath.title}">Chuyên đề</h5> -->
 								<ul class="list-unstyled">
 									<li class="mb-3">
 										<div class="d-flex align-items-center">
@@ -127,11 +128,7 @@
 											</div>
 										</div>
 									</li>
-									
-								
 								</ul>
-								<!-- Separator -->
-								<hr class="my-4">
 								
 							</div>
 							</div>

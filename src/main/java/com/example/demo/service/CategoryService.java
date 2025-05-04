@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,19 @@ public class CategoryService {
     public category getCategoryByIdWithCourses(int id) {
         return categoryRepository.findCategoryByIdWithCourses(id);
     }
+    
+	// search
+	public List<course> searchCourses(String keyword) {
+		if (keyword == null || keyword.trim().isEmpty()) {
+			return new ArrayList<>();
+		}
+		return courseRepository.searchByKeyword(keyword);
+	}
+
+	// Get the latest courses
+	public List<course> getLatestCourses(int limit) {
+		return courseRepository.findLatestCourses(limit);
+	}
 	
 
 }
