@@ -335,4 +335,16 @@ public class UserService implements UserDetailsService {
     public void updateUser(users user) {
         userRepository.updateUser(user);
     }
+    
+    public boolean checkPassword(users user, String rawPassword) {
+        logger.info("Checking password for user: {}", user.getEmail());
+        return passwordEncoder.matches(rawPassword, user.getPassword());
+    }
+
+    public void updatePassword(users user, String newPassword) {
+        logger.info("Updating password for user: {}", user.getEmail());
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setUpdateDate(LocalDateTime.now());
+        userRepository.save(user);
+    }
 } 

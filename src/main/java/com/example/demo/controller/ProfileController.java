@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -67,7 +68,6 @@ public class ProfileController {
 	
 	@PostMapping("/profile/update")
     public String updateProfile(
-    		
             @RequestParam("userID") int userID,
             @RequestParam("fullName") String fullName,
             @RequestParam(value = "phone", required = false) String phone,
@@ -114,5 +114,51 @@ public class ProfileController {
             logger.error("Lỗi khi cập nhật thông tin người dùng: {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+	}
+        
+        @PostMapping("/profile/change-password")
+        public ResponseEntity<String> changePassword(
+                @RequestParam("currentPassword") String currentPassword,
+                @RequestParam("newPassword") String newPassword,
+                @RequestParam("confirmNewPassword") String confirmNewPassword,
+                Authentication authentication) {
+            try {
+                if (authentication == null) {
+                    logger.info("Chưa đăng nhập, không thể đổi mật khẩu");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("error:Vui lòng đăng nhập để đổi mật khẩu!");
+                }
+
+                String email = authentication.getName();
+                users user = userService.findByEmailOrPhone(email);
+                if (user == null) {
+                    logger.warn("Không tìm thấy người dùng với email: {}", email);
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("error:Không tìm thấy người dùng!");
+                }
+
+                // Kiểm tra mật khẩu hiện tại
+                if (!userService.checkPassword(user, currentPassword)) {
+                    logger.warn("Mật khẩu hiện tại không đúng cho email: {}", email);
+                    return ResponseEntity.badRequest().body("error:Mật khẩu hiện tại không đúng!");
+                }
+
+                // Kiểm tra mật khẩu mới và xác nhận
+                if (!newPassword.equals(confirmNewPassword)) {
+                    logger.warn("Mật khẩu mới và xác nhận không khớp cho email: {}", email);
+                    return ResponseEntity.badRequest().body("error:Mật khẩu mới và xác nhận không khớp!");
+                }
+
+                // Kiểm tra độ dài mật khẩu mới
+                if (newPassword.length() < 6) {
+                    logger.warn("Mật khẩu mới quá ngắn cho email: {}", email);
+                    return ResponseEntity.badRequest().body("error:Mật khẩu mới phải có ít nhất 6 ký tự!");
+                }
+
+                // Cập nhật mật khẩu
+                userService.updatePassword(user, newPassword);
+                logger.info("Đổi mật khẩu thành công cho email: {}", email);
+                return ResponseEntity.ok("success:Mật khẩu đã được thay đổi thành công!");
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body("error:" + e.getMessage());
+            }
     }
 }

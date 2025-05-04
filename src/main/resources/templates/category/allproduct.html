@@ -176,8 +176,9 @@
 							<div class="product shadow-custom">
 								<div class="product-image">
 									<img class="img-fluid img-custom"
-										th:src="@{https://cdn-main.28tech.com.vn/media/anh-khoa-hoc/anh_dai_dien_khoa_hoc/new/c%C6%A1%20s%E1%BB%9F%20d%E1%BB%AF%20li%E1%BB%87u%20v%C3%A0%20sql.png}"
-										alt="product" />
+                                         th:src="${course.image} ?: 'https://i.imgur.com/default-course.jpg'"
+                                         alt="Course Image" />
+                                         
 									<div class="product-hover-overlay">
 										<a class="product-hover-overlay-link"
 											th:href="@{/course/detail/{id}(id=${course.courseID})}"></a>
@@ -219,6 +220,7 @@
 
 
 	<!-- QuickView Modal -->
+
 	<div class="modal fade quickview py-6" id="quickViewModal"
 		tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
@@ -292,6 +294,70 @@
 		</div>
 	</div>
 
+    <div class="modal fade quickview py-6" id="quickViewModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content border-radius-cus">
+                <div class="modal-header">
+                    
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Left side: Image or Banner -->
+                        <div class="col-lg-5">
+                            <div class="owl-carousel owl-theme owl-dots-modern" data-slider-id="1">
+                                <div>
+                                	<img id="quickViewImage" class="img-fluid img-custom"
+                                         src="https://i.imgur.com/default-course.jpg"
+                                         alt="Course Image" />
+                            </div>
+                            </div>
+                        </div>
+                        <!-- Right side: Product Details -->
+                        <div class="col-lg-7 d-flex">
+                            <div>
+                               
+                                <h3 class="mb-2" id="quickViewTitleCourse"></h3>
+                               
+                                <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mb-3">
+                                    <ul class="list-inline mb-2 mb-sm-0">
+                                        <li class="list-inline-item h4 fw-light mb-0 mt-4 dark-blue">
+                                            <span id="quickViewPrice"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                             
+                                <div class="mb-2 mt-4">
+                                    <span class="text-muted h5">Thời gian hoàn thành khoá hoc: <span id="quickViewDuration"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span class="text-color-custom mt-3 h4">Mô tả:</span>
+                            <p class="mb-2 mt-2 text-align-justify h5"><span id="quickViewDescription"></span></p>
+                         
+                            <hr class="m-sm-2"></hr>
+                            <ul class="list-inline d-flex justify-content-center align-items-center mt-3">
+                                <li class="list-inline-item">
+                                <button id="quickViewAddToCart" class="btn1-custom btn-lg mb-1" type="button" data-course-id="">
+                                    Thêm vào giỏ hàng
+                                </button>
+                            </li>
+                                <li class="list-inline-item">
+                                    <form id="quickViewBuyNowForm" method="POST" th:action="@{/course/buy-now}">
+                                        <input type="hidden" name="courseId" id="quickViewCourseId" value="">
+                                        <button type="submit" class="btn2-custom btn-lg mb-1">Mua Ngay</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 	<!-- ***** Footer Area Start ***** -->
 	<!-- <div th:insert="~{decorators/footers :: footer}"></div> -->
 	<!-- ***** Footer Area End ***** -->
@@ -363,12 +429,14 @@
                     const price = this.getAttribute('data-course-price');
                     const image = this.getAttribute('data-course-image');
                     const duration = this.getAttribute('data-course-duration');
+                    
+                   
 
                     // Cập nhật thông tin vào modal
                     document.getElementById('quickViewTitleCourse').textContent = title;
                     document.getElementById('quickViewDescription').textContent = description;
                     document.getElementById('quickViewPrice').textContent = price;
-                    document.getElementById('quickViewImage').src = image || '/path/to/default-image.jpg';
+                    document.getElementById('quickViewImage').src = image || 'https://i.imgur.com/default-course.jpg';
                     document.getElementById('quickViewDuration').textContent = duration;
                     document.getElementById('quickViewCourseId').value = courseId;
 
@@ -422,7 +490,7 @@
                 document.getElementById('quickViewTitleCourse').textContent = '';
                 document.getElementById('quickViewDescription').textContent = '';
                 document.getElementById('quickViewPrice').textContent = '';
-                document.getElementById('quickViewImage').src = '';
+                document.getElementById('quickViewImage').src = 'https://i.imgur.com/default-course.jpg';
                 document.getElementById('quickViewDuration').textContent = '';
                 document.getElementById('quickViewCourseId').value = '';
                 document.getElementById('quickViewAddToCart').setAttribute('data-course-id', '');

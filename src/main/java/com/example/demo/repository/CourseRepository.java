@@ -32,7 +32,9 @@ public class CourseRepository {
         c.setStatus(courseStatus.valueOf(rs.getString("Status")));
         c.setDuration(rs.getObject("Duration", LocalDateTime.class));
         c.setCreateAt(rs.getObject("CreateAt", LocalDateTime.class));
-        c.setImage(rs.getString("Image"));
+        String image = rs.getString("Image");
+        
+        c.setImage(image);
         
         
         category cat = null;

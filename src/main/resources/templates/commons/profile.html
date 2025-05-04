@@ -26,6 +26,8 @@
 <link rel="stylesheet" th:href="@{/assets/css/custom.0a822280.css}">
 <link rel="stylesheet"
 	th:href="@{/assets/css/templatemo-space-dynamic.css}">
+	
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 </head>
 <style>
@@ -278,34 +280,36 @@
                     </div>
 
 					<!-- Change Password -->
-					<div class="tab-pane fade" id="change-password" role="tabpanel"
-						aria-labelledby="change-password-tab">
-						<h5 class="text-uppercase mb-4">Thay đổi mật khẩu</h5>
-						<form id="changePasswordForm"
-							th:action="@{/profile/change-password}" method="post">
-							<div class="mb-3">
-								<label for="currentPassword" class="form-lable-cus">Mật
-									khẩu hiện tại</label> <input type="password" class="form-control"
-									id="currentPassword" name="currentPassword" required>
-							</div>
-							<div class="mb-3">
-								<label for="newPassword" class="form-lable-cus">Mật khẩu
-									mới</label> <input type="password" class="form-control"
-									id="newPassword" name="newPassword" required>
-							</div>
-							<div class="mb-3">
-								<label for="confirmNewPassword" class="form-lable-cus">Xác
-									nhận mật khẩu mới</label> <input type="password" class="form-control"
-									id="confirmNewPassword" name="confirmNewPassword" required>
-							</div>
-							<div class="form-buttons">
-								<button type="button" class="btn btn-secondary"
-									onclick="cancelChangePasswordForm()">Hủy thay đổi</button>
-								<button type="button" class="btn btn-primary"
-									onclick="submitChangePasswordForm()">Lưu thay đổi</button>
-							</div>
-						</form>
-					</div>
+					<div class="tab-pane fade" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">
+                        <h5 class="text-uppercase mb-4">Thay đổi mật khẩu</h5>
+                        <form id="changePasswordForm" th:action="@{/profile/change-password}" method="post">
+                            <div class="mb-3 position-relative">
+                                <label for="currentPassword" class="form-lable-cus">Mật khẩu hiện tại</label>
+                                <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                                <span class="password-toggle" onclick="togglePassword('currentPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                            <div class="mb-3 position-relative">
+                                <label for="newPassword" class="form-lable-cus">Mật khẩu mới</label>
+                                <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                                <span class="password-toggle" onclick="togglePassword('newPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                            <div class="mb-3 position-relative">
+                                <label for="confirmNewPassword" class="form-lable-cus">Xác nhận mật khẩu mới</label>
+                                <input type="password" class="form-control" id="confirmNewPassword" name="confirmNewPassword" required>
+                                <span class="password-toggle" onclick="togglePassword('confirmNewPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                            <div class="form-buttons">
+                                <button type="button" class="btn btn-secondary" onclick="cancelChangePasswordForm()">Hủy</button>
+                                <button type="button" class="btn btn-primary" onclick="submitChangePasswordForm()">Lưu thay đổi</button>
+                            </div>
+                        </form>
+                    </div>
 					
 					<!-- Enrolled Courses -->
 					<div class="tab-pane fade" id="enrolled-courses" role="tabpanel" aria-labelledby="enrolled-courses-tab">
@@ -592,6 +596,117 @@
                 confirmButtonText: 'OK'
             });
         }
+        
+        
+        function submitChangePasswordForm() {
+            const form = document.getElementById('changePasswordForm');
+            const currentPassword = document.getElementById('currentPassword').value.trim();
+            const newPassword = document.getElementById('newPassword').value.trim();
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value.trim();
+
+            // Kiểm tra các trường không được để trống
+            if (!currentPassword || !newPassword || !confirmNewPassword) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Vui lòng điền đầy đủ các trường mật khẩu!',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Kiểm tra mật khẩu mới và xác nhận có khớp không
+            if (newPassword !== confirmNewPassword) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Mật khẩu mới và xác nhận không khớp!',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Kiểm tra độ dài mật khẩu mới
+            if (newPassword.length < 6) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Mật khẩu mới phải có ít nhất 6 ký tự!',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Kiểm tra độ phức tạp của mật khẩu
+            /* if (!/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Mật khẩu mới phải chứa ít nhất một chữ hoa và một số!',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            } */
+
+            // Gửi yêu cầu AJAX
+            $.ajax({
+                url: form.action,
+                type: 'POST',
+                data: $(form).serialize(),
+                success: function(response) {
+                    if (response.startsWith('success')) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: response.split(':')[1],
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            // Reset form và chuyển về tab thông tin cá nhân
+                            form.reset();
+                            document.getElementById('edit-info-tab').click();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: response.split(':')[1],
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    let errorMessage = 'Đã xảy ra lỗi khi đổi mật khẩu!';
+                    try {
+                        errorMessage = xhr.responseText.split(':')[1] || errorMessage;
+                    } catch (e) {
+                        // Nếu không parse được responseText, giữ nguyên errorMessage mặc định
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        }
+
+        // Hàm hiện/ẩn mật khẩu
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = input.nextElementSibling.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+        
+        
     </script>
 	
 

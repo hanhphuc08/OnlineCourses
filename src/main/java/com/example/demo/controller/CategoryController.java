@@ -62,6 +62,7 @@ public class CategoryController {
 	public String allCategories(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
 		
 		List<course> courses = categoryService.getAllCourses();
+
 		List<categoryType> categoryTypes = categoryService.getAllWithCategoriesAndCourses();
 		if (keyword != null && !keyword.isEmpty()) {
 	        courses = categoryService.searchCourses(keyword);
