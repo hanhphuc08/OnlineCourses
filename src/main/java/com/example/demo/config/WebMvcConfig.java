@@ -21,14 +21,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/forgot-password").setViewName("commons/forgotpassword");
         registry.addViewController("/reset-password").setViewName("commons/resetpassword");
         registry.addViewController("/course/detail/**").setViewName("category/productdetail");
-        registry.addViewController("/staff/addProducts").setViewName("staff/addProducts");
-        registry.addViewController("/staff/addStaffs").setViewName("staff/addStaffs");
-        registry.addViewController("/staff/categories").setViewName("staff/categories");
-        registry.addViewController("/staff/mngcustomer").setViewName("staff/customer");
+
         registry.addViewController("/staff/dashboard").setViewName("staff/dashboard");
         registry.addViewController("/staff/orderDetail").setViewName("staff/orderDetail");
         registry.addViewController("/staff/ordersList").setViewName("staff/ordersList");
-        registry.addViewController("/staff/productsList").setViewName("staff/productsList");
-        registry.addViewController("/staff/staffsList").setViewName("staff/staffsList");
+
+        registry.addViewController("/owner/addProducts").setViewName("owner/addProducts");
+        registry.addViewController("/owner/addStaffs").setViewName("owner/addStaffs");
+        registry.addViewController("/owner/categories").setViewName("owner/categories");
+        registry.addViewController("/owner/mngcustomer").setViewName("owner/customer");
+        registry.addViewController("/owner/dashboard").setViewName("owner/dashboard");
+        registry.addViewController("/owner/orderDetail").setViewName("owner/orderDetail");
+        registry.addViewController("/owner/ordersList").setViewName("owner/ordersList");
+        registry.addViewController("/owner/productsList").setViewName("owner/productsList");
+        registry.addViewController("/owner/staffsList").setViewName("owner/staffsList");
     }
 } 

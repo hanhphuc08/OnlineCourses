@@ -16,7 +16,7 @@ public class OwnerController {
         return "owner/home";
     }
 
-    @GetMapping("/dashboard")
+    @GetMapping("/owner/dashboard")
     public String dashboard(Model model) {
         // TODO: Add dashboard statistics
         return "owner/dashboard";

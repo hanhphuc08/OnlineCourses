@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Customers</title>
+    <title>Staff</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
@@ -42,17 +42,28 @@
         }
 
         /* Header Section */
-        .main-content .customer-header {
+        .main-content .staff-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
 
-        .main-content .customer-header h2 {
+        .main-content .staff-header h2 {
             font-size: 24px;
             font-weight: 600;
             color: #343a40;
+        }
+
+        .main-content .staff-header .btn-add {
+            background-color: #3494e6;
+            border-color: #3494e6;
+            color: #fff;
+        }
+
+        .main-content .staff-header .btn-add:hover {
+            background-color: #2c7ec4;
+            border-color: #2c7ec4;
         }
 
         /* Breadcrumb */
@@ -80,35 +91,35 @@
             width: 300px;
         }
 
-        /* Customers Table */
-        .main-content .customers-table {
+        /* Staff Table */
+        .main-content .staff-table {
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             overflow-x: auto;
         }
 
-        .main-content .customers-table table {
+        .main-content .staff-table table {
             width: 100%;
             border-collapse: collapse;
             min-width: 800px;
         }
 
-        .main-content .customers-table th,
-        .main-content .customers-table td {
+        .main-content .staff-table th,
+        .main-content .staff-table td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: none;
         }
 
-        .main-content .customers-table th {
+        .main-content .staff-table th {
             background-color: #f8f9fa;
             color: #6c757d;
             font-weight: 600;
             white-space: nowrap;
         }
 
-        .main-content .customers-table td {
+        .main-content .staff-table td {
             color: #343a40;
             white-space: nowrap;
         }
@@ -133,13 +144,13 @@
         }
 
         /* Actions */
-        .main-content .customers-table .actions-item {
+        .main-content .staff-table .actions-item {
             display: flex;
             text-align: center;
             gap: 10px;
         }
 
-        .main-content .customers-table .actions a {
+        .main-content .staff-table .actions a {
             display: flex;
             align-items: center;
             color: black;
@@ -147,30 +158,30 @@
             font-size: 14px;
         }
 
-        .main-content .customers-table .actions a.view:hover,
-        .main-content .customers-table .actions a.edit:hover {
+        .main-content .staff-table .actions a.view:hover,
+        .main-content .staff-table .actions a.edit:hover {
             color: #3494e6;
         }
 
         /* Pagination */
-        .main-content .customers-table .pagination-container {
+        .main-content .staff-table .pagination-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px;
         }
 
-        .main-content .customers-table .pagination-info {
+        .main-content .staff-table .pagination-info {
             font-size: 14px;
             color: #6c757d;
         }
 
-        .main-content .customers-table .pagination-buttons {
+        .main-content .staff-table .pagination-buttons {
             display: flex;
             gap: 5px;
         }
 
-        .main-content .customers-table .pagination-button {
+        .main-content .staff-table .pagination-button {
             margin: 0 5px;
             padding: 5px 10px;
             border: 1px solid #e0e0e0;
@@ -183,17 +194,17 @@
             transition: background-color 0.2s, color 0.2s;
         }
 
-        .main-content .customers-table .pagination-button:hover {
+        .main-content .staff-table .pagination-button:hover {
             background-color: #f8f9fa;
         }
 
-        .main-content .customers-table .pagination-button.active {
+        .main-content .staff-table .pagination-button.active {
             background-color: #3494e6;
             color: #fff;
             border-color: #3494e6;
         }
 
-        .main-content .customers-table .pagination-button.active:hover {
+        .main-content .staff-table .pagination-button.active:hover {
             background-color: #2c7ec4;
         }
 
@@ -239,88 +250,25 @@
             background-color: #2c7ec4;
             border-color: #2c7ec4;
         }
-
-        /* Orders Table in Modal */
-        .main-content .orders-table table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .main-content .orders-table th,
-        .main-content .orders-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .main-content .orders-table th {
-            background-color: #f8f9fa;
-            color: #6c757d;
-            font-weight: 600;
-        }
-
-        .main-content .orders-table td {
-            color: #343a40;
-        }
-
-        .main-content .orders-table .status-pending {
-            background-color: #3494e6;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .main-content .orders-table .status-pending:hover {
-            background-color: #2c7ec4;
-        }
-
-        .main-content .orders-table .status-completed {
-            background-color: #28a745;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .main-content .orders-table .no-orders {
-            text-align: center;
-            color: #6c757d;
-            padding: 20px;
-        }
-
-        .main-content .orders-table .actions a {
-            display: flex;
-            align-items: center;
-            color: black;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .main-content .orders-table .actions a.view:hover {
-            color: #3494e6;
-        }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
     <div class="custom-sidebar">
-        <div th:replace="~{staff/sidebar :: sidebar}"></div>
+        <div th:replace="~{owner/sidebar :: sidebar}"></div>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
         <!-- Header -->
         <div class="custom-sidebar">
-            <div th:replace="~{staff/sidebar :: header}"></div>
+            <div th:replace="~{owner/sidebar :: header}"></div>
         </div>
 
-        <!-- Customer Header -->
-        <div class="customer-header">
-            <h2>Customers</h2>
+        <!-- Staff Header -->
+        <div class="staff-header">
+            <h2>Staff</h2>
+            <a th:href="@{/staff/add}" class="btn btn-add">Add Staff</a>
         </div>
 
         <!-- Breadcrumb -->
@@ -328,25 +276,25 @@
             <li class="breadcrumb-item">
                 <i class="fas fa-home px-2"></i><a th:href="@{/staff/dashboard}">Dashboard</a>
             </li>
-            <li class="breadcrumb-item active">Customers</li>
+            <li class="breadcrumb-item active">Staff</li>
         </ol>
 
         <!-- Filters -->
         <div class="filters">
             <div class="search-bar">
-                <input type="text" class="form-control" placeholder="Search Customer" />
+                <input type="text" class="form-control" placeholder="Search Staff" />
             </div>
         </div>
 
-        <!-- Customers Table -->
-        <div class="customers-table">
+        <!-- Staff Table -->
+        <div class="staff-table">
             <table>
                 <thead>
                     <tr>
                         <th style="width: 5%">
                             <input type="checkbox" />
                         </th>
-                        <th class="col-2">Customer ID</th>
+                        <th class="col-2">Staff ID</th>
                         <th class="col-3">Email</th>
                         <th class="col-2">Phone</th>
                         <th class="col-2">Status</th>
@@ -356,23 +304,22 @@
                 <tbody>
                     <tr>
                         <td><input type="checkbox" /></td>
-                        <td>#C001</td>
-                        <td>hanhphuc@example.com</td>
-                        <td>+84 123 456 7890</td>
+                        <td>#S001</td>
+                        <td>admin1@example.com</td>
+                        <td>+84 912 345 678</td>
                         <td><span class="status-active">Active</span></td>
                         <td class="actions">
                             <div class="actions-item">
-                                <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#customerDetailModal"
-                                    data-customer-id="C001" data-name="Hạnh Phúc đáng ghéc" data-email="hanhphuc@example.com"
-                                    data-phone="+84 123 456 7890" data-gender="Female"
-                                    data-address="123, Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh, Việt Nam"
-                                    data-orders='[{"id": "FC001", "date": "2025-04-28", "total": "1.500.000 VNĐ", "status": "Chưa phản hồi"}]'>
+                                <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#staffDetailModal"
+                                    data-staff-id="S001" data-name="Nguyễn Văn A" data-email="admin1@example.com"
+                                    data-phone="+84 912 345 678" data-gender="Male"
+                                    data-address="789, Trần Hưng Đạo, Quận 5, TP. Hồ Chí Minh, Việt Nam" data-status="Active">
                                     <i class="fas fa-eye me-1"></i> View Detail
                                 </a>
-                                <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#customerEditModal"
-                                    data-customer-id="C001" data-name="Hạnh Phúc đáng ghéc" data-email="hanhphuc@example.com"
-                                    data-phone="+84 123 456 7890" data-gender="Female"
-                                    data-address="123, Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh, Việt Nam" data-status="Active">
+                                <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#staffEditModal"
+                                    data-staff-id="S001" data-name="Nguyễn Văn A" data-email="admin1@example.com"
+                                    data-phone="+84 912 345 678" data-gender="Male"
+                                    data-address="789, Trần Hưng Đạo, Quận 5, TP. Hồ Chí Minh, Việt Nam" data-status="Active">
                                     <i class="fas fa-edit me-1"></i> Edit
                                 </a>
                             </div>
@@ -380,22 +327,21 @@
                     </tr>
                     <tr>
                         <td><input type="checkbox" /></td>
-                        <td>#C002</td>
-                        <td>athu@example.com</td>
-                        <td>+84 987 654 3210</td>
+                        <td>#S002</td>
+                        <td>admin2@example.com</td>
+                        <td>+84 987 654 321</td>
                         <td><span class="status-disabled">Disabled</span></td>
                         <td class="actions">
                             <div class="actions-item">
-                                <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#customerDetailModal"
-                                    data-customer-id="C002" data-name="A Thư" data-email="athu@example.com"
-                                    data-phone="+84 987 654 3210" data-gender="Male"
-                                    data-address="456, Lê Lợi, Quận 3, TP. Hồ Chí Minh, Việt Nam"
-                                    data-orders="[]">
+                                <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#staffDetailModal"
+                                    data-staff-id="S002" data-name="Trần Thị B" data-email="admin2@example.com"
+                                    data-phone="+84 987 654 321" data-gender="Female"
+                                    data-address="456, Lê Lợi, Quận 3, TP. Hồ Chí Minh, Việt Nam" data-status="Disabled">
                                     <i class="fas fa-eye me-1"></i> View Detail
                                 </a>
-                                <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#customerEditModal"
-                                    data-customer-id="C002" data-name="A Thư" data-email="athu@example.com"
-                                    data-phone="+84 987 654 3210" data-gender="Male"
+                                <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#staffEditModal"
+                                    data-staff-id="S002" data-name="Trần Thị B" data-email="admin2@example.com"
+                                    data-phone="+84 987 654 321" data-gender="Female"
                                     data-address="456, Lê Lợi, Quận 3, TP. Hồ Chí Minh, Việt Nam" data-status="Disabled">
                                     <i class="fas fa-edit me-1"></i> Edit
                                 </a>
@@ -416,53 +362,48 @@
             </div>
         </div>
 
-        <!-- Customer Detail Modal -->
-        <div class="modal fade" id="customerDetailModal" tabindex="-1" aria-labelledby="customerDetailModalLabel" aria-hidden="true">
+        <!-- Staff Detail Modal -->
+        <div class="modal fade" id="staffDetailModal" tabindex="-1" aria-labelledby="staffDetailModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="customerDetailModalLabel">Customer Information</h5>
+                        <h5 class="modal-title" id="staffDetailModalLabel">Staff Detail</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <h5>Customer ID: <span id="modalCustomerId"></span></h5>
+                            <h5>Staff ID: <span id="modalStaffId"></span></h5>
                         </div>
 
-                        <!-- Customer Details -->
+                        <!-- Staff Details -->
                         <div class="mb-4">
-                            <h5>Customer Details</h5>
-                            <p><strong>Customer ID:</strong> <span id="modalCustomerIdDetail"></span></p>
+                            <h5>Staff Details</h5>
+                            <p><strong>Staff ID:</strong> <span id="modalStaffIdDetail"></span></p>
                             <p><strong>Name:</strong> <span id="modalName"></span></p>
                             <p><strong>Email:</strong> <span id="modalEmail"></span></p>
                             <p><strong>Phone:</strong> <span id="modalPhone"></span></p>
                             <p><strong>Gender:</strong> <span id="modalGender"></span></p>
                             <p><strong>Address:</strong> <span id="modalAddress"></span></p>
-                        </div>
-
-                        <!-- Orders Table -->
-                        <div class="orders-table">
-                            <h5>Orders List</h5>
-                            <div id="ordersTableContent"></div>
+                            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Customer Edit Modal -->
-        <div class="modal fade" id="customerEditModal" tabindex="-1" aria-labelledby="customerEditModalLabel" aria-hidden="true">
+        <!-- Staff Edit Modal -->
+        <div class="modal fade" id="staffEditModal" tabindex="-1" aria-labelledby="staffEditModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="customerEditModalLabel">Edit Customer</h5>
+                        <h5 class="modal-title" id="staffEditModalLabel">Edit Staff</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form>
                             <div class="mb-3">
-                                <label for="editCustomerId" class="form-label">Customer ID</label>
-                                <input type="text" class="form-control" id="editCustomerId" readonly />
+                                <label for="editStaffId" class="form-label">Staff ID</label>
+                                <input type="text" class="form-control" id="editStaffId" readonly />
                             </div>
                             <div class="mb-3">
                                 <label for="editName" class="form-label">Name</label>
@@ -503,6 +444,21 @@
         </div>
     </div>
 
+    <!-- JavaScript files -->
+    <script>
+        function injectSvgSprite(path) {
+            var ajax = new XMLHttpRequest();
+            ajax.open("GET", path, true);
+            ajax.send();
+            ajax.onload = function (e) {
+                var div = document.createElement("div");
+                div.className = "d-none";
+                div.innerHTML = ajax.responseText;
+                document.body.insertBefore(div, document.body.childNodes[0]);
+            };
+        }
+        injectSvgSprite("https://demo.bootstrapious.com/sell/1-2-0/icons/orion-svg-sprite.svg");
+    </script>
     <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
@@ -523,73 +479,33 @@
             console.error("Bootstrap JavaScript is not loaded. Please check if the Bootstrap script is loaded correctly.");
         }
 
-        // Populate modal with customer data when "View Detail" is clicked
+        // Populate Staff Detail Modal
         document.querySelectorAll(".view").forEach((button) => {
             button.addEventListener("click", function () {
-                const customerId = this.getAttribute("data-customer-id");
+                const staffId = this.getAttribute("data-staff-id");
                 const name = this.getAttribute("data-name");
                 const email = this.getAttribute("data-email");
                 const phone = this.getAttribute("data-phone");
                 const gender = this.getAttribute("data-gender");
                 const address = this.getAttribute("data-address");
-                const orders = JSON.parse(this.getAttribute("data-orders"));
+                const status = this.getAttribute("data-status");
 
-                // Populate customer details
-                document.getElementById("modalCustomerId").textContent = "#" + customerId;
-                document.getElementById("modalCustomerIdDetail").textContent = customerId;
+                // Populate staff details
+                document.getElementById("modalStaffId").textContent = "#" + staffId;
+                document.getElementById("modalStaffIdDetail").textContent = staffId;
                 document.getElementById("modalName").textContent = name;
                 document.getElementById("modalEmail").textContent = email;
                 document.getElementById("modalPhone").textContent = phone;
                 document.getElementById("modalGender").textContent = gender;
                 document.getElementById("modalAddress").textContent = address;
-
-                // Populate orders table
-                const ordersTableContent = document.getElementById("ordersTableContent");
-                if (orders.length === 0) {
-                    ordersTableContent.innerHTML = '<div class="no-orders">Chưa có đơn hàng nào</div>';
-                } else {
-                    let tableHTML = `
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Order Date</th>
-                                    <th>Total Amount</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                    `;
-                    orders.forEach((order) => {
-                        const statusClass = order.status === "Chưa phản hồi" ? "status-pending" : "status-completed";
-                        tableHTML += `
-                            <tr>
-                                <td>#${order.id}</td>
-                                <td>${order.date}</td>
-                                <td>${order.total}</td>
-                                <td><span class="${statusClass}">${order.status}</span></td>
-                                <td class="actions">
-                                    <a class="view" href="/orders/view/${order.id}">
-                                        <i class="fas fa-eye me-1"></i> View Detail
-                                    </a>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                    tableHTML += `
-                            </tbody>
-                        </table>
-                    `;
-                    ordersTableContent.innerHTML = tableHTML;
-                }
+                document.getElementById("modalStatus").textContent = status;
             });
         });
 
-        // Populate Customer Edit Modal
+        // Populate Staff Edit Modal
         document.querySelectorAll(".edit").forEach((button) => {
             button.addEventListener("click", function () {
-                const customerId = this.getAttribute("data-customer-id");
+                const staffId = this.getAttribute("data-staff-id");
                 const name = this.getAttribute("data-name");
                 const email = this.getAttribute("data-email");
                 const phone = this.getAttribute("data-phone");
@@ -598,7 +514,7 @@
                 const status = this.getAttribute("data-status");
 
                 // Populate edit form
-                document.getElementById("editCustomerId").value = customerId;
+                document.getElementById("editStaffId").value = staffId;
                 document.getElementById("editName").value = name;
                 document.getElementById("editEmail").value = email;
                 document.getElementById("editPhone").value = phone;

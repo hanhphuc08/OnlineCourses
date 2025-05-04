@@ -69,10 +69,14 @@
             </style>
             <div class="logo">P2TS</div>
             <ul class="nav flex-column">
-                <li class="nav-item"><a class="nav-link active" th:href="@{/staff/dashboard}"> <i class="fas fa-tachometer-alt"></i> Dashboard </a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{owner/dashboard}"> <i class="fas fa-tachometer-alt"></i> Dashboard </a></li>
                 <hr class="" />
                 <li class="section-title">Management</li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/staff/ordersList}"> <i class="fas fa-shopping-cart"></i> Orders </a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/owner/categories}"> <i class="fas fa-list"></i> Categories </a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/owner/productsList}"> <i class="fas fa-book"></i> Courses </a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/owner/ordersList}"> <i class="fas fa-shopping-cart"></i> Orders </a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/owner/mngcustomer}"> <i class="fas fa-user-graduate"></i> Students </a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/owner/staffsList}"> <i class="fas fa-user"></i> Staffs </a></li>
                 <li class="nav-item"><a class="nav-link" href="/reviews"> <i class="fas fa-star"></i> Reviews </a></li>
                 <li class="nav-item"><a class="nav-link" href="/introduction"> <i class="fas fa-blog"></i> Introduction </a></li>
                 <li class="nav-item"><a class="nav-link" href="/media"> <i class="fas fa-image"></i> Socials </a></li>

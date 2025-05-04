@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Orders</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <!-- Price Slider Stylesheets -->
+    <link rel="stylesheet" href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.css" />
+    <!-- Google fonts - Playfair Display -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700" />
+    <link rel="stylesheet" href="fonts/hkgrotesk/stylesheet.2e9c9834.css" />
+    <!-- Owl carousel -->
+    <link rel="stylesheet" href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/assets/owl.carousel.css" />
+    <!-- Lightbox -->
+    <link rel="stylesheet" href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/css/glightbox.min.css" />
+    <!-- Theme stylesheet -->
+    <link rel="stylesheet" href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/style.default.7acfaf01.css" id="theme-stylesheet" />
+    <!-- Custom stylesheet - for your changes -->
+    <link rel="stylesheet" href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/css/custom.0a822280.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/solid.css" integrity="sha384-TbilV5Lbhlwdyc4RuIV/JhD8NR+BfMrvz4BL5QFa2we1hQu6wvREr3v6XSRfCTRp" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/regular.css" integrity="sha384-avJt9MoJH2rB4PKRsJRHZv7yiFZn8LrnXuzvmZoD3fh1aL6aM6s0BBcnCvBe6XSD" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/brands.css" integrity="sha384-7xAnn7Zm3QC1jFjVc1A6v/toepoG3JXboQYzbM0jrPzou9OFXm/fY6Z/XiIebl/k" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/fontawesome.css" integrity="sha384-ozJwkrqb90Oa3ZNb+yKFW2lToAWYdTiF1vt8JiH5ptTGHTGcN7qdoR1F95e0kYyG" crossorigin="anonymous" />
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f5f7fa;
+        }
+
+        /* Ensure custom-sidebar applies to imported fragments */
+        .custom-sidebar {
+            /* This class is used as a namespace for sidebar and header styles */
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 20px;
+        }
+
+        /* Header Section */
+        .main-content .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .main-content .order-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #343a40;
+        }
+
+        /* Breadcrumb */
+        .main-content .breadcrumb {
+            margin-bottom: 20px;
+        }
+
+        .main-content .breadcrumb-item a {
+            color: #3494e6;
+            text-decoration: none;
+        }
+
+        .main-content .breadcrumb-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Filters */
+        .main-content .filters {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .main-content .filters .search-bar {
+            width: 300px;
+        }
+
+        .main-content .filters .status-filter {
+            width: 150px;
+        }
+
+        /* Orders Table */
+        .main-content .orders-table {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }
+
+        .main-content .orders-table table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .main-content .orders-table th,
+        .main-content .orders-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: none;
+        }
+
+        .main-content .orders-table th {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .main-content .orders-table td {
+            color: #343a40;
+            white-space: nowrap;
+        }
+
+        /* Status Badges */
+        .main-content .orders-table .status-pending {
+            background-color: #3494e6;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .main-content .orders-table .status-pending:hover {
+            background-color: #2c7ec4;
+        }
+
+        .main-content .orders-table .status-completed {
+            background-color: #28a745;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Actions */
+        .main-content .orders-table .actions-item {
+            display: flex;
+            text-align: center;
+            gap: 10px;
+        }
+
+        .main-content .orders-table .actions a {
+            display: flex;
+            align-items: center;
+            color: black;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .main-content .orders-table .actions a.view:hover {
+            color: #28a745;
+        }
+
+        /* Pagination */
+        .main-content .orders-table .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .main-content .orders-table .pagination-info {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .main-content .orders-table .pagination-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .main-content .orders-table .pagination-button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #e0e0e0;
+            background-color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            color: #343a40;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .main-content .orders-table .pagination-button:hover {
+            background-color: #f8f9fa;
+        }
+
+        .main-content .orders-table .pagination-button.active {
+            background-color: #3494e6;
+            color: #fff;
+            border-color: #3494e6;
+        }
+
+        .main-content .orders-table .pagination-button.active:hover {
+            background-color: #2c7ec4;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="custom-sidebar">
+        <div th:replace="~{owner/sidebar :: sidebar}"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="custom-sidebar">
+            <div th:replace="~{owner/sidebar :: header}"></div>
+        </div>
+
+        <!-- Order Header -->
+        <div class="order-header">
+            <h2>Orders</h2>
+        </div>
+
+        <!-- Breadcrumb -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="fas fa-home px-2"></i><a th:href="@{/staff/dashboard}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">Orders</li>
+        </ol>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="search-bar">
+                <input type="text" class="form-control" placeholder="Search Order" />
+            </div>
+            <div class="status-filter">
+                <select class="form-select">
+                    <option selected>Status</option>
+                    <option value="pending">Chưa phản hồi</option>
+                    <option value="completed">Đã phản hồi</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="orders-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 5%">
+                            <input type="checkbox" />
+                        </th>
+                        <th class="col-2">Order ID</th>
+                        <th class="col-3">Customer</th>
+                        <th class="col-2">Total Amount</th>
+                        <th class="col-2">Status</th>
+                        <th class="col-2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-orderid="1" data-customer="John Alex" data-totalamount="734.28" data-status="Pending">
+                        <td><input type="checkbox" /></td>
+                        <td>#001</td>
+                        <td>Hạnh Phúc đáng ghéc</td>
+                        <td>1.500.000 VNĐ</td>
+                        <td><span class="status-pending">Chưa phản hồi</span></td>
+                        <td class="actions">
+                            <div class="actions-item">
+                                <a class="view" th:href="@{/staff/orderDetail}">
+                                    <i class="fas fa-eye me-1"></i> View Detail
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr data-orderid="2" data-customer="Jane Smith" data-totalamount="200.00" data-status="Completed">
+                        <td><input type="checkbox" /></td>
+                        <td>#002</td>
+                        <td>Athu dth vá</td>
+                        <td>3.500.000 VNĐ</td>
+                        <td><span class="status-completed">Đã phản hồi</span></td>
+                        <td class="actions">
+                            <div class="actions-item">
+                                <a class="view" th:href="@{/staff/orderDetail}">
+                                    <i class="fas fa-eye me-1"></i> View Detail
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <hr />
+            <div class="pagination-container">
+                <span class="pagination-info">Showing 1 to 10 of 14 entries</span>
+                <div class="pagination-buttons">
+                    <button class="pagination-button">Previous</button>
+                    <button class="pagination-button active">1</button>
+                    <button class="pagination-button">2</button>
+                    <button class="pagination-button">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/object-fit-images/ofi.min.js"></script>
+    <script>
+        var basePath = "";
+    </script>
+    <script src="js/theme.30e7c8f9.js"></script>
+    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
+    <script src="js/demo.9833433a.js"></script>
+</body>
+</html>

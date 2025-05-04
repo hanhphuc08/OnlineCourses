@@ -16,7 +16,7 @@ public class StaffController {
         return "staff/home";
     }
 
-    @GetMapping("/dashboard")
+    @GetMapping("/staff/dashboard")
     public String dashboard(Model model) {
         // TODO: Add staff dashboard statistics
         return "staff/dashboard";
