@@ -298,21 +298,20 @@
                 </tr>
                 <tr th:each="course : ${courses}"
                     th:attr="data-courseid=${course.courseID},
-             data-image=${course.image},
-             data-title=${course.title},
-             data-description=${course.description},
-             data-prices=${course.prices},
-             data-status=${course.status.name()},
-             data-createat=${course.createAt},
-             data-duration=${course.formattedDuration},
-             data-categoryid=${course.category?.categoryID}">
+                             data-image=${course.image},
+                             data-title=${course.title},
+                             data-description=${course.description},
+                             data-prices=${course.prices},
+                             data-status=${course.status.name()},
+                             data-createat=${course.createAt},
+                             data-categoryid=${course.category?.categoryID}">
                     <td><input type="checkbox" class="course-checkbox" /></td>
                     <td><img th:src="${course.image} ?: '/images/default-course.jpg'" class="course-image" alt="Course Image" /></td>
                     <td th:text="${course.title}"></td>
                     <td th:text="${course.formattedPrice}"></td>
                     <td>
-    <span th:class="${course.status.name() == 'ACTIVE'} ? 'status-active' : 'status-disabled'"
-          th:text="${course.status.name() == 'ACTIVE'} ? 'Active' : 'Inactive'"></span>
+                        <span th:class="${course.status.name() == 'ACTIVE'} ? 'status-active' : 'status-disabled'"
+                              th:text="${course.status.name() == 'ACTIVE'} ? 'Active' : 'Inactive'"></span>
                     </td>
                     <td class="actions">
                         <div class="actions-item">
@@ -387,12 +386,10 @@
                                     <input type="text" class="form-control" id="editCreateAt" disabled />
                                 </div>
                                 <div class="mb-3">
-                                    <label for="editDuration" class="form-label">Duration</label>
-                                    <input type="date" class="form-control" id="editDuration" />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="editCategoryID" class="form-label">Category ID</label>
-                                    <input type="text" class="form-control" id="editCategoryID" />
+                                    <label for="editCategoryID" class="form-label">Category</label>
+                                    <select class="form-select" id="editCategoryID">
+                                        <option value="0">Select a category</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -479,7 +476,50 @@
         }
         document.addEventListener("DOMContentLoaded", function () {
 
-            let isSubmitting = false; // Biến kiểm tra trạng thái gửi yêu cầu
+            let isSubmitting = false;
+
+            // Hàm tải danh sách danh mục
+            function loadCategories(selectedCategoryId) {
+                const token = localStorage.getItem("jwtToken");
+                if (!token) {
+                    alert("Vui lòng đăng nhập lại!");
+                    window.location.href = "/login";
+                    return;
+                }
+
+                fetch("/owner/categories", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => {
+                                throw new Error(`HTTP ${response.status}: ${text}`);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(categories => {
+                        const categorySelect = document.getElementById("editCategoryID");
+                        categorySelect.innerHTML = '<option value="0">Select a category</option>';
+                        categories.forEach(category => {
+                            const option = document.createElement("option");
+                            option.value = category.categoryID;
+                            option.textContent = category.categoryName;
+                            if (category.categoryID == selectedCategoryId) {
+                                option.selected = true;
+                            }
+                            categorySelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error("Error loading categories:", error);
+                        alert("Không thể tải danh sách danh mục: " + error.message);
+                    });
+            }
 
             // Xử lý Edit Modal
             document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#editModal"]').forEach((button) => {
@@ -501,10 +541,8 @@
                     const status = row.getAttribute("data-status");
                     console.log("Course status:", status);
                     const createat = row.getAttribute("data-createat");
-                    const duration = row.getAttribute("data-duration");
                     const categoryid = row.getAttribute("data-categoryid");
 
-                    // Điền dữ liệu vào modal
                     document.getElementById("editCourseID").value = courseId || "";
                     document.getElementById("editImage").value = image || "";
                     document.getElementById("editTitle").value = title || "";
@@ -512,14 +550,13 @@
                     document.getElementById("editPrices").value = prices || "";
                     document.getElementById("editStatus").value = status || "ACTIVE";
                     document.getElementById("editCreateAt").value = createat || "";
-                    document.getElementById("editDuration").value = duration || "";
-                    document.getElementById("editCategoryID").value = categoryid || "";
+
+                    loadCategories(categoryid);
 
                     const editModalElement = document.getElementById("editModal");
                     const editModal = new bootstrap.Modal(editModalElement);
                     editModal.show();
 
-                    // Xử lý đóng modal
                     editModalElement.addEventListener("hidden.bs.modal", function () {
                         document.querySelectorAll(".modal-backdrop").forEach((backdrop) => backdrop.remove());
                         document.body.classList.remove("modal-open");
@@ -542,7 +579,6 @@
                     const prices = row.getAttribute("data-prices");
                     const status = row.getAttribute("data-status");
                     const createat = row.getAttribute("data-createat");
-                    const duration = row.getAttribute("data-duration");
                     const categoryid = row.getAttribute("data-categoryid");
 
                     document.getElementById("viewCourseID").value = courseId || "";
@@ -552,7 +588,6 @@
                     document.getElementById("viewPrices").value = prices || "";
                     document.getElementById("viewStatus").value = status || "";
                     document.getElementById("viewCreateAt").value = createat || "";
-                    document.getElementById("viewDuration").value = duration || "";
                     document.getElementById("viewCategoryID").value = categoryid || "";
 
                     const viewModalElement = document.getElementById("viewModal");
@@ -569,7 +604,7 @@
 
             // Xử lý nút "Lưu thay đổi"
             const saveButton = document.getElementById("saveChanges");
-            const newSaveButton = saveButton.cloneNode(true); // Xóa listener cũ
+            const newSaveButton = saveButton.cloneNode(true);
             saveButton.parentNode.replaceChild(newSaveButton, saveButton);
 
             console.log("Attaching click event to saveChanges button");
@@ -590,13 +625,6 @@
                     return;
                 }
 
-                const durationValue = document.getElementById("editDuration").value;
-                let formattedDuration = "";
-                if (durationValue) {
-                    const [year, month, day] = durationValue.split("-");
-                    formattedDuration = `${day}/${month}/${year}`; // Chuyển YYYY-MM-DD thành dd/MM/yyyy
-                }
-
                 const course = {
                     courseID: courseId,
                     image: document.getElementById("editImage").value || null,
@@ -604,7 +632,6 @@
                     description: document.getElementById("editDescription").value || "",
                     prices: parseFloat(document.getElementById("editPrices").value) || 0,
                     status: document.getElementById("editStatus").value || "ACTIVE",
-                    duration: formattedDuration,
                     category: {
                         categoryID: parseInt(document.getElementById("editCategoryID").value) || 0
                     }
@@ -612,7 +639,13 @@
 
                 console.log("Sending course data:", JSON.stringify(course));
 
-                const token = localStorage.getItem("jwtToken") || "";
+                const token = localStorage.getItem("jwtToken");
+                if (!token) {
+                    alert("Vui lòng đăng nhập lại!");
+                    window.location.href = "/login";
+                    return;
+                }
+
                 const editModalElement = document.getElementById("editModal");
                 const editModal = bootstrap.Modal.getInstance(editModalElement);
 
@@ -627,7 +660,7 @@
                     .then(response => {
                         if (!response.ok) {
                             return response.text().then(text => {
-                                throw new Error(text || "Cập nhật thất bại.");
+                                throw new Error(`HTTP ${response.status}: ${text}`);
                             });
                         }
                         return response.text();
