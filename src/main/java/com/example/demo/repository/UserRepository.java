@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.model.users;
 import com.example.demo.model.role;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -194,6 +197,7 @@ public class UserRepository {
             throw new RuntimeException("Không thể cập nhật hồ sơ người dùng: " + e.getMessage());
         }
     }
+
     public void updateUser(users user) {
         String sql = "UPDATE users SET fullname = ?, phoneNumber = ?, address = ?, gender = ?, updateDate = ? WHERE userID = ?";
         try {
@@ -214,6 +218,18 @@ public class UserRepository {
         } catch (Exception e) {
             logger.error("Lỗi khi cập nhật thông tin người dùng: userID={}, lỗi: {}", user.getUserID(), e.getMessage());
             throw new RuntimeException("Lỗi khi cập nhật thông tin: " + e.getMessage());
+        }
+    }
+
+    public List<users> findAllByRoleID(String roleId) {
+        String sql = "SELECT u.*, r.RoleName FROM users u JOIN roles r ON u.RoleID = r.RoleID WHERE r.RoleID = ?";
+        try {
+            List<users> users = jdbcTemplate.query(sql, new Object[]{roleId}, userRowMapper);
+            logger.info("Found {} users with roleID: {}", users.size(), roleId);
+            return users;
+        } catch (Exception e) {
+            logger.error("Error finding users by roleID {}: {}", roleId, e.getMessage());
+            return new ArrayList<>();
         }
     }
 } 

@@ -256,7 +256,7 @@
         <!-- Course Header -->
         <div class="course-header">
             <h2>Courses</h2>
-            <a th:href="@{/courses/new}" class="btn btn-primary">Add New Course</a>
+            <a th:href="@{/owner/addProducts}" class="btn btn-primary">Add New Course</a>
         </div>
 
         <!-- Breadcrumb -->
@@ -293,23 +293,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr data-courseid="1"
-                        data-image="https://i.ytimg.com/vi/95ahbau-rJk/hqdefault.jpg?sqp=-oaymwEmCKgBEF5IWvKriqkDGQgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAE=&rs=AOn4CLBNcQURp1vDRXeuw6i8M8JT0oJpMA"
-                        data-title="Gói học tổng hợp giúp học sinh ôn luyện toàn diện cho kỳ thi THPT Quốc gia 2025"
-                        data-description="Learn the basics of programming with Python."
-                        data-prices="1.500.000" data-status="Active"
-                        data-createat="2025-01-01" data-duration="2025-06-30"
-                        data-categoryid="Programming">
-                        <td><input type="checkbox" class="course-checkbox" /></td>
-                        <td><img src="https://i.ytimg.com/vi/95ahbau-rJk/hqdefault.jpg?sqp=-oaymwEmCKgBEF5IWvKriqkDGQgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAE=&rs=AOn4CLBNcQURp1vDRXeuw6i8M8JT0oJpMA" class="course-image" alt="Course Image" /></td>
-                        <td>Gói học tổng hợp giúp học sinh ôn luyện toàn diện cho kỳ thi THPT Quốc gia 2025</td>
-                        <td>1.500.000</td>
+                <tr th:if="${courses.isEmpty}">
+                    <td colspan="6">No courses available.</td>
+                </tr>
+                <tr th:each="course : ${courses}"
+                    th:attr="data-courseid=${course.courseID},
+                         data-image=${course.image},
+                         data-title=${course.title},
+                         data-description=${course.description},
+                         data-prices=${course.prices},
+                         data-status=${course.status},
+                         data-createat=${course.createAt},
+                         data-duration=${course.formattedDuration},
+                         data-categoryid=${course.category?.categoryID}">
+                    <td><input type="checkbox" class="course-checkbox" /></td>
+                    <td><img th:src="${course.image} ?: '/images/default-course.jpg'" class="course-image" alt="Course Image" /></td>
+                    <td th:text="${course.title}"></td>
+                    <td th:text="${course.formattedPrice}"></td>
                         <td><span class="status-active">Active</span></td>
                         <td class="actions">
                             <div class="actions-item">
-                                <a class="delete" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-course-id="1">
-                                    <i class="fas fa-trash me-1"></i> Delete
-                                </a>
                                 <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#editModal" data-course-id="1">
                                     <i class="fas fa-edit me-1"></i> Edit
                                 </a>
@@ -319,32 +322,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr data-courseid="2"
-                        data-image="https://i.ytimg.com/vi/95ahbau-rJk/hqdefault.jpg?sqp=-oaymwEmCKgBEF5IWvKriqkDGQgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAE=&rs=AOn4CLBNcQURp1vDRXeuw6i8M8JT0oJpMA"
-                        data-title="Khoá học luyện đề theo từng chuyên đề trọng tâm cho kỳ thi THPT Quốc gia 2025"
-                        data-description="Deep dive into data science techniques."
-                        data-prices="199.999.000" data-status="Disabled"
-                        data-createat="2025-02-01" data-duration="2025-07-31"
-                        data-categoryid="Data Science">
-                        <td><input type="checkbox" class="course-checkbox" /></td>
-                        <td><img src="https://i.ytimg.com/vi/95ahbau-rJk/hqdefault.jpg?sqp=-oaymwEmCKgBEF5IWvKriqkDGQgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAE=&rs=AOn4CLBNcQURp1vDRXeuw6i8M8JT0oJpMA" class="course-image" alt="Course Image" /></td>
-                        <td>Khoá học luyện đề theo từng chuyên đề trọng tâm cho kỳ thi THPT Quốc gia 2025</td>
-                        <td>199.999.000</td>
-                        <td><span class="status-disabled">Disabled</span></td>
-                        <td class="actions">
-                            <div class="actions-item">
-                                <a class="delete" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-course-id="2">
-                                    <i class="fas fa-trash me-1"></i> Delete
-                                </a>
-                                <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#editModal" data-course-id="2">
-                                    <i class="fas fa-edit me-1"></i> Edit
-                                </a>
-                                <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#viewModal" data-course-id="2">
-                                    <i class="fas fa-eye me-1"></i> View
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
+
                 </tbody>
             </table>
 
@@ -356,23 +334,6 @@
                     <button class="pagination-button active" data-page="1">1</button>
                     <button class="pagination-button" data-page="2">2</button>
                     <button class="pagination-button" id="nextPage">Next</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Delete Modal -->
-        <div class="modal fade quickview py-6" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title-cus" id="deleteModalLabel">Xác nhận xóa</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">Bạn chắc chắn muốn xóa khóa học này chứ?</div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -590,7 +551,40 @@
                         document.body.style.overflow = "auto";
                     });
                 });
-            });
+            });// Nút "Lưu thay đổi"
+            document.getElementById("saveChanges").addEventListener("click", function () {
+                const course = {
+                    id: document.getElementById("editCourseID").value,
+                    image: document.getElementById("editImage").value,
+                    title: document.getElementById("editTitle").value,
+                    description: document.getElementById("editDescription").value,
+                    prices: parseFloat(document.getElementById("editPrices").value),
+                    status: document.getElementById("editStatus").value,
+                    duration: document.getElementById("editDuration").value,
+                    categoryID: document.getElementById("editCategoryID").value
+                };
+
+                fetch("/owner/course/edit", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(course)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Cập nhật thất bại.");
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        alert("Cập nhật thành công!");
+                        location.reload(); // Reload để cập nhật bảng
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert("Đã xảy ra lỗi khi cập nhật.");
+                    });
 
             // Handle Pagination 
             // Initial update for pagination info

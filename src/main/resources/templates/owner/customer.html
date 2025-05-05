@@ -340,70 +340,29 @@
 
         <!-- Customers Table -->
         <div class="customers-table">
-            <table>
-                <thead>
+            <div th:if="${customers == null or customers.isEmpty()}">
+                <p>Không có khách hàng nào để hiển thị.</p>
+            </div>
+            <div th:unless="${customers == null or customers.isEmpty()}">
+                <table>
+                    <thead>
                     <tr>
-                        <th style="width: 5%">
-                            <input type="checkbox" />
-                        </th>
-                        <th class="col-2">Customer ID</th>
-                        <th class="col-3">Email</th>
-                        <th class="col-2">Phone</th>
-                        <th class="col-2">Status</th>
-                        <th class="col-2">Action</th>
+                        <th>Email</th>
+                        <th>Họ tên</th>
+                        <th>Số điện thoại</th>
+                        <th>Vai trò</th>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="checkbox" /></td>
-                        <td>#C001</td>
-                        <td>hanhphuc@example.com</td>
-                        <td>+84 123 456 7890</td>
-                        <td><span class="status-active">Active</span></td>
-                        <td class="actions">
-                            <div class="actions-item">
-                                <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#customerDetailModal"
-                                    data-customer-id="C001" data-name="Hạnh Phúc đáng ghéc" data-email="hanhphuc@example.com"
-                                    data-phone="+84 123 456 7890" data-gender="Female"
-                                    data-address="123, Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh, Việt Nam"
-                                    data-orders='[{"id": "FC001", "date": "2025-04-28", "total": "1.500.000 VNĐ", "status": "Chưa phản hồi"}]'>
-                                    <i class="fas fa-eye me-1"></i> View Detail
-                                </a>
-                                <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#customerEditModal"
-                                    data-customer-id="C001" data-name="Hạnh Phúc đáng ghéc" data-email="hanhphuc@example.com"
-                                    data-phone="+84 123 456 7890" data-gender="Female"
-                                    data-address="123, Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh, Việt Nam" data-status="Active">
-                                    <i class="fas fa-edit me-1"></i> Edit
-                                </a>
-                            </div>
-                        </td>
+                    </thead>
+                    <tbody>
+                    <tr th:each="customer : ${customers}">
+                        <td th:text="${customer.email} ?: 'N/A'">Email</td>
+                        <td th:text="${customer.fullname} ?: 'N/A'">Tên</td>
+                        <td th:text="${customer.phoneNumber} ?: 'N/A'">SĐT</td>
+                        <td th:text="${customer.role != null} ? ${customer.role.roleID} : 'N/A'">Role</td>
                     </tr>
-                    <tr>
-                        <td><input type="checkbox" /></td>
-                        <td>#C002</td>
-                        <td>athu@example.com</td>
-                        <td>+84 987 654 3210</td>
-                        <td><span class="status-disabled">Disabled</span></td>
-                        <td class="actions">
-                            <div class="actions-item">
-                                <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#customerDetailModal"
-                                    data-customer-id="C002" data-name="A Thư" data-email="athu@example.com"
-                                    data-phone="+84 987 654 3210" data-gender="Male"
-                                    data-address="456, Lê Lợi, Quận 3, TP. Hồ Chí Minh, Việt Nam"
-                                    data-orders="[]">
-                                    <i class="fas fa-eye me-1"></i> View Detail
-                                </a>
-                                <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#customerEditModal"
-                                    data-customer-id="C002" data-name="A Thư" data-email="athu@example.com"
-                                    data-phone="+84 987 654 3210" data-gender="Male"
-                                    data-address="456, Lê Lợi, Quận 3, TP. Hồ Chí Minh, Việt Nam" data-status="Disabled">
-                                    <i class="fas fa-edit me-1"></i> Edit
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
 
             <hr />
             <div class="pagination-container">

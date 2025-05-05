@@ -73,13 +73,16 @@ public class CourseRepository {
         return lp;
     }
 	// Get all courses with their categories
-	public List<course> findAllCourses() {
+    public List<course> findAllCourses() {
         String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, cat.CreateDate, cat.UpdateDate " +
-                     "FROM course c " +
-                     "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID";
+                "FROM course c " +
+                "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID";
         try {
-            return jdbcTemplate.query(sql, this::mapRowToCourse);
+            List<course> courses = jdbcTemplate.query(sql, this::mapRowToCourse);
+            System.out.println("CourseRepository: Fetched " + courses.size() + " courses");
+            return courses;
         } catch (Exception e) {
+            System.err.println("CourseRepository: Error fetching courses: " + e.getMessage());
             throw new RuntimeException("Error fetching courses: " + e.getMessage());
         }
     }
@@ -206,5 +209,18 @@ public class CourseRepository {
 	        }
 	    }
 
-    
+    public void updateCourse(course course) {
+        String sql = "UPDATE course SET Title = ?, Description = ?, Prices = ?, Status = ?, Image = ? WHERE CourseID = ?";
+        try {
+            jdbcTemplate.update(sql,
+                    course.getTitle(),
+                    course.getDescription(),
+                    course.getPrices(),
+                    course.getStatus().toString(),
+                    course.getImage(),
+                    course.getCourseID());
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating course with ID " + course.getCourseID() + ": " + e.getMessage());
+        }
+    }
 }

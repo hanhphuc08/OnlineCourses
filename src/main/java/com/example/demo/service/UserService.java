@@ -347,4 +347,8 @@ public class UserService implements UserDetailsService {
         user.setUpdateDate(LocalDateTime.now());
         userRepository.save(user);
     }
+
+    public List<users> findAllCustomers() {
+        return userRepository.findAllByRoleID("Customer");
+    }
 } 
