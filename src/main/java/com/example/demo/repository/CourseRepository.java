@@ -216,7 +216,7 @@ public class CourseRepository {
 	    }
 
     public void updateCourse(course course) {
-        String sql = "UPDATE course SET Title = ?, Description = ?, Prices = ?, Status = ?, Image = ?, Duration = ?, CategoryID = ? WHERE CourseID = ?";
+        String sql = "UPDATE course SET Title = ?, Description = ?, Prices = ?, Status = ?, Image = ?, Duration = ?, CategoryID = ?, Quantity = ? WHERE CourseID = ?";
         try {
             jdbcTemplate.update(sql,
                     course.getTitle(),
@@ -226,6 +226,7 @@ public class CourseRepository {
                     course.getImage(),
                     course.getDuration(),
                     course.getCategory() != null ? course.getCategory().getCategoryID() : null,
+                    course.getQuantity(),
                     course.getCourseID());
         } catch (Exception e) {
             throw new RuntimeException("Error updating course with ID " + course.getCourseID() + ": " + e.getMessage());

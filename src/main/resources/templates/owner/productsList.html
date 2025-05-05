@@ -303,7 +303,7 @@
                              data-description=${course.description},
                              data-prices=${course.prices},
                              data-status=${course.status.name()},
-                             data-createat=${course.createAt},
+                             data-quantity=${course.quantity},
                              data-categoryid=${course.category?.categoryID}">
                     <td><input type="checkbox" class="course-checkbox" /></td>
                     <td><img th:src="${course.image} ?: '/images/default-course.jpg'" class="course-image" alt="Course Image" /></td>
@@ -382,8 +382,8 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="editCreateAt" class="form-label">Created At</label>
-                                    <input type="text" class="form-control" id="editCreateAt" disabled />
+                                    <label for="editQuantity" class="form-label">Quantity</label>
+                                    <input type="number" min="0" class="form-control" id="editQuantity" />
                                 </div>
                                 <div class="mb-3">
                                     <label for="editCategoryID" class="form-label">Category</label>
@@ -478,7 +478,6 @@
 
             let isSubmitting = false;
 
-            // Hàm tải danh sách danh mục
             function loadCategories(selectedCategoryId) {
                 const token = localStorage.getItem("jwtToken");
                 if (!token) {
@@ -521,7 +520,6 @@
                     });
             }
 
-            // Xử lý Edit Modal
             document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#editModal"]').forEach((button) => {
                 button.addEventListener("click", function (e) {
                     e.preventDefault();
@@ -539,8 +537,7 @@
                     const description = row.getAttribute("data-description");
                     const prices = row.getAttribute("data-prices");
                     const status = row.getAttribute("data-status");
-                    console.log("Course status:", status);
-                    const createat = row.getAttribute("data-createat");
+                    const quantity = row.getAttribute("data-quantity");
                     const categoryid = row.getAttribute("data-categoryid");
 
                     document.getElementById("editCourseID").value = courseId || "";
@@ -549,8 +546,7 @@
                     document.getElementById("editDescription").value = description || "";
                     document.getElementById("editPrices").value = prices || "";
                     document.getElementById("editStatus").value = status || "ACTIVE";
-                    document.getElementById("editCreateAt").value = createat || "";
-
+                    document.getElementById("editQuantity").value = quantity || "0";
                     loadCategories(categoryid);
 
                     const editModalElement = document.getElementById("editModal");
@@ -565,7 +561,6 @@
                 });
             });
 
-            // Xử lý View Modal
             document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#viewModal"]').forEach((button) => {
                 button.addEventListener("click", function (e) {
                     e.preventDefault();
@@ -578,7 +573,7 @@
                     const description = row.getAttribute("data-description");
                     const prices = row.getAttribute("data-prices");
                     const status = row.getAttribute("data-status");
-                    const createat = row.getAttribute("data-createat");
+                    const quantity = row.getAttribute("data-quantity");
                     const categoryid = row.getAttribute("data-categoryid");
 
                     document.getElementById("viewCourseID").value = courseId || "";
@@ -587,7 +582,7 @@
                     document.getElementById("viewDescription").value = description || "";
                     document.getElementById("viewPrices").value = prices || "";
                     document.getElementById("viewStatus").value = status || "";
-                    document.getElementById("viewCreateAt").value = createat || "";
+                    document.getElementById("viewQuantity").value = quantity || "0";
                     document.getElementById("viewCategoryID").value = categoryid || "";
 
                     const viewModalElement = document.getElementById("viewModal");
@@ -602,7 +597,6 @@
                 });
             });
 
-            // Xử lý nút "Lưu thay đổi"
             const saveButton = document.getElementById("saveChanges");
             const newSaveButton = saveButton.cloneNode(true);
             saveButton.parentNode.replaceChild(newSaveButton, saveButton);
@@ -625,6 +619,14 @@
                     return;
                 }
 
+                const quantityInput = parseInt(document.getElementById("editQuantity").value);
+                if (isNaN(quantityInput) || quantityInput < 0) {
+                    alert("Quantity must be a non-negative number");
+                    newSaveButton.disabled = false;
+                    isSubmitting = false;
+                    return;
+                }
+
                 const course = {
                     courseID: courseId,
                     image: document.getElementById("editImage").value || null,
@@ -632,6 +634,7 @@
                     description: document.getElementById("editDescription").value || "",
                     prices: parseFloat(document.getElementById("editPrices").value) || 0,
                     status: document.getElementById("editStatus").value || "ACTIVE",
+                    quantity: quantityInput,
                     category: {
                         categoryID: parseInt(document.getElementById("editCategoryID").value) || 0
                     }

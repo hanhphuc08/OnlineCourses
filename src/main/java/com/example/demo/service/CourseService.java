@@ -43,7 +43,11 @@ public class CourseService {
 		if (course.getPrices() == null || course.getPrices().doubleValue() < 0) {
 			throw new IllegalArgumentException("Price must be non-negative");
 		}
-		logger.info("Updating course ID: {}, Status: {}", course.getCourseID(), course.getStatus());
+		if (course.getQuantity() < 0) {
+			throw new IllegalArgumentException("Quantity must be non-negative");
+		}
+		logger.info("Updating course ID: {}, Status: {}, Quantity: {}",
+				course.getCourseID(), course.getStatus(), course.getQuantity());
 		courseRepository.updateCourse(course);
 	}
 }

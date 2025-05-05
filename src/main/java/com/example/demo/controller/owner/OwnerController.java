@@ -1,4 +1,3 @@
-
 package com.example.demo.controller.owner;
 
 import com.example.demo.model.category;
@@ -114,6 +113,10 @@ public class OwnerController {
                 logger.error("Price must be non-negative: {}", courseDTO.getPrices());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Price must be non-negative");
             }
+            if (courseDTO.getQuantity() < 0) {
+                logger.error("Quantity must be non-negative: {}", courseDTO.getQuantity());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Quantity must be non-negative");
+            }
 
             course course = new course();
             course.setCourseID(courseDTO.getCourseID());
@@ -122,7 +125,8 @@ public class OwnerController {
             course.setPrices(courseDTO.getPrices());
             course.setStatus(courseStatus.valueOf(courseDTO.getStatus()));
             course.setImage(courseDTO.getImage());
-            course.setDuration(null); // Không sử dụng Duration
+            course.setQuantity(courseDTO.getQuantity());
+            course.setDuration(null);
 
             if (courseDTO.getCategory() != null && courseDTO.getCategory().getCategoryID() > 0) {
                 category cat = new category();
@@ -151,6 +155,7 @@ class CourseUpdateDTO {
     private BigDecimal prices;
     private String status;
     private String image;
+    private int quantity;
     private CategoryDTO category;
 
     public int getCourseID() { return courseID; }
@@ -165,6 +170,8 @@ class CourseUpdateDTO {
     public void setStatus(String status) { this.status = status; }
     public String getImage() { return image; }
     public void setImage(String image) { this.image = image; }
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
     public CategoryDTO getCategory() { return category; }
     public void setCategory(CategoryDTO category) { this.category = category; }
 
@@ -177,6 +184,7 @@ class CourseUpdateDTO {
                 ", prices=" + prices +
                 ", status='" + status + '\'' +
                 ", image='" + image + '\'' +
+                ", quantity=" + quantity +
                 ", category=" + category +
                 '}';
     }
