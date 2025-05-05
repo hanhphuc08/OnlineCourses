@@ -50,4 +50,18 @@ public class CourseService {
 				course.getCourseID(), course.getStatus(), course.getQuantity());
 		courseRepository.updateCourse(course);
 	}
+	public void addCourse(course course) {
+		if (course.getTitle() == null || course.getTitle().trim().isEmpty()) {
+			throw new IllegalArgumentException("Title is required");
+		}
+		if (course.getPrices() == null || course.getPrices().doubleValue() < 0) {
+			throw new IllegalArgumentException("Price must be non-negative");
+		}
+		if (course.getQuantity() < 0) {
+			throw new IllegalArgumentException("Quantity must be non-negative");
+		}
+		logger.info("Adding new course: title={}, status={}, quantity={}",
+				course.getTitle(), course.getStatus(), course.getQuantity());
+		courseRepository.addCourse(course);
+	}
 }

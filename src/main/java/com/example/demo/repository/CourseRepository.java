@@ -232,4 +232,22 @@ public class CourseRepository {
             throw new RuntimeException("Error updating course with ID " + course.getCourseID() + ": " + e.getMessage());
         }
     }
+    public void addCourse(course course) {
+        String sql = "INSERT INTO course (Title, Description, Prices, Status, Image, Duration, CategoryID, Quantity, CreateAt) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            jdbcTemplate.update(sql,
+                    course.getTitle(),
+                    course.getDescription(),
+                    course.getPrices(),
+                    course.getStatus().toString(),
+                    course.getImage(),
+                    course.getDuration(),
+                    course.getCategory() != null ? course.getCategory().getCategoryID() : null,
+                    course.getQuantity(),
+                    course.getCreateAt());
+        } catch (Exception e) {
+            throw new RuntimeException("Error adding course: " + e.getMessage());
+        }
+    }
 }

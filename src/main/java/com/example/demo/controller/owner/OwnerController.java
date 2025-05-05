@@ -18,9 +18,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/owner")
@@ -119,10 +127,8 @@ public class OwnerController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Quantity must be non-negative");
             }
 
-            // Lấy khóa học hiện tại từ cơ sở dữ liệu
             course existingCourse = courseService.getCourseById(courseDTO.getCourseID());
 
-            // Tạo object course mới với dữ liệu từ DTO
             course course = new course();
             course.setCourseID(courseDTO.getCourseID());
             course.setTitle(courseDTO.getTitle());
@@ -131,8 +137,8 @@ public class OwnerController {
             course.setStatus(courseStatus.valueOf(courseDTO.getStatus()));
             course.setImage(courseDTO.getImage());
             course.setQuantity(courseDTO.getQuantity());
-            course.setDuration(existingCourse.getDuration()); // Giữ Duration hiện tại
-            course.setCreateAt(existingCourse.getCreateAt()); // Giữ CreateAt hiện tại
+            course.setDuration(existingCourse.getDuration());
+            course.setCreateAt(existingCourse.getCreateAt());
 
             if (courseDTO.getCategory() != null && courseDTO.getCategory().getCategoryID() > 0) {
                 category cat = new category();
@@ -150,6 +156,81 @@ public class OwnerController {
             logger.error("Error updating course: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error updating course: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/course/add")
+    public ResponseEntity<String> addCourse(
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("prices") BigDecimal prices,
+            @RequestParam("status") String status,
+            @RequestParam("quantity") int quantity,
+            @RequestParam("categoryID") int categoryID,
+            @RequestParam(value = "duration", required = false) String duration,
+            @RequestParam("imageUrl") String imageUrl) {
+        try {
+            logger.info("Received course add request: title={}, categoryID={}", title, categoryID);
+
+            if (title == null || title.trim().isEmpty()) {
+                logger.error("Title is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Title is required");
+            }
+            if (prices == null || prices.doubleValue() < 0) {
+                logger.error("Price must be non-negative: {}", prices);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Price must be non-negative");
+            }
+            if (quantity < 0) {
+                logger.error("Quantity must be non-negative: {}", quantity);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Quantity must be non-negative");
+            }
+            if (status == null || (!status.equals("ACTIVE") && !status.equals("INACTIVE"))) {
+                logger.error("Invalid status: {}", status);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Status must be ACTIVE or INACTIVE");
+            }
+            if (categoryID <= 0) {
+                logger.error("Invalid Category ID: {}", categoryID);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Category ID");
+            }
+            if (imageUrl == null || imageUrl.trim().isEmpty()) {
+                logger.error("Image URL is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Image URL is required");
+            }
+
+            course course = new course();
+            course.setTitle(title);
+            course.setDescription(description);
+            course.setPrices(prices);
+            course.setStatus(courseStatus.valueOf(status));
+            course.setQuantity(quantity);
+            course.setCreateAt(LocalDateTime.now());
+            course.setImage(imageUrl);
+
+            // Xử lý duration
+            if (duration != null && !duration.trim().isEmpty()) {
+                try {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDateTime durationDate = LocalDate.parse(duration, formatter).atStartOfDay();
+                    course.setDuration(durationDate);
+                } catch (Exception e) {
+                    logger.error("Invalid duration format: {}", duration);
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid duration format. Use yyyy-MM-dd");
+                }
+            } else {
+                course.setDuration(null);
+            }
+
+            category cat = new category();
+            cat.setCategoryID(categoryID);
+            course.setCategory(cat);
+
+            courseService.addCourse(course);
+            logger.info("Course added successfully: title={}", title);
+            return ResponseEntity.ok("Course added successfully");
+        } catch (Exception e) {
+            logger.error("Error adding course: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error adding course: " + e.getMessage());
         }
     }
 }

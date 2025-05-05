@@ -223,58 +223,48 @@ body {
 		</ol>
 
 		<!-- Form -->
-		<form method="POST" action="/courses/add"
-			enctype="multipart/form-data">
+		<form id="addCourseForm" enctype="multipart/form-data">
 			<!-- Course Information -->
 			<div class="form-section">
 				<h5>Course Information</h5>
 				<div class="form-two-columns">
 					<div class="col">
 						<div class="form-group">
-							<label for="title">Title</label> <input type="text"
-								class="form-control" id="title" name="title"
-								placeholder="Enter Course Title" required />
+							<label for="title">Title</label>
+							<input type="text" class="form-control" id="title" name="title" placeholder="Enter Course Title" required />
 						</div>
 						<div class="form-group">
 							<label for="description">Description</label>
-							<textarea class="form-control" id="description"
-								name="description" rows="3"
-								placeholder="Enter Course Description" required></textarea>
+							<textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter Course Description" required></textarea>
 						</div>
 						<div class="form-group">
-							<label for="prices">Price</label> <input type="number"
-								step="0.01" class="form-control" id="prices" name="prices"
-								placeholder="Enter Course Price" required />
+							<label for="prices">Price</label>
+							<input type="number" step="0.01" class="form-control" id="prices" name="prices" placeholder="Enter Course Price" required />
 						</div>
 					</div>
 					<div class="col">
 						<div class="form-group">
-							<label for="categoryID">Course Category</label> <select
-								class="form-select" id="categoryID" name="categoryID" required>
+							<label for="categoryID">Course Category</label>
+							<select class="form-select" id="categoryID" name="categoryID" required>
 								<option value="" disabled selected>Select Category</option>
-								<option value="Programming">Programming</option>
-								<option value="Data Science">Data Science</option>
-								<option value="Design">Design</option>
-								<option value="Business">Business</option>
 							</select>
 						</div>
 						<div class="form-group">
-							<label for="status">Status</label>
+							<label>Status</label>
 							<div class="status-radio">
-								<input type="radio" id="statusActive" name="status"
-									value="Active" /> <label for="statusActive">Active</label> <input
-									type="radio" id="statusDisabled" name="status" value="Disabled"
-									checked /> <label for="statusDisabled">Disabled</label>
+								<input type="radio" id="statusActive" name="status" value="ACTIVE" checked />
+								<label for="statusActive">Active</label>
+								<input type="radio" id="statusInactive" name="status" value="INACTIVE" />
+								<label for="statusInactive">Inactive</label>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="duration">Duration</label> <input type="date"
-								class="form-control" id="duration" name="duration" required />
+							<label for="quantity">Quantity</label>
+							<input type="number" min="0" class="form-control" id="quantity" name="quantity" placeholder="Enter Quantity" required />
 						</div>
 						<div class="form-group">
-							<label for="createdAt">Created At</label> <input type="text"
-								class="form-control" id="createdAt" name="createdAt"
-								value="2025-04-28" readonly />
+							<label for="duration">Duration</label>
+							<input type="date" class="form-control" id="duration" name="duration" />
 						</div>
 					</div>
 				</div>
@@ -282,33 +272,10 @@ body {
 
 			<!-- Course Images -->
 			<div class="form-section">
-				<h5>Course Images</h5>
-				<div class="image-options">
-					<div>
-						<input type="radio" id="imageUpload" name="imageType"
-							value="upload" checked onchange="toggleImageInput()" /> <label
-							for="imageUpload">Upload File</label>
-					</div>
-					<div>
-						<input type="radio" id="imageUrl" name="imageType" value="url"
-							onchange="toggleImageInput()" /> <label for="imageUrl">Enter
-							URL</label>
-					</div>
-				</div>
-				<div id="imageUploadSection">
-					<div class="image-upload">
-						<input type="file" id="imageFile" name="imageFile"
-							accept="image/*" style="display: none"
-							onchange="this.nextElementSibling.innerText = this.files[0] ? this.files[0].name : 'Drop files here to upload';" />
-						<label for="imageFile" style="cursor: pointer">Drop files
-							here to upload</label>
-					</div>
-				</div>
-				<div id="imageUrlSection" style="display: none">
-					<div class="form-group">
-						<input type="text" class="form-control" id="imageUrlInput"
-							name="imageUrl" placeholder="Enter Image URL" />
-					</div>
+				<h5>Course Image</h5>
+				<div class="form-group">
+					<label for="imageUrlInput">Image URL</label>
+					<input type="text" class="form-control" id="imageUrlInput" name="imageUrl" placeholder="Enter Image URL" required />
 				</div>
 			</div>
 
@@ -357,34 +324,137 @@ body {
 	<script
 		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
 	<script src="js/demo.9833433a.js"></script>
+
 	<script>
-		// Check if Bootstrap is loaded
 		if (typeof bootstrap === 'undefined') {
-			console
-					.error("Bootstrap JavaScript is not loaded. Please check if the Bootstrap script is loaded correctly.");
+			console.error("Bootstrap JavaScript is not loaded.");
 		}
 
-		function toggleImageInput() {
-			const uploadSection = document.getElementById("imageUploadSection");
-			const urlSection = document.getElementById("imageUrlSection");
-			const imageUploadRadio = document.getElementById("imageUpload");
+		document.addEventListener("DOMContentLoaded", function () {
+			// Load categories
+			function loadCategories() {
+				const token = localStorage.getItem("jwtToken");
+				if (!token) {
+					alert("Please log in again!");
+					window.location.href = "/login";
+					return;
+				}
 
-			if (imageUploadRadio.checked) {
-				uploadSection.style.display = "block";
-				urlSection.style.display = "none";
-				document.getElementById("imageUrlInput").removeAttribute(
-						"required");
-				document.getElementById("imageFile").setAttribute("required",
-						"required");
-			} else {
-				uploadSection.style.display = "none";
-				urlSection.style.display = "block";
-				document.getElementById("imageFile")
-						.removeAttribute("required");
-				document.getElementById("imageUrlInput").setAttribute(
-						"required", "required");
+				fetch("/owner/categories", {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": "Bearer " + token
+					}
+				})
+						.then(response => {
+							if (!response.ok) {
+								return response.text().then(text => {
+									throw new Error(`HTTP ${response.status}: ${text}`);
+								});
+							}
+							return response.json();
+						})
+						.then(categories => {
+							const categorySelect = document.getElementById("categoryID");
+							categorySelect.innerHTML = '<option value="" disabled selected>Select Category</option>';
+							categories.forEach(category => {
+								const option = document.createElement("option");
+								option.value = category.categoryID;
+								option.textContent = category.categoryName;
+								categorySelect.appendChild(option);
+							});
+						})
+						.catch(error => {
+							console.error("Error loading categories:", error);
+							alert("Unable to load categories: " + error.message);
+						});
 			}
-		}
+
+			loadCategories();
+
+			// Handle form submission
+			document.getElementById("addCourseForm").addEventListener("submit", function (e) {
+				e.preventDefault();
+
+				const title = document.getElementById("title").value;
+				const description = document.getElementById("description").value;
+				const prices = document.getElementById("prices").value;
+				const status = document.querySelector("input[name='status']:checked").value;
+				const quantity = document.getElementById("quantity").value;
+				const categoryID = document.getElementById("categoryID").value;
+				const duration = document.getElementById("duration").value;
+				const imageUrl = document.getElementById("imageUrlInput").value;
+
+				// Validate inputs
+				if (!title.trim()) {
+					alert("Please enter a title!");
+					return;
+				}
+				if (!prices || prices < 0) {
+					alert("Please enter a valid price (non-negative)!");
+					return;
+				}
+				if (!quantity || quantity < 0) {
+					alert("Please enter a valid quantity (non-negative)!");
+					return;
+				}
+				if (!categoryID) {
+					alert("Please select a category!");
+					return;
+				}
+				if (!imageUrl.trim()) {
+					alert("Please enter an image URL!");
+					return;
+				}
+
+				const formData = new FormData();
+				formData.append("title", title);
+				formData.append("description", description);
+				formData.append("prices", prices);
+				formData.append("status", status);
+				formData.append("quantity", quantity);
+				formData.append("categoryID", categoryID);
+				formData.append("imageUrl", imageUrl);
+				if (duration) {
+					formData.append("duration", duration);
+				}
+
+				const token = localStorage.getItem("jwtToken");
+				if (!token) {
+					alert("Please log in again!");
+					window.location.href = "/login";
+					return;
+				}
+
+				console.log("Sending form data:", formData);
+
+				fetch("/owner/course/add", {
+					method: "POST",
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					body: formData
+				})
+						.then(response => {
+							if (!response.ok) {
+								return response.text().then(text => {
+									throw new Error(`HTTP ${response.status}: ${text}`);
+								});
+							}
+							return response.text();
+						})
+						.then(data => {
+							alert("Course added successfully!");
+							window.location.href = "/owner/productsList";
+						})
+						.catch(error => {
+							console.error("Error:", error.message);
+							alert("An error occurred: " + error.message);
+						});
+			});
+		});
 	</script>
+
 </body>
 </html>
