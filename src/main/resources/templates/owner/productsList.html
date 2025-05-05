@@ -283,14 +283,14 @@
         <div class="courses-table">
             <table>
                 <thead>
-                    <tr>
-                        <th style="width: 5%"><input type="checkbox" id="selectAll" /></th>
-                        <th class="col-1">Image</th>
-                        <th class="col-5 text-center">Title</th>
-                        <th class="col-1">Price</th>
-                        <th class="col-2">Status</th>
-                        <th class="col-2 text-center">Action</th>
-                    </tr>
+                <tr>
+                    <th style="width: 5%"><input type="checkbox" id="selectAll" /></th>
+                    <th class="col-1">Image</th>
+                    <th class="col-5 text-center">Title</th>
+                    <th class="col-1">Price</th>
+                    <th class="col-2">Status</th>
+                    <th class="col-2 text-center">Action</th>
+                </tr>
                 </thead>
                 <tbody>
                 <tr th:if="${courses.isEmpty}">
@@ -298,31 +298,33 @@
                 </tr>
                 <tr th:each="course : ${courses}"
                     th:attr="data-courseid=${course.courseID},
-                         data-image=${course.image},
-                         data-title=${course.title},
-                         data-description=${course.description},
-                         data-prices=${course.prices},
-                         data-status=${course.status},
-                         data-createat=${course.createAt},
-                         data-duration=${course.formattedDuration},
-                         data-categoryid=${course.category?.categoryID}">
+             data-image=${course.image},
+             data-title=${course.title},
+             data-description=${course.description},
+             data-prices=${course.prices},
+             data-status=${course.status.name()},
+             data-createat=${course.createAt},
+             data-duration=${course.formattedDuration},
+             data-categoryid=${course.category?.categoryID}">
                     <td><input type="checkbox" class="course-checkbox" /></td>
                     <td><img th:src="${course.image} ?: '/images/default-course.jpg'" class="course-image" alt="Course Image" /></td>
                     <td th:text="${course.title}"></td>
                     <td th:text="${course.formattedPrice}"></td>
-                        <td><span class="status-active">Active</span></td>
-                        <td class="actions">
-                            <div class="actions-item">
-                                <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#editModal" data-course-id="1">
-                                    <i class="fas fa-edit me-1"></i> Edit
-                                </a>
-                                <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#viewModal" data-course-id="1">
-                                    <i class="fas fa-eye me-1"></i> View
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-
+                    <td>
+    <span th:class="${course.status.name() == 'ACTIVE'} ? 'status-active' : 'status-disabled'"
+          th:text="${course.status.name() == 'ACTIVE'} ? 'Active' : 'Inactive'"></span>
+                    </td>
+                    <td class="actions">
+                        <div class="actions-item">
+                            <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#editModal" th:attr="data-course-id=${course.courseID}">
+                                <i class="fas fa-edit me-1"></i> Edit
+                            </a>
+                            <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#viewModal" th:attr="data-course-id=${course.courseID}">
+                                <i class="fas fa-eye me-1"></i> View
+                            </a>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
 
@@ -376,8 +378,8 @@
                                 <div class="mb-3">
                                     <label for="editStatus" class="form-label">Status</label>
                                     <select class="form-select" id="editStatus">
-                                        <option value="Active">Active</option>
-                                        <option value="Disabled">Disabled</option>
+                                        <option value="ACTIVE">Active</option>
+                                        <option value="INACTIVE">Inactive</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
@@ -475,15 +477,21 @@
         if (typeof bootstrap === 'undefined') {
             console.error("Bootstrap JavaScript is not loaded. Please check if the Bootstrap script is loaded correctly.");
         }
-
         document.addEventListener("DOMContentLoaded", function () {
-            // Handle Edit Modal
+
+            let isSubmitting = false; // Biến kiểm tra trạng thái gửi yêu cầu
+
+            // Xử lý Edit Modal
             document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#editModal"]').forEach((button) => {
                 button.addEventListener("click", function (e) {
                     e.preventDefault();
                     const courseId = this.getAttribute("data-course-id");
-                    const editModalElement = document.getElementById("editModal");
-                    const editModal = new bootstrap.Modal(editModalElement);
+                    console.log("Opening modal for course ID:", courseId);
+
+                    if (!courseId || isNaN(parseInt(courseId)) || parseInt(courseId) <= 0) {
+                        alert("Invalid Course ID in button");
+                        return;
+                    }
 
                     const row = this.closest("tr");
                     const image = row.getAttribute("data-image");
@@ -491,37 +499,41 @@
                     const description = row.getAttribute("data-description");
                     const prices = row.getAttribute("data-prices");
                     const status = row.getAttribute("data-status");
+                    console.log("Course status:", status);
                     const createat = row.getAttribute("data-createat");
                     const duration = row.getAttribute("data-duration");
                     const categoryid = row.getAttribute("data-categoryid");
 
-                    document.getElementById("editCourseID").value = courseId;
-                    document.getElementById("editImage").value = image;
-                    document.getElementById("editTitle").value = title;
-                    document.getElementById("editDescription").value = description;
-                    document.getElementById("editPrices").value = prices;
-                    document.getElementById("editStatus").value = status;
-                    document.getElementById("editCreateAt").value = createat;
-                    document.getElementById("editDuration").value = duration;
-                    document.getElementById("editCategoryID").value = categoryid;
+                    // Điền dữ liệu vào modal
+                    document.getElementById("editCourseID").value = courseId || "";
+                    document.getElementById("editImage").value = image || "";
+                    document.getElementById("editTitle").value = title || "";
+                    document.getElementById("editDescription").value = description || "";
+                    document.getElementById("editPrices").value = prices || "";
+                    document.getElementById("editStatus").value = status || "ACTIVE";
+                    document.getElementById("editCreateAt").value = createat || "";
+                    document.getElementById("editDuration").value = duration || "";
+                    document.getElementById("editCategoryID").value = categoryid || "";
 
+                    const editModalElement = document.getElementById("editModal");
+                    const editModal = new bootstrap.Modal(editModalElement);
                     editModal.show();
 
+                    // Xử lý đóng modal
                     editModalElement.addEventListener("hidden.bs.modal", function () {
                         document.querySelectorAll(".modal-backdrop").forEach((backdrop) => backdrop.remove());
                         document.body.classList.remove("modal-open");
                         document.body.style.overflow = "auto";
-                    });
+                    }, { once: true });
                 });
             });
 
-            // Handle View Modal
+            // Xử lý View Modal
             document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#viewModal"]').forEach((button) => {
                 button.addEventListener("click", function (e) {
                     e.preventDefault();
                     const courseId = this.getAttribute("data-course-id");
-                    const viewModalElement = document.getElementById("viewModal");
-                    const viewModal = new bootstrap.Modal(viewModalElement);
+                    console.log("Opening view modal for course ID:", courseId);
 
                     const row = this.closest("tr");
                     const image = row.getAttribute("data-image");
@@ -533,61 +545,105 @@
                     const duration = row.getAttribute("data-duration");
                     const categoryid = row.getAttribute("data-categoryid");
 
-                    document.getElementById("viewCourseID").value = courseId;
-                    document.getElementById("viewImage").src = image;
-                    document.getElementById("viewTitle").value = title;
-                    document.getElementById("viewDescription").value = description;
-                    document.getElementById("viewPrices").value = prices;
-                    document.getElementById("viewStatus").value = status;
-                    document.getElementById("viewCreateAt").value = createat;
-                    document.getElementById("viewDuration").value = duration;
-                    document.getElementById("viewCategoryID").value = categoryid;
+                    document.getElementById("viewCourseID").value = courseId || "";
+                    document.getElementById("viewImage").src = image || "/images/default-course.jpg";
+                    document.getElementById("viewTitle").value = title || "";
+                    document.getElementById("viewDescription").value = description || "";
+                    document.getElementById("viewPrices").value = prices || "";
+                    document.getElementById("viewStatus").value = status || "";
+                    document.getElementById("viewCreateAt").value = createat || "";
+                    document.getElementById("viewDuration").value = duration || "";
+                    document.getElementById("viewCategoryID").value = categoryid || "";
 
+                    const viewModalElement = document.getElementById("viewModal");
+                    const viewModal = new bootstrap.Modal(viewModalElement);
                     viewModal.show();
 
                     viewModalElement.addEventListener("hidden.bs.modal", function () {
                         document.querySelectorAll(".modal-backdrop").forEach((backdrop) => backdrop.remove());
                         document.body.classList.remove("modal-open");
                         document.body.style.overflow = "auto";
-                    });
+                    }, { once: true });
                 });
-            });// Nút "Lưu thay đổi"
-            document.getElementById("saveChanges").addEventListener("click", function () {
+            });
+
+            // Xử lý nút "Lưu thay đổi"
+            const saveButton = document.getElementById("saveChanges");
+            const newSaveButton = saveButton.cloneNode(true); // Xóa listener cũ
+            saveButton.parentNode.replaceChild(newSaveButton, saveButton);
+
+            console.log("Attaching click event to saveChanges button");
+            newSaveButton.addEventListener("click", function () {
+                if (isSubmitting) {
+                    console.log("Request already in progress, ignoring click");
+                    return;
+                }
+                isSubmitting = true;
+                newSaveButton.disabled = true;
+
+                const courseIdInput = document.getElementById("editCourseID").value;
+                const courseId = parseInt(courseIdInput);
+                if (isNaN(courseId) || courseId <= 0) {
+                    alert("Invalid Course ID");
+                    newSaveButton.disabled = false;
+                    isSubmitting = false;
+                    return;
+                }
+
+                const durationValue = document.getElementById("editDuration").value;
+                let formattedDuration = "";
+                if (durationValue) {
+                    const [year, month, day] = durationValue.split("-");
+                    formattedDuration = `${day}/${month}/${year}`; // Chuyển YYYY-MM-DD thành dd/MM/yyyy
+                }
+
                 const course = {
-                    id: document.getElementById("editCourseID").value,
-                    image: document.getElementById("editImage").value,
-                    title: document.getElementById("editTitle").value,
-                    description: document.getElementById("editDescription").value,
-                    prices: parseFloat(document.getElementById("editPrices").value),
-                    status: document.getElementById("editStatus").value,
-                    duration: document.getElementById("editDuration").value,
-                    categoryID: document.getElementById("editCategoryID").value
+                    courseID: courseId,
+                    image: document.getElementById("editImage").value || null,
+                    title: document.getElementById("editTitle").value || "",
+                    description: document.getElementById("editDescription").value || "",
+                    prices: parseFloat(document.getElementById("editPrices").value) || 0,
+                    status: document.getElementById("editStatus").value || "ACTIVE",
+                    duration: formattedDuration,
+                    category: {
+                        categoryID: parseInt(document.getElementById("editCategoryID").value) || 0
+                    }
                 };
+
+                console.log("Sending course data:", JSON.stringify(course));
+
+                const token = localStorage.getItem("jwtToken") || "";
+                const editModalElement = document.getElementById("editModal");
+                const editModal = bootstrap.Modal.getInstance(editModalElement);
 
                 fetch("/owner/course/edit", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
                     },
                     body: JSON.stringify(course)
                 })
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error("Cập nhật thất bại.");
+                            return response.text().then(text => {
+                                throw new Error(text || "Cập nhật thất bại.");
+                            });
                         }
                         return response.text();
                     })
                     .then(data => {
-                        alert("Cập nhật thành công!");
-                        location.reload(); // Reload để cập nhật bảng
+                        alert("Cập nhật khóa học thành công!");
+                        editModal.hide();
+                        location.reload();
                     })
                     .catch(error => {
-                        console.error(error);
-                        alert("Đã xảy ra lỗi khi cập nhật.");
+                        console.error("Lỗi:", error.message);
+                        alert("Đã xảy ra lỗi: " + error.message);
+                        newSaveButton.disabled = false;
+                        isSubmitting = false;
                     });
-
-            // Handle Pagination 
-            // Initial update for pagination info
+            });
         });
     </script>
 </body>

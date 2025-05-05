@@ -29,7 +29,13 @@ public class CourseRepository {
         c.setDescription(rs.getString("Description"));
         c.setPrices(rs.getBigDecimal("Prices"));
         c.setQuantity(rs.getInt("Quantity"));
-        c.setStatus(courseStatus.valueOf(rs.getString("Status")));
+        String status = rs.getString("Status");
+        try {
+            c.setStatus(courseStatus.valueOf(status != null ? status.trim().toUpperCase() : "INACTIVE"));
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid status value: " + status + ", defaulting to INACTIVE");
+            c.setStatus(courseStatus.INACTIVE);
+        }
         c.setDuration(rs.getObject("Duration", LocalDateTime.class));
         c.setCreateAt(rs.getObject("CreateAt", LocalDateTime.class));
         String image = rs.getString("Image");
@@ -210,7 +216,7 @@ public class CourseRepository {
 	    }
 
     public void updateCourse(course course) {
-        String sql = "UPDATE course SET Title = ?, Description = ?, Prices = ?, Status = ?, Image = ? WHERE CourseID = ?";
+        String sql = "UPDATE course SET Title = ?, Description = ?, Prices = ?, Status = ?, Image = ?, Duration = ?, CategoryID = ? WHERE CourseID = ?";
         try {
             jdbcTemplate.update(sql,
                     course.getTitle(),
@@ -218,6 +224,8 @@ public class CourseRepository {
                     course.getPrices(),
                     course.getStatus().toString(),
                     course.getImage(),
+                    course.getDuration(),
+                    course.getCategory() != null ? course.getCategory().getCategoryID() : null,
                     course.getCourseID());
         } catch (Exception e) {
             throw new RuntimeException("Error updating course with ID " + course.getCourseID() + ": " + e.getMessage());
