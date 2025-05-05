@@ -195,6 +195,13 @@
             gap: 5px;
         }
 
+        .main-content .modal .course-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
         .main-content .pagination-button {
             margin: 0 5px;
             padding: 5px 10px;
@@ -298,13 +305,16 @@
                 </tr>
                 <tr th:each="course : ${courses}"
                     th:attr="data-courseid=${course.courseID},
-                             data-image=${course.image},
-                             data-title=${course.title},
-                             data-description=${course.description},
-                             data-prices=${course.prices},
-                             data-status=${course.status.name()},
-                             data-quantity=${course.quantity},
-                             data-categoryid=${course.category?.categoryID}">
+             data-image=${course.image},
+             data-title=${course.title},
+             data-description=${course.description},
+             data-prices=${course.prices},
+             data-status=${course.status.name()},
+             data-quantity=${course.quantity},
+             data-createat=${#temporals.format(course.createAt, 'dd/MM/yyyy')},
+             data-duration=${course.duration != null ? #temporals.format(course.duration, 'dd/MM/yyyy') : 'Không có'},
+             data-categoryid=${course.category?.categoryID},
+             data-categoryname=${course.category?.categoryName != null ? course.category.categoryName : 'Không có danh mục'}">
                     <td><input type="checkbox" class="course-checkbox" /></td>
                     <td><img th:src="${course.image} ?: '/images/default-course.jpg'" class="course-image" alt="Course Image" /></td>
                     <td th:text="${course.title}"></td>
@@ -442,16 +452,20 @@
                                     <input type="text" class="form-control" id="viewStatus" readonly />
                                 </div>
                                 <div class="mb-3">
+                                    <label for="viewQuantity" class="form-label">Quantity</label>
+                                    <input type="text" class="form-control" id="viewQuantity" readonly />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="viewCategoryName" class="form-label">Category</label>
+                                    <input type="text" class="form-control" id="viewCategoryName" readonly />
+                                </div>
+                                <div class="mb-3">
                                     <label for="viewCreateAt" class="form-label">Created At</label>
                                     <input type="text" class="form-control" id="viewCreateAt" readonly />
                                 </div>
                                 <div class="mb-3">
                                     <label for="viewDuration" class="form-label">Duration</label>
                                     <input type="text" class="form-control" id="viewDuration" readonly />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="viewCategoryID" class="form-label">Category ID</label>
-                                    <input type="text" class="form-control" id="viewCategoryID" readonly />
                                 </div>
                             </div>
                         </div>
@@ -478,7 +492,7 @@
 
             let isSubmitting = false;
 
-            function loadCategories(selectedCategoryId) {
+            function loadCategories(selectedCategoryId, callback) {
                 const token = localStorage.getItem("jwtToken");
                 if (!token) {
                     alert("Vui lòng đăng nhập lại!");
@@ -513,6 +527,7 @@
                             }
                             categorySelect.appendChild(option);
                         });
+                        if (callback) callback(categories);
                     })
                     .catch(error => {
                         console.error("Error loading categories:", error);
@@ -524,7 +539,7 @@
                 button.addEventListener("click", function (e) {
                     e.preventDefault();
                     const courseId = this.getAttribute("data-course-id");
-                    console.log("Opening modal for course ID:", courseId);
+                    console.log("Opening edit modal for course ID:", courseId);
 
                     if (!courseId || isNaN(parseInt(courseId)) || parseInt(courseId) <= 0) {
                         alert("Invalid Course ID in button");
@@ -547,6 +562,7 @@
                     document.getElementById("editPrices").value = prices || "";
                     document.getElementById("editStatus").value = status || "ACTIVE";
                     document.getElementById("editQuantity").value = quantity || "0";
+
                     loadCategories(categoryid);
 
                     const editModalElement = document.getElementById("editModal");
@@ -567,6 +583,11 @@
                     const courseId = this.getAttribute("data-course-id");
                     console.log("Opening view modal for course ID:", courseId);
 
+                    if (!courseId || isNaN(parseInt(courseId)) || parseInt(courseId) <= 0) {
+                        alert("Invalid Course ID in button");
+                        return;
+                    }
+
                     const row = this.closest("tr");
                     const image = row.getAttribute("data-image");
                     const title = row.getAttribute("data-title");
@@ -574,7 +595,9 @@
                     const prices = row.getAttribute("data-prices");
                     const status = row.getAttribute("data-status");
                     const quantity = row.getAttribute("data-quantity");
-                    const categoryid = row.getAttribute("data-categoryid");
+                    const createat = row.getAttribute("data-createat");
+                    const duration = row.getAttribute("data-duration");
+                    const categoryname = row.getAttribute("data-categoryname");
 
                     document.getElementById("viewCourseID").value = courseId || "";
                     document.getElementById("viewImage").src = image || "/images/default-course.jpg";
@@ -583,7 +606,9 @@
                     document.getElementById("viewPrices").value = prices || "";
                     document.getElementById("viewStatus").value = status || "";
                     document.getElementById("viewQuantity").value = quantity || "0";
-                    document.getElementById("viewCategoryID").value = categoryid || "";
+                    document.getElementById("viewCategoryName").value = categoryname || "Không có danh mục";
+                    document.getElementById("viewCreateAt").value = createat || "Không có";
+                    document.getElementById("viewDuration").value = duration || "Không có";
 
                     const viewModalElement = document.getElementById("viewModal");
                     const viewModal = new bootstrap.Modal(viewModalElement);

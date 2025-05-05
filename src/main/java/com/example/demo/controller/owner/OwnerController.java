@@ -1,3 +1,4 @@
+
 package com.example.demo.controller.owner;
 
 import com.example.demo.model.category;
@@ -118,6 +119,10 @@ public class OwnerController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Quantity must be non-negative");
             }
 
+            // Lấy khóa học hiện tại từ cơ sở dữ liệu
+            course existingCourse = courseService.getCourseById(courseDTO.getCourseID());
+
+            // Tạo object course mới với dữ liệu từ DTO
             course course = new course();
             course.setCourseID(courseDTO.getCourseID());
             course.setTitle(courseDTO.getTitle());
@@ -126,15 +131,16 @@ public class OwnerController {
             course.setStatus(courseStatus.valueOf(courseDTO.getStatus()));
             course.setImage(courseDTO.getImage());
             course.setQuantity(courseDTO.getQuantity());
-            course.setDuration(null);
+            course.setDuration(existingCourse.getDuration()); // Giữ Duration hiện tại
+            course.setCreateAt(existingCourse.getCreateAt()); // Giữ CreateAt hiện tại
 
             if (courseDTO.getCategory() != null && courseDTO.getCategory().getCategoryID() > 0) {
                 category cat = new category();
                 cat.setCategoryID(courseDTO.getCategory().getCategoryID());
                 course.setCategory(cat);
             } else {
-                course.setCategory(null);
-                logger.warn("Category is null or invalid, setting course category to null");
+                course.setCategory(existingCourse.getCategory());
+                logger.warn("Category is null or invalid, keeping existing category");
             }
 
             courseService.updateCourse(course);
