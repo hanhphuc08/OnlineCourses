@@ -14,6 +14,7 @@ public class users {
 	    private LocalDateTime createDate;
 	    private LocalDateTime updateDate;
 	    private role role;
+	private int status;
 
 	
 	    public users() {}
@@ -118,5 +119,13 @@ public class users {
 	    public void setRole(role role) {
 	        this.role = role;
 	    }
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
 
 }

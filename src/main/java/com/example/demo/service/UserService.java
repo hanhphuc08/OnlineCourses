@@ -349,6 +349,28 @@ public class UserService implements UserDetailsService {
     }
 
     public List<users> findAllCustomers() {
-        return userRepository.findAllByRoleID("Customer");
+        logger.info("Fetching all staff members with role Customer");
+        List<users> customerList = userRepository.findAllByRoleID("Customer");
+        logger.info("Found {} Customer members", customerList.size());
+        if (customerList.isEmpty()) {
+            logger.warn("No staff members found. Checking database for Customer users...");
+            List<users> allUsers = userRepository.findAllByRoleID("Staff");
+            logger.info("Total users with Customer role: {}", allUsers.size());
+            allUsers.forEach(user -> logger.info("User: {}, Role: {}", user.getEmail(), user.getRole().getRoleID()));
+        }
+        return customerList;
+    }
+
+    public List<users> findAllStaff() {
+        logger.info("Fetching all staff members with role Staff");
+        List<users> staffList = userRepository.findAllByRoleID("Staff");
+        logger.info("Found {} staff members", staffList.size());
+        if (staffList.isEmpty()) {
+            logger.warn("No staff members found. Checking database for Staff users...");
+            List<users> allUsers = userRepository.findAllByRoleID("Staff");
+            logger.info("Total users with Staff role: {}", allUsers.size());
+            allUsers.forEach(user -> logger.info("User: {}, Role: {}", user.getEmail(), user.getRole().getRoleID()));
+        }
+        return staffList;
     }
 } 

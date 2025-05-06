@@ -38,7 +38,7 @@ public class UserRepository {
             user.setEmailCode(rs.getString("EmailCode"));
             user.setCreateDate(rs.getTimestamp("CreateDate").toLocalDateTime());
             user.setUpdateDate(rs.getTimestamp("UpdateDate").toLocalDateTime());
-            
+            user.setStatus(rs.getInt("Status"));
             // Map role information
             String roleId = rs.getString("RoleID");
             String roleName = rs.getString("RoleName");
@@ -199,15 +199,16 @@ public class UserRepository {
     }
 
     public void updateUser(users user) {
-        String sql = "UPDATE users SET fullname = ?, phoneNumber = ?, address = ?, gender = ?, updateDate = ? WHERE userID = ?";
+        String sql = "UPDATE users SET fullname = ?, phoneNumber = ?, address = ?, gender = ?, status = ?, updateDate = ? WHERE userID = ?";
         try {
-            int rows = jdbcTemplate.update(sql, 
-                user.getFullname(),
-                user.getPhoneNumber(),
-                user.getAddress(),
-                user.getGender(),
-                LocalDateTime.now(),
-                user.getUserID()
+            int rows = jdbcTemplate.update(sql,
+                    user.getFullname(),
+                    user.getPhoneNumber(),
+                    user.getAddress(),
+                    user.getGender(),
+                    user.getStatus(),
+                    LocalDateTime.now(),
+                    user.getUserID()
             );
             if (rows > 0) {
                 logger.info("Cập nhật thông tin người dùng thành công: userID={}", user.getUserID());
@@ -224,8 +225,14 @@ public class UserRepository {
     public List<users> findAllByRoleID(String roleId) {
         String sql = "SELECT u.*, r.RoleName FROM users u JOIN roles r ON u.RoleID = r.RoleID WHERE r.RoleID = ?";
         try {
+            logger.info("Executing query to find users with roleID: {}", roleId);
             List<users> users = jdbcTemplate.query(sql, new Object[]{roleId}, userRowMapper);
             logger.info("Found {} users with roleID: {}", users.size(), roleId);
+            if (users.isEmpty()) {
+                logger.warn("No users found with roleID: {}. Checking query and data...", roleId);
+            } else {
+                users.forEach(user -> logger.info("User: {}, Role: {}", user.getEmail(), user.getRole().getRoleID()));
+            }
             return users;
         } catch (Exception e) {
             logger.error("Error finding users by roleID {}: {}", roleId, e.getMessage());
