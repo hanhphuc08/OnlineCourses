@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,9 +18,11 @@ import com.example.demo.model.categoryType;
 import com.example.demo.model.course;
 import com.example.demo.model.courseStatus;
 import com.example.demo.model.learningPath;
+import com.example.demo.service.UserService;
 
 @Repository
 public class CourseRepository {
+	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
@@ -82,7 +86,8 @@ public class CourseRepository {
     public List<course> findAllCourses() {
         String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, cat.CreateDate, cat.UpdateDate " +
                 "FROM course c " +
-                "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID";
+                "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
+                "WHERE c.Status = 'ACTIVE'";
         try {
             List<course> courses = jdbcTemplate.query(sql, this::mapRowToCourse);
             System.out.println("CourseRepository: Fetched " + courses.size() + " courses");
@@ -96,9 +101,9 @@ public class CourseRepository {
     // Get courses by CategoryID with their categories
     public List<course> findCoursesByCategoryId(int categoryId) {
         String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, cat.CreateDate, cat.UpdateDate " +
-                     "FROM course c " +
-                     "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
-                     "WHERE c.CategoryID = ?";
+                "FROM course c " +
+                "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
+                "WHERE c.CategoryID = ? AND c.Status = 'ACTIVE'";
         try {
             return jdbcTemplate.query(sql, this::mapRowToCourse, categoryId);
         } catch (Exception e) {
@@ -120,9 +125,9 @@ public class CourseRepository {
     
     public course findById(int courseID) {
         String sql = "SELECT c.*, cat.* " +
-                     "FROM course c " +
-                     "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
-                     "WHERE c.CourseID = ?";
+                "FROM course c " +
+                "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
+                "WHERE c.CourseID = ? AND c.Status = 'ACTIVE'";
 
         try {
             course courses = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
@@ -171,11 +176,11 @@ public class CourseRepository {
 		        params.add("%" + keywords[i] + "%");
 		    }
 		    String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, " +
-		             "cat.CreateDate, cat.UpdateDate " +
-		             "FROM course c " +
-		             "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
-		             "WHERE " + whereClause.toString() + " " +
-		             "ORDER BY c.CreateAt DESC";
+	                 "cat.CreateDate, cat.UpdateDate " +
+	                 "FROM course c " +
+	                 "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
+	                 "WHERE " + whereClause.toString() + " AND c.Status = 'ACTIVE' " +
+	                 "ORDER BY c.CreateAt DESC";
 
 		    try {
 		        return jdbcTemplate.query(sql, params.toArray(), this::mapRowToCourse);
@@ -187,10 +192,11 @@ public class CourseRepository {
 		// Get latest courses, sorted by CreateAt descending, limited to a specific number
 		public List<course> findLatestCourses(int limit) {
 		    String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, cat.CreateDate, cat.UpdateDate " +
-		                 "FROM course c " +
-		                 "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
-		                 "ORDER BY c.CreateAt DESC " +
-		                 "LIMIT ?";
+	                 "FROM course c " +
+	                 "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
+	                 "WHERE c.Status = 'ACTIVE' " +
+	                 "ORDER BY c.CreateAt DESC " +
+	                 "LIMIT ?";
 		    try {
 		        return jdbcTemplate.query(sql, new Object[]{limit}, this::mapRowToCourse);
 		    } catch (Exception e) {
@@ -201,11 +207,11 @@ public class CourseRepository {
 		 // get courses CategoryTypeId
 	    public List<course> findCoursesByCategoryTypeId(int categoryTypeId) {
 	        String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, " +
-	                    "cat.CreateDate, cat.UpdateDate " +
-	                    "FROM course c " +
-	                    "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
-	                    "LEFT JOIN category_type ct ON cat.CategoryTypeID = ct.CategoryTypeID " +
-	                    "WHERE ct.CategoryTypeID = ?";
+	                 "cat.CreateDate, cat.UpdateDate " +
+	                 "FROM course c " +
+	                 "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
+	                 "LEFT JOIN category_type ct ON cat.CategoryTypeID = ct.CategoryTypeID " +
+	                 "WHERE ct.CategoryTypeID = ? AND c.Status = 'ACTIVE'";
 	        
 	        try {
 	            return jdbcTemplate.query(sql, new Object[]{categoryTypeId}, this::mapRowToCourse);
@@ -232,6 +238,7 @@ public class CourseRepository {
             throw new RuntimeException("Error updating course with ID " + course.getCourseID() + ": " + e.getMessage());
         }
     }
+
     public void addCourse(course course) {
         String sql = "INSERT INTO course (Title, Description, Prices, Status, Image, Duration, CategoryID, Quantity, CreateAt) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -250,4 +257,51 @@ public class CourseRepository {
             throw new RuntimeException("Error adding course: " + e.getMessage());
         }
     }
+
+    
+    public long countAllCourses() {
+        String sql = "SELECT COUNT(*) FROM course";
+        try {
+            Long count = jdbcTemplate.queryForObject(sql, Long.class);
+            logger.info("Đếm tổng số khóa học: {}", count);
+            return count != null ? count : 0;
+        } catch (Exception e) {
+            logger.error("Lỗi khi đếm tổng số khóa học: {}", e.getMessage());
+            throw new RuntimeException("Lỗi khi đếm tổng số khóa học: " + e.getMessage());
+        }
+    }
+
+    public long countActiveCourses() {
+        String sql = "SELECT COUNT(*) FROM course WHERE Status = 'ACTIVE'";
+        try {
+            Long count = jdbcTemplate.queryForObject(sql, Long.class);
+            logger.info("Đếm số khóa học đang hoạt động: {}", count);
+            return count != null ? count : 0;
+        } catch (Exception e) {
+            logger.error("Lỗi khi đếm số khóa học đang hoạt động: {}", e.getMessage());
+            throw new RuntimeException("Lỗi khi đếm số khóa học đang hoạt động: " + e.getMessage());
+        }
+    }
+    
+    public List<Object[]> findTopCoursesByEnrollments(int limit) {
+        String sql = "SELECT c.CourseID, c.Title, COUNT(od.CourseID) as enrollmentCount " +
+                     "FROM course c " +
+                     "LEFT JOIN orderDetail od ON c.CourseID = od.CourseID " +
+                     "GROUP BY c.CourseID, c.Title " +
+                     "ORDER BY enrollmentCount DESC " +
+                     "LIMIT ?";
+        try {
+            return jdbcTemplate.query(sql, new Object[]{limit}, (rs, rowNum) -> new Object[]{
+                rs.getInt("CourseID"),
+                rs.getString("Title"),
+                rs.getLong("enrollmentCount")
+            });
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy top khóa học bán chạy: {}", e.getMessage());
+            throw new RuntimeException("Lỗi khi lấy top khóa học bán chạy: " + e.getMessage());
+        }
+    }
+    
+    
+    
 }

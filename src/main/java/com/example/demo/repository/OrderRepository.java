@@ -253,5 +253,177 @@ public class OrderRepository {
             throw new RuntimeException("Không thể lấy danh sách đơn hàng: " + e.getMessage());
         }
     }
+	
+	
+	 public long countPendingOrders() {
+	        String sql = "SELECT COUNT(*) FROM orders WHERE OrderStatus = 'PENDING'";
+	        try {
+	            Long count = jdbcTemplate.queryForObject(sql, Long.class);
+	            logger.info("Đếm số đơn hàng đang chờ xử lý: {}", count);
+	            return count != null ? count : 0;
+	        } catch (Exception e) {
+	            logger.error("Lỗi khi đếm số đơn hàng đang chờ xử lý: {}", e.getMessage());
+	            throw new RuntimeException("Lỗi khi đếm số đơn hàng đang chờ xử lý: " + e.getMessage());
+	        }
+	    }
+	 
+	 public List<Object[]> findRecentOrders(int limit) {
+	        String sql = "SELECT o.OrderID, o.OrderDate, o.OrderStatus, u.Fullname, MIN(c.Title) as CourseTitle " +
+	                     "FROM orders o " +
+	                     "JOIN users u ON o.UserID = u.UserID " +
+	                     "JOIN orderDetail od ON o.OrderID = od.OrderID " +
+	                     "JOIN course c ON od.CourseID = c.CourseID " +
+	                     "GROUP BY o.OrderID, o.OrderDate, o.OrderStatus, u.Fullname " +
+	                     "ORDER BY o.OrderDate DESC " +
+	                     "LIMIT ?";
+	        try {
+	            return jdbcTemplate.query(sql, new Object[]{limit}, (rs, rowNum) -> new Object[]{
+	                rs.getInt("OrderID"),
+	                rs.getTimestamp("OrderDate").toLocalDateTime(),
+	                rs.getString("OrderStatus"),
+	                rs.getString("Fullname"),
+	                rs.getString("CourseTitle")
+	            });
+	        } catch (Exception e) {
+	            logger.error("Lỗi khi lấy danh sách đơn hàng gần đây: {}", e.getMessage());
+	            throw new RuntimeException("Lỗi khi lấy danh sách đơn hàng gần đây: " + e.getMessage());
+	        }
+	    }
+	 
+	 
+	 public List<Object[]> findAllOrders(int page, int size, String search, String status) {
+	        StringBuilder sql = new StringBuilder(
+	            "SELECT o.OrderID, o.OrderDate, o.OrderStatus, u.Fullname, o.TotalAmount, MIN(c.Title) as CourseTitle " +
+	            "FROM orders o " +
+	            "JOIN users u ON o.UserID = u.UserID " +
+	            "JOIN orderDetail od ON o.OrderID = od.OrderID " +
+	            "JOIN course c ON od.CourseID = c.CourseID "
+	        );
+
+	        List<Object> params = new ArrayList<>();
+	        if (search != null && !search.trim().isEmpty()) {
+	            sql.append("WHERE (o.OrderID LIKE ? OR u.Fullname LIKE ?) ");
+	            params.add("%" + search + "%");
+	            params.add("%" + search + "%");
+	        }
+	        if (status != null && !status.equals("all")) {
+	            sql.append(search != null && !search.trim().isEmpty() ? "AND " : "WHERE ");
+	            sql.append("o.OrderStatus = ? ");
+	            params.add(status);
+	        }
+
+	        sql.append("GROUP BY o.OrderID, o.OrderDate, o.OrderStatus, u.Fullname, o.TotalAmount " +
+	                   "ORDER BY o.OrderDate DESC " +
+	                   "LIMIT ? OFFSET ?");
+	        params.add(size);
+	        params.add(page * size);
+
+	        try {
+	            return jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) -> new Object[]{
+	                rs.getInt("OrderID"),
+	                rs.getTimestamp("OrderDate").toLocalDateTime(),
+	                rs.getString("OrderStatus"),
+	                rs.getString("Fullname"),
+	                rs.getBigDecimal("TotalAmount"),
+	                rs.getString("CourseTitle")
+	            });
+	        } catch (Exception e) {
+	            logger.error("Lỗi khi lấy danh sách tất cả đơn hàng: {}", e.getMessage());
+	            throw new RuntimeException("Lỗi khi lấy danh sách tất cả đơn hàng: " + e.getMessage());
+	        }
+	    }
+
+	    public long countAllOrders(String search, String status) {
+	        StringBuilder sql = new StringBuilder(
+	            "SELECT COUNT(DISTINCT o.OrderID) " +
+	            "FROM orders o " +
+	            "JOIN users u ON o.UserID = u.UserID " +
+	            "JOIN orderDetail od ON o.OrderID = od.OrderID " +
+	            "JOIN course c ON od.CourseID = c.CourseID "
+	        );
+
+	        List<Object> params = new ArrayList<>();
+	        if (search != null && !search.trim().isEmpty()) {
+	            sql.append("WHERE (o.OrderID LIKE ? OR u.Fullname LIKE ?) ");
+	            params.add("%" + search + "%");
+	            params.add("%" + search + "%");
+	        }
+	        if (status != null && !status.equals("all")) {
+	            sql.append(search != null && !search.trim().isEmpty() ? "AND " : "WHERE ");
+	            sql.append("o.OrderStatus = ? ");
+	            params.add(status);
+	        }
+
+	        try {
+	            Long count = jdbcTemplate.queryForObject(sql.toString(), params.toArray(), Long.class);
+	            return count != null ? count : 0;
+	        } catch (Exception e) {
+	            logger.error("Lỗi khi đếm tổng số đơn hàng: {}", e.getMessage());
+	            throw new RuntimeException("Lỗi khi đếm tổng số đơn hàng: " + e.getMessage());
+	        }
+	    }
+
+	    public Object[] findOrderDetailsById(int orderId) {
+	        String sql = "SELECT o.OrderID, o.OrderDate, o.OrderStatus, o.TotalAmount, o.PromotionID, " +
+	                     "u.UserID, u.Fullname, u.Email, u.PhoneNumber " +
+	                     "FROM orders o " +
+	                     "JOIN users u ON o.UserID = u.UserID " +
+	                     "WHERE o.OrderID = ?";
+	        try {
+	            return jdbcTemplate.queryForObject(sql, new Object[]{orderId}, (rs, rowNum) -> {
+	                Object[] result = new Object[12];
+	                result[0] = rs.getInt("OrderID");
+	                result[1] = rs.getTimestamp("OrderDate").toLocalDateTime();
+	                result[2] = rs.getString("OrderStatus");
+	                result[3] = rs.getBigDecimal("TotalAmount");
+	                result[4] = rs.getObject("PromotionID") != null ? rs.getInt("PromotionID") : null;
+	                result[5] = rs.getInt("UserID");
+	                result[6] = rs.getString("Fullname");
+	                result[7] = rs.getString("Email");
+	                result[8] = rs.getString("PhoneNumber");
+	                return result;
+	            });
+	        } catch (Exception e) {
+	            logger.error("Lỗi khi lấy chi tiết đơn hàng {}: {}", orderId, e.getMessage());
+	            throw new RuntimeException("Lỗi khi lấy chi tiết đơn hàng: " + e.getMessage());
+	        }
+	    }
+
+	    public List<Object[]> findOrderDetailItems(int orderId) {
+	        String sql = "SELECT od.OrderID, od.CourseID, od.Price, c.Title, c.Image, od.PromotionID, p.Code AS PromotionCode, p.DiscountPercentage " +
+	                     "FROM orderDetail od " +
+	                     "JOIN course c ON od.CourseID = c.CourseID " +
+	                     "LEFT JOIN promotion p ON od.PromotionID = p.PromotionID " +
+	                     "WHERE od.OrderID = ?";
+	        try {
+	            return jdbcTemplate.query(sql, new Object[]{orderId}, (rs, rowNum) -> new Object[]{
+	                rs.getInt("OrderID"),
+	                rs.getInt("CourseID"),
+	                rs.getBigDecimal("Price"),
+	                rs.getString("Title"),
+	                rs.getString("Image"),
+	                rs.getObject("PromotionID") != null ? rs.getInt("PromotionID") : null,
+	                rs.getString("PromotionCode"),
+	                rs.getBigDecimal("DiscountPercentage")
+	            });
+	        } catch (Exception e) {
+	            logger.error("Lỗi khi lấy chi tiết khóa học cho đơn hàng {}: {}", orderId, e.getMessage());
+	            return new ArrayList<>();
+	        }
+	    }
+
+	    public void updateOrderStatus(int orderId, String status) {
+	        String sql = "UPDATE orders SET OrderStatus = ? WHERE OrderID = ?";
+	        try {
+	            int rowsAffected = jdbcTemplate.update(sql, status, orderId);
+	            if (rowsAffected == 0) {
+	                throw new RuntimeException("Không tìm thấy đơn hàng với OrderID: " + orderId);
+	            }
+	            logger.info("Cập nhật trạng thái đơn hàng {} thành {}", orderId, status);
+	        } catch (Exception e) {
+	            logger.error("Lỗi khi cập nhật trạng thái đơn hàng {}: {}", orderId, e.getMessage());
+	            throw new RuntimeException("Lỗi khi cập nhật trạng thái đơn hàng: " + e.getMessage());
+	        }
+	    }
 
 }

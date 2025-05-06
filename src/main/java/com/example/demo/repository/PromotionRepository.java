@@ -2,12 +2,14 @@ package com.example.demo.repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.model.course;
 import com.example.demo.model.promotion;
 
 @Repository
@@ -21,14 +23,43 @@ public class PromotionRepository {
         promotion promotion = new promotion();
         promotion.setPromotionID(rs.getInt("PromotionID"));
         promotion.setCode(rs.getString("Code"));
-        promotion.setDiscountPercentage(rs.getBigDecimal("DiscountPercentage"));
+        promotion.setDiscountPercentage(rs.getDouble("DiscountPercentage"));
         promotion.setExpirationDate(rs.getTimestamp("ExpirationDate").toLocalDateTime());
         promotion.setCourseID(rs.getInt("CourseID"));
         promotion.setStatus(rs.getString("Status"));
         promotion.setCreateAt(rs.getTimestamp("CreateAt").toLocalDateTime());
         promotion.setUsageLimit(rs.getInt("UsageLimit"));
         promotion.setUsageCount(rs.getInt("UsageCount"));
+        
+     // Map course (nếu có)
+        course course = new course();
+        course.setCourseID(rs.getInt("CourseID"));
+        try {
+            course.setTitle(rs.getString("CourseTitle"));
+        } catch (SQLException e) {
+            course.setTitle(null); // Trường CourseTitle có thể không tồn tại trong một số truy vấn
+        }
+        promotion.setCourse(course);
         return promotion;
+    }
+	
+	public List<promotion> getAllPromotions() {
+        String sql = "SELECT p.*, c.Title as CourseTitle " +
+                     "FROM promotion p " +
+                     "LEFT JOIN course c ON p.CourseID = c.CourseID";
+        return jdbcTemplate.query(sql, this::mapRowToPromotion);
+    }
+	
+	public promotion findByCode(String code) {
+        String sql = "SELECT p.*, c.Title as CourseTitle " +
+                     "FROM promotion p " +
+                     "LEFT JOIN course c ON p.CourseID = c.CourseID " +
+                     "WHERE p.Code = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{code}, this::mapRowToPromotion);
+        } catch (Exception e) {
+            return null;
+        }
     }
 	
 	public promotion findByCodeAndCourseId(String code, int courseId) {
@@ -87,5 +118,31 @@ public class PromotionRepository {
 	        throw e;
 	    }
 	}
-
+	public void addPromotion(promotion promotion) {
+        String sql = "INSERT INTO promotion (Code, DiscountPercentage, ExpirationDate, CourseID, Status, CreateAt, UsageLimit, UsageCount) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql,
+                promotion.getCode(),
+                promotion.getDiscountPercentage(),
+                promotion.getExpirationDate(),
+                promotion.getCourseID(),
+                promotion.getStatus(),
+                promotion.getCreateAt(),
+                promotion.getUsageLimit(),
+                promotion.getUsageCount());
+    }
+	
+	public void updatePromotion(promotion promotion) {
+        String sql = "UPDATE promotion SET Code = ?, DiscountPercentage = ?, ExpirationDate = ?, CourseID = ?, " +
+                     "Status = ?, UsageLimit = ?, UsageCount = ? WHERE PromotionID = ?";
+        jdbcTemplate.update(sql,
+                promotion.getCode(),
+                promotion.getDiscountPercentage(),
+                promotion.getExpirationDate(),
+                promotion.getCourseID(),
+                promotion.getStatus(),
+                promotion.getUsageLimit(),
+                promotion.getUsageCount(),
+                promotion.getPromotionID());
+    }
 }

@@ -6,13 +6,24 @@ import java.time.LocalDateTime;
 public class promotion {
 	private int promotionID;
     private String code;
-    private BigDecimal discountPercentage;
+    private Double discountPercentage;
     private LocalDateTime expirationDate;
     private int courseID;
     private String status;
     private LocalDateTime createAt;
     private int usageLimit;
     private int usageCount;
+    
+    
+    private course course;
+    
+    
+	public course getCourse() {
+		return course;
+	}
+	public void setCourse(course course) {
+		this.course = course;
+	}
 	public int getPromotionID() {
 		return promotionID;
 	}
@@ -25,10 +36,10 @@ public class promotion {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	public BigDecimal getDiscountPercentage() {
+	public Double getDiscountPercentage() {
 		return discountPercentage;
 	}
-	public void setDiscountPercentage(BigDecimal discountPercentage) {
+	public void setDiscountPercentage(Double discountPercentage) {
 		this.discountPercentage = discountPercentage;
 	}
 	public LocalDateTime getExpirationDate() {

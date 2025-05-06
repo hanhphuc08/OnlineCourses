@@ -351,4 +351,12 @@ public class UserService implements UserDetailsService {
     public List<users> findAllCustomers() {
         return userRepository.findAllByRoleID("Customer");
     }
+    
+    public long countAllStudents() {
+        logger.info("Đếm tổng số học viên");
+        return userRepository.countAllStudents();
+    }
+    
+    
+    
 } 

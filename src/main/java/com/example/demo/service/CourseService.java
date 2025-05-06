@@ -13,7 +13,10 @@ import java.util.List;
 @Service
 public class CourseService {
 
+
 	private static final Logger logger = LoggerFactory.getLogger(CourseService.class);
+
+
 
 	@Autowired
 	private CourseRepository courseRepository;
@@ -50,6 +53,7 @@ public class CourseService {
 				course.getCourseID(), course.getStatus(), course.getQuantity());
 		courseRepository.updateCourse(course);
 	}
+
 	public void addCourse(course course) {
 		if (course.getTitle() == null || course.getTitle().trim().isEmpty()) {
 			throw new IllegalArgumentException("Title is required");
@@ -64,4 +68,23 @@ public class CourseService {
 				course.getTitle(), course.getStatus(), course.getQuantity());
 		courseRepository.addCourse(course);
 	}
+
+
+	
+	public long countAllCourses() {
+        logger.info("Đếm tổng số khóa học");
+        return courseRepository.countAllCourses();
+    }
+
+    public long countActiveCourses() {
+        logger.info("Đếm số khóa học đang hoạt động");
+        return courseRepository.countActiveCourses();
+    }
+    public List<Object[]> findTopCoursesByEnrollments(int limit) {
+        logger.info("Lấy top {} khóa học bán chạy nhất", limit);
+        return courseRepository.findTopCoursesByEnrollments(limit);
+    }
+ 
+	
 }
+

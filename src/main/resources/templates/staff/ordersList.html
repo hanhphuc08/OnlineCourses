@@ -236,18 +236,20 @@
         </ol>
 
         <!-- Filters -->
-        <div class="filters">
+        <form th:action="@{/staff/ordersList}" method="get" class="filters">
             <div class="search-bar">
-                <input type="text" class="form-control" placeholder="Search Order" />
+                <input type="text" class="form-control" name="search" th:value="${search}" placeholder="Tìm kiếm đơn hàng" />
             </div>
             <div class="status-filter">
-                <select class="form-select">
-                    <option selected>Status</option>
-                    <option value="pending">Chưa phản hồi</option>
-                    <option value="completed">Đã phản hồi</option>
+                <select class="form-select" name="status">
+                    <option value="all" th:selected="${status == 'all'}">Tất cả trạng thái</option>
+                    <option value="PENDING" th:selected="${status == 'PENDING'}">Chưa phản hồi</option>
+                    <option value="CONFIRM" th:selected="${status == 'CONFIRM'}">Đã xác nhận</option>
+                    <option value="CANCEL" th:selected="${status == 'CANCEL'}">Đã hủy</option>
                 </select>
             </div>
-        </div>
+            <button type="submit" class="btn btn-primary">Lọc</button>
+        </form>
 
         <!-- Orders Table -->
         <div class="orders-table">
@@ -265,45 +267,40 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr data-orderid="1" data-customer="John Alex" data-totalamount="734.28" data-status="Pending">
-                        <td><input type="checkbox" /></td>
-                        <td>#001</td>
-                        <td>Hạnh Phúc đáng ghéc</td>
-                        <td>1.500.000 VNĐ</td>
-                        <td><span class="status-pending">Chưa phản hồi</span></td>
+                    <tr th:each="order : ${orders}" th:attr="data-orderid=${order[0]},data-customer=${order[3]},data-totalamount=${order[4]},data-status=${order[2]}">
+                        <td><input type="checkbox" class="order-checkbox" /></td>
+                        <td th:text="'#' + ${order[0]}"></td>
+                        <td th:text="${order[3]}"></td>
+                        <td th:text="${#numbers.formatDecimal(order[4], 0, 0, 'COMMA')} + ' VNĐ'"></td>
+                        <td>
+                            <span th:switch="${order[2]}">
+                                <span th:case="'PENDING'" class="status-pending">Chưa phản hồi</span>
+                                <span th:case="'CONFIRM'" class="status-confirm">Đã xác nhận</span>
+                                <span th:case="'CANCEL'" class="status-cancel">Đã hủy</span>
+                                <span th:case="*" class="status-pending">Không xác định</span>
+                            </span>
+                        </td>
                         <td class="actions">
                             <div class="actions-item">
-                                <a class="view" th:href="@{/staff/orderDetail}">
-                                    <i class="fas fa-eye me-1"></i> View Detail
+                                <a class="view" th:href="@{/staff/orderDetail(orderId=${order[0]})}">
+                                    <i class="fas fa-eye me-1"></i> Xem chi tiết
                                 </a>
                             </div>
                         </td>
                     </tr>
-                    <tr data-orderid="2" data-customer="Jane Smith" data-totalamount="200.00" data-status="Completed">
-                        <td><input type="checkbox" /></td>
-                        <td>#002</td>
-                        <td>Athu dth vá</td>
-                        <td>3.500.000 VNĐ</td>
-                        <td><span class="status-completed">Đã phản hồi</span></td>
-                        <td class="actions">
-                            <div class="actions-item">
-                                <a class="view" th:href="@{/staff/orderDetail}">
-                                    <i class="fas fa-eye me-1"></i> View Detail
-                                </a>
-                            </div>
-                        </td>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="6" class="text-center">Chưa có đơn hàng nào</td>
                     </tr>
                 </tbody>
             </table>
 
             <hr />
             <div class="pagination-container">
-                <span class="pagination-info">Showing 1 to 10 of 14 entries</span>
+                <span class="pagination-info" th:text="'Hiển thị ' + ${(currentPage * pageSize + 1)} + ' đến ' + ${#lists.size(orders) + (currentPage * pageSize)} + ' của ' + ${totalOrders} + ' đơn hàng'"></span>
                 <div class="pagination-buttons">
-                    <button class="pagination-button">Previous</button>
-                    <button class="pagination-button active">1</button>
-                    <button class="pagination-button">2</button>
-                    <button class="pagination-button">Next</button>
+                    <a class="pagination-button" th:classappend="${currentPage == 0} ? 'disabled'" th:href="@{/staff/ordersList(page=${currentPage - 1},size=${pageSize},search=${search},status=${status})}">Trước</a>
+                    <a class="pagination-button" th:classappend="${currentPage == page} ? 'active'" th:href="@{/staff/ordersList(page=${page},size=${pageSize},search=${search},status=${status})}" th:each="page : ${#numbers.sequence(0, totalPages - 1)}" th:text="${page + 1}"></a>
+                    <a class="pagination-button" th:classappend="${currentPage == totalPages - 1} ? 'disabled'" th:href="@{/staff/ordersList(page=${currentPage + 1},size=${pageSize},search=${search},status=${status})}">Sau</a>
                 </div>
             </div>
         </div>
@@ -323,5 +320,33 @@
     <script src="js/theme.30e7c8f9.js"></script>
     <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
     <script src="js/demo.9833433a.js"></script>
+    
+    <script>
+        if (typeof bootstrap === 'undefined') {
+            console.error("Bootstrap JavaScript is not loaded. Please check if the Bootstrap script is loaded correctly.");
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Select all checkboxes
+            const selectAll = document.getElementById("selectAll");
+            const checkboxes = document.querySelectorAll(".order-checkbox");
+
+            selectAll.addEventListener("change", function () {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = selectAll.checked;
+                });
+            });
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", function () {
+                    if (!this.checked) {
+                        selectAll.checked = false;
+                    } else if (Array.from(checkboxes).every(cb => cb.checked)) {
+                        selectAll.checked = true;
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

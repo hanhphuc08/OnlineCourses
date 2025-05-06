@@ -232,4 +232,17 @@ public class UserRepository {
             return new ArrayList<>();
         }
     }
+    
+    public long countAllStudents() {
+        String sql = "SELECT COUNT(*) FROM users WHERE RoleID = 'CUSTOMER'";
+        try {
+            Long count = jdbcTemplate.queryForObject(sql, Long.class);
+            logger.info("Đếm tổng số học viên: {}", count);
+            return count != null ? count : 0;
+        } catch (Exception e) {
+            logger.error("Lỗi khi đếm tổng số học viên: {}", e.getMessage());
+            throw new RuntimeException("Lỗi khi đếm tổng số học viên: " + e.getMessage());
+        }
+    }
+    
 } 

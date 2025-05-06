@@ -396,9 +396,12 @@
                                     <input type="number" min="0" class="form-control" id="editQuantity" />
                                 </div>
                                 <div class="mb-3">
-                                    <label for="editCategoryID" class="form-label">Category</label>
+                                    <label for="editCategoryID" class="form-label">Danh mục</label>
                                     <select class="form-select" id="editCategoryID">
-                                        <option value="0">Select a category</option>
+                                        <option value="0">Chọn danh mục</option>
+                                        <option th:each="cat : ${categories}" 
+                                                th:value="${cat.categoryID}" 
+                                                th:text="${cat.categoryName}"></option>
                                     </select>
                                 </div>
                             </div>
@@ -488,53 +491,16 @@
         if (typeof bootstrap === 'undefined') {
             console.error("Bootstrap JavaScript is not loaded. Please check if the Bootstrap script is loaded correctly.");
         }
+
         document.addEventListener("DOMContentLoaded", function () {
+            // Handle "Select All" checkbox
+            document.getElementById("selectAll").addEventListener("change", function () {
+                document.querySelectorAll(".course-checkbox").forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+            });
 
-            let isSubmitting = false;
-
-            function loadCategories(selectedCategoryId, callback) {
-                const token = localStorage.getItem("jwtToken");
-                if (!token) {
-                    alert("Vui lòng đăng nhập lại!");
-                    window.location.href = "/login";
-                    return;
-                }
-
-                fetch("/owner/categories", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + token
-                    }
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.text().then(text => {
-                                throw new Error(`HTTP ${response.status}: ${text}`);
-                            });
-                        }
-                        return response.json();
-                    })
-                    .then(categories => {
-                        const categorySelect = document.getElementById("editCategoryID");
-                        categorySelect.innerHTML = '<option value="0">Select a category</option>';
-                        categories.forEach(category => {
-                            const option = document.createElement("option");
-                            option.value = category.categoryID;
-                            option.textContent = category.categoryName;
-                            if (category.categoryID == selectedCategoryId) {
-                                option.selected = true;
-                            }
-                            categorySelect.appendChild(option);
-                        });
-                        if (callback) callback(categories);
-                    })
-                    .catch(error => {
-                        console.error("Error loading categories:", error);
-                        alert("Không thể tải danh sách danh mục: " + error.message);
-                    });
-            }
-
+            // Handle Edit Modal
             document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#editModal"]').forEach((button) => {
                 button.addEventListener("click", function (e) {
                     e.preventDefault();
@@ -542,7 +508,7 @@
                     console.log("Opening edit modal for course ID:", courseId);
 
                     if (!courseId || isNaN(parseInt(courseId)) || parseInt(courseId) <= 0) {
-                        alert("Invalid Course ID in button");
+                        alert("ID khóa học không hợp lệ");
                         return;
                     }
 
@@ -553,7 +519,7 @@
                     const prices = row.getAttribute("data-prices");
                     const status = row.getAttribute("data-status");
                     const quantity = row.getAttribute("data-quantity");
-                    const categoryid = row.getAttribute("data-categoryid");
+                    const categoryId = row.getAttribute("data-categoryid");
 
                     document.getElementById("editCourseID").value = courseId || "";
                     document.getElementById("editImage").value = image || "";
@@ -562,8 +528,7 @@
                     document.getElementById("editPrices").value = prices || "";
                     document.getElementById("editStatus").value = status || "ACTIVE";
                     document.getElementById("editQuantity").value = quantity || "0";
-
-                    loadCategories(categoryid);
+                    document.getElementById("editCategoryID").value = categoryId || "0";
 
                     const editModalElement = document.getElementById("editModal");
                     const editModal = new bootstrap.Modal(editModalElement);
@@ -577,6 +542,7 @@
                 });
             });
 
+            // Handle View Modal
             document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#viewModal"]').forEach((button) => {
                 button.addEventListener("click", function (e) {
                     e.preventDefault();
@@ -584,7 +550,7 @@
                     console.log("Opening view modal for course ID:", courseId);
 
                     if (!courseId || isNaN(parseInt(courseId)) || parseInt(courseId) <= 0) {
-                        alert("Invalid Course ID in button");
+                        alert("ID khóa học không hợp lệ");
                         return;
                     }
 
@@ -604,7 +570,7 @@
                     document.getElementById("viewTitle").value = title || "";
                     document.getElementById("viewDescription").value = description || "";
                     document.getElementById("viewPrices").value = prices || "";
-                    document.getElementById("viewStatus").value = status || "";
+                    document.getElementById("viewStatus").value = status === "ACTIVE" ? "Kích hoạt" : "Không kích hoạt";
                     document.getElementById("viewQuantity").value = quantity || "0";
                     document.getElementById("viewCategoryName").value = categoryname || "Không có danh mục";
                     document.getElementById("viewCreateAt").value = createat || "Không có";
@@ -622,68 +588,82 @@
                 });
             });
 
+            // Handle Save Changes in Edit Modal
+            let isSubmitting = false;
             const saveButton = document.getElementById("saveChanges");
-            const newSaveButton = saveButton.cloneNode(true);
-            saveButton.parentNode.replaceChild(newSaveButton, saveButton);
-
-            console.log("Attaching click event to saveChanges button");
-            newSaveButton.addEventListener("click", function () {
+            saveButton.addEventListener("click", function () {
                 if (isSubmitting) {
-                    console.log("Request already in progress, ignoring click");
+                    console.log("Yêu cầu đang xử lý, bỏ qua click");
                     return;
                 }
                 isSubmitting = true;
-                newSaveButton.disabled = true;
+                saveButton.disabled = true;
+                saveButton.innerHTML = "Đang lưu...";
 
                 const courseIdInput = document.getElementById("editCourseID").value;
                 const courseId = parseInt(courseIdInput);
                 if (isNaN(courseId) || courseId <= 0) {
-                    alert("Invalid Course ID");
-                    newSaveButton.disabled = false;
+                    alert("ID khóa học không hợp lệ");
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = "Lưu thay đổi";
                     isSubmitting = false;
                     return;
                 }
 
                 const quantityInput = parseInt(document.getElementById("editQuantity").value);
                 if (isNaN(quantityInput) || quantityInput < 0) {
-                    alert("Quantity must be a non-negative number");
-                    newSaveButton.disabled = false;
+                    alert("Số lượng phải là số không âm");
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = "Lưu thay đổi";
                     isSubmitting = false;
                     return;
                 }
 
-                const course = {
-                    courseID: courseId,
-                    image: document.getElementById("editImage").value || null,
-                    title: document.getElementById("editTitle").value || "",
-                    description: document.getElementById("editDescription").value || "",
-                    prices: parseFloat(document.getElementById("editPrices").value) || 0,
-                    status: document.getElementById("editStatus").value || "ACTIVE",
-                    quantity: quantityInput,
-                    category: {
-                        categoryID: parseInt(document.getElementById("editCategoryID").value) || 0
-                    }
-                };
-
-                console.log("Sending course data:", JSON.stringify(course));
-
-                const token = localStorage.getItem("jwtToken");
-                if (!token) {
-                    alert("Vui lòng đăng nhập lại!");
-                    window.location.href = "/login";
+                const title = document.getElementById("editTitle").value;
+                if (!title.trim()) {
+                    alert("Vui lòng nhập tiêu đề");
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = "Lưu thay đổi";
+                    isSubmitting = false;
                     return;
                 }
+
+                const prices = parseFloat(document.getElementById("editPrices").value);
+                if (isNaN(prices) || prices < 0) {
+                    alert("Giá phải là số không âm");
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = "Lưu thay đổi";
+                    isSubmitting = false;
+                    return;
+                }
+
+                const categoryId = parseInt(document.getElementById("editCategoryID").value);
+                if (isNaN(categoryId) || categoryId <= 0) {
+                    alert("Vui lòng chọn danh mục");
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = "Lưu thay đổi";
+                    isSubmitting = false;
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("courseID", courseId);
+                formData.append("title", title);
+                formData.append("description", document.getElementById("editDescription").value || "");
+                formData.append("prices", prices);
+                formData.append("status", document.getElementById("editStatus").value || "ACTIVE");
+                formData.append("image", document.getElementById("editImage").value || "");
+                formData.append("quantity", quantityInput);
+                formData.append("categoryID", categoryId);
+
+                console.log("Sending form data:", [...formData]);
 
                 const editModalElement = document.getElementById("editModal");
                 const editModal = bootstrap.Modal.getInstance(editModalElement);
 
                 fetch("/owner/course/edit", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + token
-                    },
-                    body: JSON.stringify(course)
+                    body: formData
                 })
                     .then(response => {
                         if (!response.ok) {
@@ -701,7 +681,8 @@
                     .catch(error => {
                         console.error("Lỗi:", error.message);
                         alert("Đã xảy ra lỗi: " + error.message);
-                        newSaveButton.disabled = false;
+                        saveButton.disabled = false;
+                        saveButton.innerHTML = "Lưu thay đổi";
                         isSubmitting = false;
                     });
             });

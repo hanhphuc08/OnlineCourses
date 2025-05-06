@@ -250,115 +250,121 @@ body {
 		<div class="custom-sidebar">
 			<div th:replace="~{staff/sidebar :: header}"></div>
 		</div>
+		
+		
 
 		<!-- Order Header -->
 		<div class="order-header">
 			<h2>Order Detail</h2>
-			<a th:href="@{/staff/ordersList}" class="btn btn-back">Back to all orders</a>
+			<a th:href="@{/staff/ordersList}" class="btn btn-back">Quay lại danh sách đơn hàng</a>
 		</div>
 
 		<!-- Breadcrumb -->
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item"><i class="fas fa-home px-2"></i><a
 				th:href="@{/staff/dashboard}">Dashboard</a></li>
-			<li class="breadcrumb-item"><a th:href="@{staff/ordersList}">Orders</a></li>
+			<li class="breadcrumb-item"><a th:href="@{/staff/ordersList}">Orders</a></li>
 			<li class="breadcrumb-item active">Order Detail</li>
 		</ol>
 
 		<!-- Order Info -->
-		<div class="order-info">
-			<div>
-				<h3>
-					Order ID: #001 <span class="status-pending">Chưa phản hồi</span>
-				</h3>
-			</div>
-			<div class="actions">
-				<select class="form-select" name="orderStatus">
-					<option value="pending" selected>Chưa phản hồi</option>
-					<option value="completed">Đã phản hồi</option>
-				</select>
-				<button class="btn btn-save">Save</button>
-			</div>
-		</div>
+		<div class="order-info" th:if="${orderDetails != null}">
+            <div>
+                <h3>
+                    Mã đơn hàng: <span th:text="'#' + ${orderDetails[0]}"></span>
+                    <span th:switch="${orderDetails[2]}">
+                        <span th:case="'PENDING'" class="status-pending">Chưa phản hồi</span>
+                        <span th:case="'CONFIRM'" class="status-confirm">Đã xác nhận</span>
+                        <span th:case="'CANCEL'" class="status-cancel">Đã hủy</span>
+                        <span th:case="*" class="status-pending">Không xác định</span>
+                    </span>
+                </h3>
+            </div>
+            <div class="actions">
+                <form th:action="@{/staff/orderDetail/updateStatus}" method="post">
+                    <input type="hidden" name="orderId" th:value="${orderDetails[0]}" />
+                    <select class="form-select" name="orderStatus">
+                        <option value="PENDING" th:selected="${orderDetails[2] == 'PENDING'}">Chưa phản hồi</option>
+                        <option value="CONFIRM" th:selected="${orderDetails[2] == 'CONFIRM'}">Đã xác nhận</option>
+                        <option value="CANCEL" th:selected="${orderDetails[2] == 'CANCEL'}">Đã hủy</option>
+                    </select>
+                    <button type="submit" class="btn btn-save">Lưu</button>
+                </form>
+            </div>
+        </div>
 
 		<!-- Details Section -->
-		<div class="details-section">
-			<div class="details-two-columns">
-				<div class="col">
-					<h5>Customer Information</h5>
-					<p>
-						<strong>Name:</strong> Hạnh Phúc đáng ghéc
-					</p>
-					<p>
-						<strong>Email:</strong> hanhphuc@example.com
-					</p>
-					<p>
-						<strong>Contact No.:</strong> +84 123 456 7890
-					</p>
-					<p>
-						<strong>Gender:</strong> Female
-					</p>
-					<p>
-						<strong>Address:</strong> 123, Nguyễn Huệ, Quận 1, TP. Hồ Chí
-						Minh, Việt Nam
-					</p>
-					<a th:href="@{staff/mngcustomer/1}" class="view-profile">View Customer</a>
-				</div>
-				<div class="col">
-					<h5>Order Details Information</h5>
-					<p>
-						<strong>Order ID:</strong> #001
-					</p>
-					<p>
-						<strong>Order Date:</strong> 2025-04-28
-					</p>
-					<p>
-						<strong>Promotion ID:</strong> PROMO2025
-					</p>
-					<p>
-						<strong>Order Status:</strong> Chưa phản hồi
-					</p>
-					<p>
-						<strong>Total Amount:</strong> 1.500.000 VNĐ
-					</p>
-				</div>
-			</div>
-		</div>
+		 <div class="details-section" th:if="${orderDetails != null}">
+            <div class="details-two-columns">
+                <div class="col">
+                    <h5>Thông tin khách hàng</h5>
+                    <p><strong>Tên:</strong> <span th:text="${orderDetails[6]}"></span></p>
+                    <p><strong>Email:</strong> <span th:text="${orderDetails[7]}"></span></p>
+                    <p><strong>Số điện thoại:</strong> <span th:text="${orderDetails[8]}"></span></p>
+                    <a th:href="@{/staff/mngcustomer/{id}(id=${orderDetails[5]})}" class="view-profile">Xem hồ sơ khách hàng</a>
+                </div>
+                <div class="col">
+                    <h5>Thông tin đơn hàng</h5>
+                    <p><strong>Mã đơn hàng:</strong> <span th:text="'#' + ${orderDetails[0]}"></span></p>
+                    <p><strong>Ngày đặt:</strong> <span th:text="${#temporals.format(orderDetails[1], 'yyyy-MM-dd HH:mm')}"></span></p>
+                    <p><strong>Trạng thái:</strong>
+                        <span th:switch="${orderDetails[2]}">
+                            <span th:case="'PENDING'">Chưa phản hồi</span>
+                            <span th:case="'CONFIRM'">Đã xác nhận</span>
+                            <span th:case="'CANCEL'">Đã hủy</span>
+                            <span th:case="*">Không xác định</span>
+                        </span>
+                    </p>
+                    <p><strong>Tổng tiền:</strong> <span th:text="${#numbers.formatDecimal(orderDetails[3], 0, 0, 'COMMA')} + ' VNĐ'"></span></p>
+                </div>
+            </div>
+        </div>
 
 		<!-- Products Table -->
-		<div class="products-table">
-			<h5>Products</h5>
-			<table>
-				<thead>
-					<tr>
-						<th>Image</th>
-						<th>Product</th>
-						<th>Price</th>
-						<th>Quantity</th>
-						<th>Total</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							<div class="img-cus">
-								<img
-									src="https://scontent.fhan3-2.fna.fbcdn.net/v/t39.30808-6/494475995_10228447921854163_2399264944604778584_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=1&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeGGr_cO_FkdZekO76pr7BWf4d2PBVxcdkvh3Y8FXFx2S85hNGneHKvI_7hknEBt007wNxk1KYabbQ7iqy0il1GY&_nc_ohc=U_OmZiK2axwQ7kNvwGIBrMR&_nc_oc=AdmzS1ntmn9BX-XXZkPZpi99m_ud7AfZ3hV2IAyrfcAmP7OBzZ8FkKhCgpV6FIAm0Xg&_nc_zt=23&_nc_ht=scontent.fhan3-2.fna&_nc_gid=kjLXOWudOv5tjf1czMT3Ew&oh=00_AfGESXuboAZqYBm3iHWfZS47wXZyD8e92GZwkEw47SScjg&oe=68156E66"
-									alt="Product Image" />
-							</div>
-						</td>
-						<td>
-							<div class="product-info">
-								<span>Lập trình Java từ cơ bản đến nâng cao</span>
-							</div>
-						</td>
-						<td>1.500.000 VNĐ</td>
-						<td>1</td>
-						<td>1.500.000 VNĐ</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+		<div class="products-table" th:if="${orderDetails != null}">
+            <h5>Khóa học</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hình ảnh</th>
+                        <th>Khóa học</th>
+                        <th>Giá gốc</th>
+                        <th>Mã giảm giá</th>
+                        <th>Giảm</th>
+                        <th>Số lượng</th>
+                        <th>Tổng cộng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${orderDetailItems}">
+                        <td>
+                            <div class="img-cus">
+                                <img th:src="${item[4] != null} ? ${item[4]} : 'https://example.com/default-image.jpg'" alt="Course Image" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="product-info">
+                                <span th:text="${item[3] != null} ? ${item[3]} : 'Unknown'"></span>
+                            </div>
+                        </td>
+                        <td th:text="${item[2] != null} ? ${#numbers.formatDecimal(item[2], 0, 0, 'COMMA')} + ' VNĐ' : 'Không xác định'"></td>
+                        <td th:text="${item[6] != null} ? ${item[6]} : 'Không có'"></td>
+                        <td th:text="${item[7] != null} ? ${item[7]} + '%' : '0%'"></td>
+                        <td>1</td>
+                        <td th:with="discountedPrice=${item[7] != null} ? ${item[2] * (1 - item[7] / 100)} : ${item[2]}"
+                            th:text="${discountedPrice != null} ? ${#numbers.formatDecimal(discountedPrice, 0, 0, 'COMMA')} + ' VNĐ' : 'Không xác định'"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(orderDetailItems)}">
+                        <td colspan="7" class="text-center">Không có khóa học nào</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="alert alert-warning" th:if="${orderDetails == null}">
+            Không tìm thấy đơn hàng.
+        </div>
+
 	</div>
 	<script
 		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
@@ -383,5 +389,38 @@ body {
 	<script
 		src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
 	<script src="js/demo.9833433a.js"></script>
+	
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+        if (typeof bootstrap === 'undefined') {
+            console.error("Bootstrap JavaScript is not loaded. Please check if the Bootstrap script is loaded correctly.");
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Show SweetAlert2 for success message
+            const successMessage = /*[[${success}]]*/ null;
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: successMessage,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#3494e6'
+                });
+            }
+
+            // Show SweetAlert2 for error message
+            const errorMessage = /*[[${error}]]*/ null;
+            if (errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: errorMessage,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#dc3545'
+                });
+            }
+        });
+    </script>
 </body>
 </html>
