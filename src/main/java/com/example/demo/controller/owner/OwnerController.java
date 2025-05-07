@@ -1,15 +1,15 @@
 
 package com.example.demo.controller.owner;
 
-<<<<<<< HEAD
+
 import com.example.demo.model.category;
 import com.example.demo.model.course;
 import com.example.demo.model.courseStatus;
 import com.example.demo.model.promotion;
 import com.example.demo.model.users;
-=======
+
 import com.example.demo.model.*;
->>>>>>> origin/fontend
+
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.CourseRepository;
 import com.example.demo.service.CourseService;
@@ -26,12 +26,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-<<<<<<< HEAD
+
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-=======
+
 import org.springframework.security.crypto.password.PasswordEncoder;
->>>>>>> origin/fontend
+
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -164,7 +164,7 @@ public class OwnerController {
     }
 
     @GetMapping("/customer")
-<<<<<<< HEAD
+
     public String getCustomers(Model model, Authentication authentication) {
     	logger.info("Bắt đầu xử lý /owner/customer");
         if (authentication == null || !authentication.getAuthorities().stream()
@@ -181,13 +181,10 @@ public class OwnerController {
             logger.error("Lỗi khi lấy danh sách khách hàng: {}", e.getMessage());
             model.addAttribute("error", "Không thể tải danh sách khách hàng. Vui lòng thử lại sau.");
         }
-        return "owner/mngcustomer";
-=======
-    public String getCustomers(Model model) {
-        List<users> customers = userService.findAllCustomers();
-        model.addAttribute("customers", customers);
         return "owner/customer";
     }
+
+    
 
     @PostMapping("/customer/update")
     @PreAuthorize("hasRole('Owner')")
@@ -261,7 +258,7 @@ public class OwnerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error updating customer: " + e.getMessage());
         }
->>>>>>> origin/fontend
+
     }
     
 
@@ -538,7 +535,7 @@ public class OwnerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể thêm khuyến mãi: " + e.getMessage());
         }
     }
-<<<<<<< HEAD
+
     
     @PostMapping("/promotion/edit")
     public ResponseEntity<?> updatePromotion(
@@ -609,7 +606,7 @@ public class OwnerController {
         }
     }
 
-=======
+
 
     @GetMapping("/staffsList")
     public String staffList(Model model) {
@@ -787,7 +784,7 @@ public class OwnerController {
                     .body("Error adding staff: " + e.getMessage());
         }
     }
->>>>>>> origin/fontend
+
 }
 
 class CourseUpdateDTO {
