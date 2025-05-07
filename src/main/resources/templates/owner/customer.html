@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.css" />
     <!-- Google fonts - Playfair Display -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700" />
-    <link rel="stylesheet" href="fonts/hkgrotesk/stylesheet.2e9c9834.css" />
     <!-- Owl carousel -->
     <link rel="stylesheet" href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/assets/owl.carousel.css" />
     <!-- Lightbox -->
@@ -347,18 +346,50 @@
                 <table>
                     <thead>
                     <tr>
-                        <th>Email</th>
-                        <th>Họ tên</th>
-                        <th>Số điện thoại</th>
-                        <th>Vai trò</th>
+                        <th style="width: 5%">
+                            <input type="checkbox" />
+                        </th>
+                        <th class="col-2">Customer ID</th>
+                        <th class="col-3">Email</th>
+                        <th class="col-2">Họ tên</th>
+                        <th class="col-2">Số điện thoại</th>
+                        <th class="col-2">Giới tính</th>
+                        <th class="col-2">Địa chỉ</th>
+                        <th class="col-2">Trạng thái</th>
+                        <th class="col-2">Hành động</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="customer : ${customers}">
-                        <td th:text="${customer.email} ?: 'N/A'">Email</td>
-                        <td th:text="${customer.fullname} ?: 'N/A'">Tên</td>
-                        <td th:text="${customer.phoneNumber} ?: 'N/A'">SĐT</td>
-                        <td th:text="${customer.role != null} ? ${customer.role.roleID} : 'N/A'">Role</td>
+                    <tr th:each="customer : ${customers}"
+                        th:attr="data-customer-id=${customer.userID},
+                                 data-name=${customer.fullname},
+                                 data-email=${customer.email},
+                                 data-phone=${customer.phoneNumber},
+                                 data-gender=${customer.gender},
+                                 data-address=${customer.address},
+                                 data-status=${customer.status},
+                                 data-orders='[]'">
+                        <td><input type="checkbox" /></td>
+                        <td>#C<span th:text="${customer.userID}"></span></td>
+                        <td th:text="${customer.email} ?: 'N/A'"></td>
+                        <td th:text="${customer.fullname} ?: 'N/A'"></td>
+                        <td th:text="${customer.phoneNumber} ?: 'N/A'"></td>
+                        <td th:text="${customer.gender} ?: 'N/A'"></td>
+                        <td th:text="${customer.address} ?: 'N/A'"></td>
+                        <td>
+                            <span th:class="${customer.status == 1} ? 'status-active' : 'status-disabled'"
+                                  th:text="${customer.status == 1} ? 'Active' : 'Disabled'"></span>
+                        </td>
+                        <td class="actions">
+                            <div class="actions-item">
+                                <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#customerDetailModal">
+                                    <i class="fas fa-eye me-1"></i> View Detail
+                                </a>
+                                <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#customerEditModal">
+                                    <i class="fas fa-edit me-1"></i> Edit
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -366,7 +397,7 @@
 
             <hr />
             <div class="pagination-container">
-                <span class="pagination-info">Showing 1 to 2 of 2 entries</span>
+                <span class="pagination-info" th:text="${customers != null} ? ('Showing 1 to ' + ${customers.size()} + ' of ' + ${customers.size()} + ' entries') : 'No entries'"></span>
                 <div class="pagination-buttons">
                     <button class="pagination-button">Previous</button>
                     <button class="pagination-button active">1</button>
@@ -384,19 +415,15 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <h5>Customer ID: <span id="modalCustomerId"></span></h5>
-                        </div>
-
                         <!-- Customer Details -->
                         <div class="mb-4">
-                            <h5>Customer Details</h5>
                             <p><strong>Customer ID:</strong> <span id="modalCustomerIdDetail"></span></p>
                             <p><strong>Name:</strong> <span id="modalName"></span></p>
                             <p><strong>Email:</strong> <span id="modalEmail"></span></p>
                             <p><strong>Phone:</strong> <span id="modalPhone"></span></p>
                             <p><strong>Gender:</strong> <span id="modalGender"></span></p>
                             <p><strong>Address:</strong> <span id="modalAddress"></span></p>
+                            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
                         </div>
 
                         <!-- Orders Table -->
@@ -418,49 +445,48 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="editCustomerId" class="form-label">Customer ID</label>
-                                <input type="text" class="form-control" id="editCustomerId" readonly />
-                            </div>
+                        <form id="editCustomerForm" th:action="@{/owner/customer/update}" th:method="POST">
+                            <input type="hidden" id="editCustomerId" name="userID" />
                             <div class="mb-3">
                                 <label for="editName" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="editName" readonly />
+                                <input type="text" class="form-control" id="editName" name="fullname" readonly />
                             </div>
                             <div class="mb-3">
                                 <label for="editEmail" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="editEmail" readonly />
+                                <input type="email" class="form-control" id="editEmail" name="email" readonly />
                             </div>
                             <div class="mb-3">
                                 <label for="editPhone" class="form-label">Phone</label>
-                                <input type="text" class="form-control" id="editPhone" readonly />
+                                <input type="text" class="form-control" id="editPhone" name="phoneNumber" readonly />
                             </div>
                             <div class="mb-3">
                                 <label for="editGender" class="form-label">Gender</label>
-                                <select class="form-select" id="editGender" disabled>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
+                                <select class="form-select" id="editGender" name="gender" required>
+                                    <option value="" disabled>Select Gender</option>
+                                    <option value="MALE">Male</option>
+                                    <option value="FEMALE">Female</option>
+                                    <option value="OTHER">Other</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="editAddress" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="editAddress" readonly />
+                                <input type="text" class="form-control" id="editAddress" name="address" />
                             </div>
                             <div class="mb-3">
                                 <label for="editStatus" class="form-label">Status</label>
-                                <select class="form-select" id="editStatus">
-                                    <option value="Active">Active</option>
-                                    <option value="Disabled">Disabled</option>
+                                <select class="form-select" id="editStatus" name="status">
+                                    <option value="1">Active</option>
+                                    <option value="0">Disabled</option>
                                 </select>
                             </div>
-                            <button type="button" class="btn btn-save" data-bs-dismiss="modal">Save</button>
+                            <button type="submit" class="btn btn-save">Save</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -477,30 +503,49 @@
     <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
     <script src="js/demo.9833433a.js"></script>
     <script>
+
         // Check if Bootstrap is loaded
         if (typeof bootstrap === 'undefined') {
             console.error("Bootstrap JavaScript is not loaded. Please check if the Bootstrap script is loaded correctly.");
         }
 
-        // Populate modal with customer data when "View Detail" is clicked
+        // Populate Customer Detail Modal
         document.querySelectorAll(".view").forEach((button) => {
             button.addEventListener("click", function () {
-                const customerId = this.getAttribute("data-customer-id");
-                const name = this.getAttribute("data-name");
-                const email = this.getAttribute("data-email");
-                const phone = this.getAttribute("data-phone");
-                const gender = this.getAttribute("data-gender");
-                const address = this.getAttribute("data-address");
-                const orders = JSON.parse(this.getAttribute("data-orders"));
+                const customerId = this.closest("tr").getAttribute("data-customer-id");
+                const name = this.closest("tr").getAttribute("data-name");
+                const email = this.closest("tr").getAttribute("data-email");
+                const phone = this.closest("tr").getAttribute("data-phone");
+                const gender = this.closest("tr").getAttribute("data-gender");
+                const address = this.closest("tr").getAttribute("data-address");
+                const status = this.closest("tr").getAttribute("data-status");
+                const orders = JSON.parse(this.closest("tr").getAttribute("data-orders"));
+
+                console.log("View Detail clicked:", {
+                    customerId: customerId,
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    gender: gender,
+                    address: address,
+                    status: status,
+                    orders: orders
+                });
 
                 // Populate customer details
-                document.getElementById("modalCustomerId").textContent = "#" + customerId;
-                document.getElementById("modalCustomerIdDetail").textContent = customerId;
-                document.getElementById("modalName").textContent = name;
-                document.getElementById("modalEmail").textContent = email;
-                document.getElementById("modalPhone").textContent = phone;
-                document.getElementById("modalGender").textContent = gender;
-                document.getElementById("modalAddress").textContent = address;
+                document.getElementById("modalCustomerIdDetail").textContent = customerId || "N/A";
+                document.getElementById("modalName").textContent = name || "N/A";
+                document.getElementById("modalEmail").textContent = email || "N/A";
+                document.getElementById("modalPhone").textContent = phone || "N/A";
+                document.getElementById("modalGender").textContent = gender || "N/A";
+                document.getElementById("modalAddress").textContent = address || "N/A";
+
+                const statusValue = parseInt(status, 10);
+                let statusText = "N/A";
+                if (!isNaN(statusValue)) {
+                    statusText = statusValue === 1 ? "Active" : "Disabled";
+                }
+                document.getElementById("modalStatus").textContent = statusText;
 
                 // Populate orders table
                 const ordersTableContent = document.getElementById("ordersTableContent");
@@ -508,38 +553,38 @@
                     ordersTableContent.innerHTML = '<div class="no-orders">Chưa có đơn hàng nào</div>';
                 } else {
                     let tableHTML = `
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Order Date</th>
-                                    <th>Total Amount</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                    `;
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Order Date</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
                     orders.forEach((order) => {
                         const statusClass = order.status === "Chưa phản hồi" ? "status-pending" : "status-completed";
                         tableHTML += `
-                            <tr>
-                                <td>#${order.id}</td>
-                                <td>${order.date}</td>
-                                <td>${order.total}</td>
-                                <td><span class="${statusClass}">${order.status}</span></td>
-                                <td class="actions">
-                                    <a class="view" href="/orders/view/${order.id}">
-                                        <i class="fas fa-eye me-1"></i> View Detail
-                                    </a>
-                                </td>
-                            </tr>
-                        `;
+                    <tr>
+                        <td>#${order.id}</td>
+                        <td>${order.date}</td>
+                        <td>${order.total}</td>
+                        <td><span class="${statusClass}">${order.status}</span></td>
+                        <td class="actions">
+                            <a class="view" href="/orders/view/${order.id}">
+                                <i class="fas fa-eye me-1"></i> View Detail
+                            </a>
+                        </td>
+                    </tr>
+                `;
                     });
                     tableHTML += `
-                            </tbody>
-                        </table>
-                    `;
+                    </tbody>
+                </table>
+            `;
                     ordersTableContent.innerHTML = tableHTML;
                 }
             });
@@ -548,23 +593,71 @@
         // Populate Customer Edit Modal
         document.querySelectorAll(".edit").forEach((button) => {
             button.addEventListener("click", function () {
-                const customerId = this.getAttribute("data-customer-id");
-                const name = this.getAttribute("data-name");
-                const email = this.getAttribute("data-email");
-                const phone = this.getAttribute("data-phone");
-                const gender = this.getAttribute("data-gender");
-                const address = this.getAttribute("data-address");
-                const status = this.getAttribute("data-status");
+                const customerId = this.closest("tr").getAttribute("data-customer-id");
+                const name = this.closest("tr").getAttribute("data-name");
+                const email = this.closest("tr").getAttribute("data-email");
+                const phone = this.closest("tr").getAttribute("data-phone");
+                const gender = this.closest("tr").getAttribute("data-gender");
+                const address = this.closest("tr").getAttribute("data-address");
+                const status = this.closest("tr").getAttribute("data-status");
 
-                // Populate edit form
+                console.log("Edit clicked:", {
+                    customerId: customerId,
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    gender: gender,
+                    address: address,
+                    status: status
+                });
+
                 document.getElementById("editCustomerId").value = customerId;
-                document.getElementById("editName").value = name;
-                document.getElementById("editEmail").value = email;
-                document.getElementById("editPhone").value = phone;
-                document.getElementById("editGender").value = gender;
-                document.getElementById("editAddress").value = address;
-                document.getElementById("editStatus").value = status;
+                document.getElementById("editName").value = name || "N/A";
+                document.getElementById("editEmail").value = email || "N/A";
+                document.getElementById("editPhone").value = phone || "N/A";
+                document.getElementById("editAddress").value = address || "";
+
+                const statusValue = parseInt(status, 10);
+                const statusSelect = document.getElementById("editStatus");
+                statusSelect.value = !isNaN(statusValue) && statusValue === 1 ? "1" : "0";
+
+                const genderSelect = document.getElementById("editGender");
+                const normalizedGender = gender ? gender.toUpperCase() : "";
+                genderSelect.value = normalizedGender;
+                if (!normalizedGender || !["MALE", "FEMALE", "OTHER"].includes(normalizedGender)) {
+                    genderSelect.value = "";
+                }
             });
+        });
+
+        // Handle form submission with AJAX
+        document.getElementById("editCustomerForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            console.log("Edit form submitted");
+
+            const formData = new FormData(this);
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            }
+
+            fetch(this.action, {
+                method: "POST",
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to update customer");
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    alert("Customer updated successfully!");
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Failed to update customer: " + error.message);
+                });
         });
     </script>
 </body>

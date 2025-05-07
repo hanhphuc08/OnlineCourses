@@ -1,11 +1,15 @@
 
 package com.example.demo.controller.owner;
 
+<<<<<<< HEAD
 import com.example.demo.model.category;
 import com.example.demo.model.course;
 import com.example.demo.model.courseStatus;
 import com.example.demo.model.promotion;
 import com.example.demo.model.users;
+=======
+import com.example.demo.model.*;
+>>>>>>> origin/fontend
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.CourseRepository;
 import com.example.demo.service.CourseService;
@@ -22,8 +26,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+<<<<<<< HEAD
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+=======
+import org.springframework.security.crypto.password.PasswordEncoder;
+>>>>>>> origin/fontend
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,7 +57,8 @@ public class OwnerController {
 
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private CourseService courseService;
     
@@ -155,6 +164,7 @@ public class OwnerController {
     }
 
     @GetMapping("/customer")
+<<<<<<< HEAD
     public String getCustomers(Model model, Authentication authentication) {
     	logger.info("Bắt đầu xử lý /owner/customer");
         if (authentication == null || !authentication.getAuthorities().stream()
@@ -172,6 +182,86 @@ public class OwnerController {
             model.addAttribute("error", "Không thể tải danh sách khách hàng. Vui lòng thử lại sau.");
         }
         return "owner/mngcustomer";
+=======
+    public String getCustomers(Model model) {
+        List<users> customers = userService.findAllCustomers();
+        model.addAttribute("customers", customers);
+        return "owner/customer";
+    }
+
+    @PostMapping("/customer/update")
+    @PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<String> updateCustomer(@ModelAttribute users updatedUser) {
+        try {
+            logger.info("Received customer update request for userID: {}", updatedUser.getUserID());
+
+            // Validate required fields
+            if (updatedUser.getUserID() <= 0) {
+                logger.error("Invalid User ID: {}", updatedUser.getUserID());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid User ID");
+            }
+            if (updatedUser.getFullname() == null || updatedUser.getFullname().trim().isEmpty()) {
+                logger.error("Full name is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Full name is required");
+            }
+            if (updatedUser.getEmail() == null || updatedUser.getEmail().trim().isEmpty()) {
+                logger.error("Email is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is required");
+            }
+            if (!updatedUser.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                logger.error("Invalid email format: {}", updatedUser.getEmail());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email format");
+            }
+            if (updatedUser.getPhoneNumber() == null || updatedUser.getPhoneNumber().trim().isEmpty()) {
+                logger.error("Phone number is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Phone number is required");
+            }
+            if (!updatedUser.getPhoneNumber().matches("^\\+?\\d{10,15}$")) {
+                logger.error("Invalid phone number format: {}", updatedUser.getPhoneNumber());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid phone number format (must be 10-15 digits, optionally starting with +)");
+            }
+
+            // Validate Gender
+            if (updatedUser.getGender() == null || updatedUser.getGender().trim().isEmpty()) {
+                logger.error("Gender is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Gender is required");
+            }
+            if (!updatedUser.getGender().equals("MALE") && !updatedUser.getGender().equals("FEMALE") && !updatedUser.getGender().equals("OTHER")) {
+                logger.error("Invalid Gender: {}. Must be 'MALE', 'FEMALE', or 'OTHER'", updatedUser.getGender());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Gender. Must be 'MALE', 'FEMALE', or 'OTHER'");
+            }
+
+            // Validate Status
+            if (updatedUser.getStatus() != 0 && updatedUser.getStatus() != 1) {
+                logger.error("Invalid Status: {}. Must be 0 or 1", updatedUser.getStatus());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Status. Must be 0 or 1");
+            }
+
+            // Fetch existing user
+            users existingUser = userService.findByUid(String.valueOf(updatedUser.getUserID()));
+            if (existingUser == null) {
+                logger.error("User not found with ID: {}", updatedUser.getUserID());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            // Update fields (fullname, email, phoneNumber are readonly in UI, but we keep them unchanged here)
+            existingUser.setFullname(updatedUser.getFullname());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+            existingUser.setGender(updatedUser.getGender());
+            existingUser.setAddress(updatedUser.getAddress());
+            existingUser.setStatus(updatedUser.getStatus());
+
+            // Save updated user
+            userService.updateUser(existingUser);
+            logger.info("Customer updated successfully: userID={}", updatedUser.getUserID());
+            return ResponseEntity.ok("Customer updated successfully");
+        } catch (Exception e) {
+            logger.error("Error updating customer: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating customer: " + e.getMessage());
+        }
+>>>>>>> origin/fontend
     }
     
 
@@ -448,6 +538,7 @@ public class OwnerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể thêm khuyến mãi: " + e.getMessage());
         }
     }
+<<<<<<< HEAD
     
     @PostMapping("/promotion/edit")
     public ResponseEntity<?> updatePromotion(
@@ -518,6 +609,185 @@ public class OwnerController {
         }
     }
 
+=======
+
+    @GetMapping("/staffsList")
+    public String staffList(Model model) {
+        logger.info("Fetching staff list for display");
+        List<users> staffList = userService.findAllStaff();
+        logger.info("Staff list fetched: {} staff members", staffList.size());
+        if (staffList.isEmpty()) {
+            logger.warn("Staff list is empty. Check UserService.findAllStaff() and database data.");
+        } else {
+            staffList.forEach(staff -> logger.info("Staff: ID={}, Email={}, Status={}, Role={}",
+                    staff.getUserID(), staff.getEmail(), staff.getStatus(), staff.getRole().getRoleID()));
+        }
+        model.addAttribute("staffList", staffList);
+        model.addAttribute("hasStaff", !staffList.isEmpty());
+        return "owner/staffsList";
+    }
+
+    @PostMapping("/staff/update")
+    public ResponseEntity<String> updateStaff(@ModelAttribute users updatedUser) {
+        try {
+            logger.info("Received staff update request for userID: {}", updatedUser.getUserID());
+
+            // Validate required fields
+            if (updatedUser.getUserID() <= 0) {
+                logger.error("Invalid User ID: {}", updatedUser.getUserID());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid User ID");
+            }
+            if (updatedUser.getFullname() == null || updatedUser.getFullname().trim().isEmpty()) {
+                logger.error("Full name is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Full name is required");
+            }
+            if (updatedUser.getEmail() == null || updatedUser.getEmail().trim().isEmpty()) {
+                logger.error("Email is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is required");
+            }
+            // Validate email format
+            if (!updatedUser.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                logger.error("Invalid email format: {}", updatedUser.getEmail());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email format");
+            }
+            if (updatedUser.getPhoneNumber() == null || updatedUser.getPhoneNumber().trim().isEmpty()) {
+                logger.error("Phone number is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Phone number is required");
+            }
+            // Validate phone number format
+            if (!updatedUser.getPhoneNumber().matches("^\\+?\\d{10,15}$")) {
+                logger.error("Invalid phone number format: {}", updatedUser.getPhoneNumber());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid phone number format (must be 10-15 digits, optionally starting with +)");
+            }
+
+            // Validate Gender
+            if (updatedUser.getGender() == null || updatedUser.getGender().trim().isEmpty()) {
+                logger.error("Gender is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Gender is required");
+            }
+            if (!updatedUser.getGender().equals("MALE") && !updatedUser.getGender().equals("FEMALE") && !updatedUser.getGender().equals("OTHER")) {
+                logger.error("Invalid Gender: {}. Must be 'MALE', 'FEMALE', or 'OTHER'", updatedUser.getGender());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Gender. Must be 'MALE', 'FEMALE', or 'OTHER'");
+            }
+
+            // Validate Status
+            if (updatedUser.getStatus() != 0 && updatedUser.getStatus() != 1) {
+                logger.error("Invalid Status: {}. Must be 0 or 1", updatedUser.getStatus());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Status. Must be 0 or 1");
+            }
+
+            // Fetch existing user
+            users existingUser = userService.findByUid(String.valueOf(updatedUser.getUserID()));
+            if (existingUser == null) {
+                logger.error("User not found with ID: {}", updatedUser.getUserID());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            // Update fields
+            existingUser.setFullname(updatedUser.getFullname());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+            existingUser.setGender(updatedUser.getGender());
+            existingUser.setAddress(updatedUser.getAddress());
+            existingUser.setStatus(updatedUser.getStatus());
+
+            // Save updated user
+            userService.updateUser(existingUser);
+            logger.info("Staff updated successfully: userID={}", updatedUser.getUserID());
+            return ResponseEntity.ok("Staff updated successfully");
+        } catch (Exception e) {
+            logger.error("Error updating staff: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating staff: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/staff/add")
+    public String addStaffForm(Model model) {
+        logger.info("Displaying Add Staff form");
+        return "owner/addStaff";
+    }
+
+    @PostMapping("/staff/add")
+    public ResponseEntity<String> addStaff(@ModelAttribute users newUser) {
+        try {
+            logger.info("Received staff add request: email={}", newUser.getEmail());
+
+            // Validate required fields
+            if (newUser.getFullname() == null || newUser.getFullname().trim().isEmpty()) {
+                logger.error("Full name is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Full name is required");
+            }
+            if (newUser.getEmail() == null || newUser.getEmail().trim().isEmpty()) {
+                logger.error("Email is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is required");
+            }
+            // Validate email format
+            if (!newUser.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                logger.error("Invalid email format: {}", newUser.getEmail());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email format");
+            }
+            if (newUser.getPhoneNumber() == null || newUser.getPhoneNumber().trim().isEmpty()) {
+                logger.error("Phone number is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Phone number is required");
+            }
+            // Validate phone number format
+            if (!newUser.getPhoneNumber().matches("^\\+?\\d{10,15}$")) {
+                logger.error("Invalid phone number format: {}", newUser.getPhoneNumber());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid phone number format (must be 10-15 digits, optionally starting with +)");
+            }
+            if (newUser.getGender() == null || newUser.getGender().trim().isEmpty()) {
+                logger.error("Gender is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Gender is required");
+            }
+            if (!newUser.getGender().equals("MALE") && !newUser.getGender().equals("FEMALE") && !newUser.getGender().equals("OTHER")) {
+                logger.error("Invalid Gender: {}. Must be 'MALE', 'FEMALE', or 'OTHER'", newUser.getGender());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Gender. Must be 'MALE', 'FEMALE', or 'OTHER'");
+            }
+            if (newUser.getPassword() == null || newUser.getPassword().trim().isEmpty()) {
+                logger.error("Password is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password is required");
+            }
+
+            // Check if email or phone number already exists
+            try {
+                userService.findByEmailOrPhone(newUser.getEmail());
+                logger.error("Email already registered: {}", newUser.getEmail());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already registered");
+            } catch (Exception e) {
+                // Email not found, continue
+            }
+
+            try {
+                userService.findByEmailOrPhone(newUser.getPhoneNumber());
+                logger.error("Phone number already registered: {}", newUser.getPhoneNumber());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Phone number already registered");
+            } catch (Exception e) {
+                // Phone number not found, continue
+            }
+
+            // Set default role to Staff
+            role staffRole = new role();
+            staffRole.setRoleID("Staff");
+            newUser.setRole(staffRole);
+
+            // Set default status to Active (1)
+            newUser.setStatus(1);
+
+            // Encode password
+            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+
+            // Save new user
+            userService.registerUser(newUser);
+            logger.info("Staff added successfully: email={}", newUser.getEmail());
+            return ResponseEntity.ok("Staff added successfully");
+        } catch (Exception e) {
+            logger.error("Error adding staff: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error adding staff: " + e.getMessage());
+        }
+    }
+>>>>>>> origin/fontend
 }
 
 class CourseUpdateDTO {

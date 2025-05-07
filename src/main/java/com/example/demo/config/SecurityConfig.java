@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -59,7 +60,8 @@ public class SecurityConfig {
                         "/category/**",
                         "/courses/**",
                         "/course/detail/**",
-                        "/error"
+                        "/error",
+                            "/search/**"
                     ).permitAll()
                     .requestMatchers("/profile/**", "/course/cart/add/**", "/course/checkout/**", "/cart/**", "/checkout/vnpay-return").authenticated()
                     .requestMatchers("/staff/**").hasRole("Staff")
@@ -85,6 +87,12 @@ public class SecurityConfig {
                 .clearAuthentication(true)
                 .permitAll()
             )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Đảm bảo tạo session nếu cần
+                        .invalidSessionUrl("/login") // Chuyển hướng nếu session không hợp lệ
+                        .maximumSessions(1) // Giới hạn số session
+                        .expiredUrl("/login?expired=true")
+                )
             .exceptionHandling(exceptionHandling -> exceptionHandling
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
                     System.out.println("=== ACCESS DENIED ===");
