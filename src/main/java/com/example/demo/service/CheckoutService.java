@@ -101,9 +101,12 @@ public class CheckoutService {
             BigDecimal price = detail.getPrice();
             if (detail.getPromotionID() != null) {
                 promotion appliedPromo = promotionRepository.findById(detail.getPromotionID());
-                BigDecimal discountPercentage = appliedPromo.getDiscountPercentage();
-                BigDecimal discount = price.multiply(discountPercentage).divide(BigDecimal.valueOf(100));
-                price = price.subtract(discount);
+                if (appliedPromo != null) {
+                    double discountPercentage = appliedPromo.getDiscountPercentage(); 
+                    BigDecimal discountPercentageBD = BigDecimal.valueOf(discountPercentage); 
+                    BigDecimal discount = price.multiply(discountPercentageBD).divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP);
+                    price = price.subtract(discount);
+                }
             }
             totalAmount = totalAmount.add(price);
         }
