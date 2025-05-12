@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Order Detail</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <!-- Bootstrap 5 CSS -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet" />
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Favicon -->
+    <link rel="shortcut icon"
+          href="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/img/favicon.png" />
+
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f5f7fa;
+        }
+
+        /* Ensure custom-sidebar applies to imported fragments */
+        .custom-sidebar {
+            /* This class is used as a namespace for sidebar and header styles */
+
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 20px;
+        }
+
+        /* Order Header */
+        .main-content .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .main-content .order-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #343a40;
+        }
+
+        .main-content .order-header .btn-back {
+            background-color: #3494e6;
+            border-color: #3494e6;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .main-content .order-header .btn-back:hover {
+            background-color: #2c7ec4;
+            border-color: #2c7ec4;
+        }
+
+        /* Breadcrumb */
+        .main-content .breadcrumb {
+            margin-bottom: 20px;
+        }
+
+        .main-content .breadcrumb-item a {
+            color: #3494e6;
+            text-decoration: none;
+        }
+
+        .main-content .breadcrumb-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Order Info */
+        .main-content .order-info {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-content .order-info h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #343a40;
+            margin: 0;
+        }
+
+        .main-content .order-info .status-pending {
+            background-color: #3494e6;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-left: 10px;
+        }
+
+        .main-content .order-info .status-pending:hover {
+            background-color: #2c7ec4;
+        }
+
+        .main-content .order-info .status-completed {
+            background-color: #28a745;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .main-content .order-info .actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .main-content .order-info .actions .form-select {
+            width: 180px;
+        }
+
+        .main-content .order-info .btn-save {
+            background-color: #3494e6;
+            border-color: #3494e6;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .main-content .order-info .btn-save:hover {
+            background-color: #2c7ec4;
+            border-color: #2c7ec4;
+        }
+
+        /* Details Section */
+        .main-content .details-section {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .main-content .details-section h5 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 15px;
+        }
+
+        .main-content .details-section p {
+            margin-bottom: 5px;
+            color: #343a40;
+        }
+
+        .main-content .details-section .view-profile {
+            color: #3494e6;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .main-content .details-section .view-profile:hover {
+            color: #2c7ec4;
+        }
+
+        /* Two Columns Layout */
+        .main-content .details-two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .main-content .details-two-columns .col {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        /* Products Table */
+        .main-content .products-table {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .main-content .products-table h5 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 15px;
+        }
+
+        .main-content .products-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .main-content .products-table th, .main-content .products-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .main-content .products-table th {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .main-content .products-table td {
+            color: #343a40;
+        }
+
+        .main-content .products-table .product-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .main-content .products-table .img-cus img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<!-- Sidebar -->
+<div class="custom-sidebar">
+    <div th:replace="~{owner/sidebar :: sidebar}"></div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Header -->
+    <div class="custom-sidebar">
+        <div th:replace="~{owner/sidebar :: header}"></div>
+    </div>
+
+
+
+    <!-- Order Header -->
+    <div class="order-header">
+        <h2>Order Detail</h2>
+        <a th:href="@{/owner/ordersList}" class="btn btn-back">Quay lại danh sách đơn hàng</a>
+    </div>
+
+    <!-- Breadcrumb -->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><i class="fas fa-home px-2"></i><a
+                th:href="@{/owner/dashboard}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/owner/ordersList}">Orders</a></li>
+        <li class="breadcrumb-item active">Order Detail</li>
+    </ol>
+
+    <!-- Order Info -->
+    <div class="order-info" th:if="${orderDetails != null}">
+        <div>
+            <h3>
+                Mã đơn hàng: <span th:text="'#' + ${orderDetails[0]}"></span>
+                <span th:switch="${orderDetails[2]}">
+                        <span th:case="'PENDING'" class="status-pending">Chưa phản hồi</span>
+                        <span th:case="'CONFIRM'" class="status-confirm">Đã xác nhận</span>
+                        <span th:case="'CANCEL'" class="status-cancel">Đã hủy</span>
+                        <span th:case="*" class="status-pending">Không xác định</span>
+                    </span>
+            </h3>
+        </div>
+    </div>
+
+    <!-- Details Section -->
+    <div class="details-section" th:if="${orderDetails != null}">
+        <div class="details-two-columns">
+            <div class="col">
+                <h5>Thông tin khách hàng</h5>
+                <p><strong>Tên:</strong> <span th:text="${orderDetails[6]}"></span></p>
+                <p><strong>Email:</strong> <span th:text="${orderDetails[7]}"></span></p>
+                <p><strong>Số điện thoại:</strong> <span th:text="${orderDetails[8]}"></span></p>
+                <a th:href="@{/owner/customer/{id}(id=${orderDetails[5]})}" class="view-profile">Xem hồ sơ khách hàng</a>
+            </div>
+            <div class="col">
+                <h5>Thông tin đơn hàng</h5>
+                <p><strong>Mã đơn hàng:</strong> <span th:text="'#' + ${orderDetails[0]}"></span></p>
+                <p><strong>Ngày đặt:</strong> <span th:text="${#temporals.format(orderDetails[1], 'yyyy-MM-dd HH:mm')}"></span></p>
+                <p><strong>Trạng thái:</strong>
+                    <span th:switch="${orderDetails[2]}">
+                            <span th:case="'PENDING'">Chưa phản hồi</span>
+                            <span th:case="'CONFIRM'">Đã xác nhận</span>
+                            <span th:case="'CANCEL'">Đã hủy</span>
+                            <span th:case="*">Không xác định</span>
+                        </span>
+                </p>
+                <p><strong>Tổng tiền:</strong> <span th:text="${#numbers.formatDecimal(orderDetails[3], 0, 0, 'COMMA')} + ' VNĐ'"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="products-table" th:if="${orderDetails != null}">
+        <h5>Khóa học</h5>
+        <table>
+            <thead>
+            <tr>
+                <th>Hình ảnh</th>
+                <th>Khóa học</th>
+                <th>Giá gốc</th>
+                <th>Mã giảm giá</th>
+                <th>Giảm</th>
+                <th>Số lượng</th>
+                <th>Tổng cộng</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${orderDetailItems}">
+                <td>
+                    <div class="img-cus">
+                        <img th:src="${item[4] != null} ? ${item[4]} : 'https://example.com/default-image.jpg'" alt="Course Image" />
+                    </div>
+                </td>
+                <td>
+                    <div class="product-info">
+                        <span th:text="${item[3] != null} ? ${item[3]} : 'Unknown'"></span>
+                    </div>
+                </td>
+                <td th:text="${item[2] != null} ? ${#numbers.formatDecimal(item[2], 0, 0, 'COMMA')} + ' VNĐ' : 'Không xác định'"></td>
+                <td th:text="${item[6] != null} ? ${item[6]} : 'Không có'"></td>
+                <td th:text="${item[7] != null} ? ${item[7]} + '%' : '0%'"></td>
+                <td>1</td>
+                <td th:with="discountedPrice=${item[7] != null} ? ${item[2] * (1 - item[7] / 100)} : ${item[2]}"
+                    th:text="${discountedPrice != null} ? ${#numbers.formatDecimal(discountedPrice, 0, 0, 'COMMA')} + ' VNĐ' : 'Không xác định'"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(orderDetailItems)}">
+                <td colspan="7" class="text-center">Không có khóa học nào</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="alert alert-warning" th:if="${orderDetails == null}">
+        Không tìm thấy đơn hàng.
+    </div>
+
+</div>
+<script
+        src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script
+        src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
+<script
+        src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
+<script
+        src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.min.js"></script>
+<script
+        src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
+<script
+        src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/js/glightbox.min.js"></script>
+<script
+        src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/object-fit-images/ofi.min.js"></script>
+<script>
+    var basePath = "";
+</script>
+<script src="js/theme.30e7c8f9.js"></script>
+<script
+        src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
+<script src="js/demo.9833433a.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    if (typeof bootstrap === 'undefined') {
+        console.error("Bootstrap JavaScript is not loaded. Please check if the Bootstrap script is loaded correctly.");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Show SweetAlert2 for success message
+        const successMessage = /*[[${success}]]*/ null;
+        if (successMessage) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: successMessage,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3494e6'
+            });
+        }
+
+        // Show SweetAlert2 for error message
+        const errorMessage = /*[[${error}]]*/ null;
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi!',
+                text: errorMessage,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#dc3545'
+            });
+        }
+    });
+</script>
+</body>
+</html>

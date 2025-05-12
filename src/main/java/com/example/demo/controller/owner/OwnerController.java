@@ -138,7 +138,87 @@ public class OwnerController {
         }
         return "owner/productsList";
     }
-    
+
+    @GetMapping("/ordersList")
+    public String showOrdersList(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "status", defaultValue = "all") String status,
+            Model model, Authentication authentication) {
+        logger.info("Bắt đầu xử lý /owner/ordersList: page={}, size={}, search={}, status={}", page, size, search, status);
+        if (authentication == null || !authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_Owner"))) {
+            logger.warn("Không có quyền truy cập ordersList: {}", authentication != null ? authentication.getName() : "Chưa đăng nhập");
+            return "redirect:/login";
+        }
+
+        try {
+            List<Object[]> orders = orderService.findAllOrders(page, size, search, status);
+            long totalOrders = orderService.countAllOrders(search, status);
+            int totalPages = (int) Math.ceil((double) totalOrders / size);
+
+            model.addAttribute("orders", orders);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("pageSize", size);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("totalOrders", totalOrders);
+            model.addAttribute("search", search);
+            model.addAttribute("status", status);
+            logger.info("Danh sách đơn hàng: {}, tổng số: {}", orders.size(), totalOrders);
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy danh sách đơn hàng: {}", e.getMessage());
+            model.addAttribute("error", "Không thể tải danh sách đơn hàng. Vui lòng thử lại sau.");
+        }
+        return "owner/ordersList";
+    }
+
+    @GetMapping("/orderDetail")
+    public String showOrderDetail(@RequestParam("orderId") int orderId, Model model, Authentication authentication) {
+        logger.info("Bắt đầu xử lý /owner/orderDetail với OrderID: {}", orderId);
+        if (authentication == null || !authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_Owner"))) {
+            logger.warn("Không có quyền truy cập orderDetail: {}", authentication != null ? authentication.getName() : "Chưa đăng nhập");
+            return "redirect:/login";
+        }
+
+        try {
+            Object[] orderDetails = orderService.findOrderDetailsById(orderId);
+            model.addAttribute("orderDetails", orderDetails);
+            model.addAttribute("orderDetailItems", orderDetails[9]); // Danh sách khóa học
+            logger.info("Chi tiết đơn hàng {}: {}", orderId, orderDetails);
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy chi tiết đơn hàng {}: {}", orderId, e.getMessage());
+            model.addAttribute("error", "Không thể tải chi tiết đơn hàng. Vui lòng thử lại sau.");
+        }
+
+        return "owner/orderDetail";
+    }
+
+    @PostMapping("/orderDetail/updateStatus")
+    public String updateOrderStatus(
+            @RequestParam("orderId") int orderId,
+            @RequestParam("orderStatus") String status,
+            RedirectAttributes redirectAttributes,
+            Authentication authentication) {
+        logger.info("Bắt đầu xử lý cập nhật trạng thái đơn hàng {} thành {}", orderId, status);
+        if (authentication == null || !authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_Owner"))) {
+            logger.warn("Không có quyền cập nhật trạng thái: {}", authentication != null ? authentication.getName() : "Chưa đăng nhập");
+            return "redirect:/login";
+        }
+
+        try {
+            orderService.updateOrderStatus(orderId, status);
+            redirectAttributes.addFlashAttribute("success", "Cập nhật trạng thái đơn hàng thành công!");
+        } catch (Exception e) {
+            logger.error("Lỗi khi cập nhật trạng thái đơn hàng {}: {}", orderId, e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Không thể cập nhật trạng thái đơn hàng. Vui lòng thử lại sau.");
+        }
+
+        return "redirect:/owner/orderDetail?orderId=" + orderId;
+    }
+
     @GetMapping("/addProducts")
     public String addCourseForm(Model model, Authentication authentication) {
         logger.info("Bắt đầu xử lý /owner/addProducts (form thêm khóa học)");
@@ -188,9 +268,8 @@ public class OwnerController {
     }
 
     @GetMapping("/customer")
-
     public String getCustomers(Model model, Authentication authentication) {
-    	logger.info("Bắt đầu xử lý /owner/customer");
+        logger.info("Bắt đầu xử lý /owner/customer");
         if (authentication == null || !authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_Owner"))) {
             logger.warn("Không có quyền truy cập customer: {}", authentication != null ? authentication.getName() : "Chưa đăng nhập");
@@ -199,6 +278,11 @@ public class OwnerController {
 
         try {
             List<users> customers = userService.findAllCustomers();
+            // Lấy danh sách đơn hàng cho từng khách hàng
+            for (users customer : customers) {
+                List<order> orders = orderService.findByUserId(customer.getUserID());
+                customer.setOrders(orders);
+            }
             model.addAttribute("customers", customers);
             logger.info("Danh sách khách hàng: {}", customers.size());
         } catch (Exception e) {
@@ -208,7 +292,34 @@ public class OwnerController {
         return "owner/customer";
     }
 
-    
+    @GetMapping("/customer/{id}")
+    public String getCustomerDetail(@PathVariable("id") int userId, Model model, Authentication authentication) {
+        logger.info("Bắt đầu xử lý /owner/customer/{} để hiển thị thông tin chi tiết khách hàng", userId);
+        if (authentication == null || !authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_Owner"))) {
+            logger.warn("Không có quyền truy cập thông tin khách hàng: {}", authentication != null ? authentication.getName() : "Chưa đăng nhập");
+            return "redirect:/login";
+        }
+
+        try {
+            users customer = userService.findByUid(String.valueOf(userId));
+            if (customer == null) {
+                logger.warn("Không tìm thấy khách hàng với UserID: {}", userId);
+                model.addAttribute("error", "Không tìm thấy khách hàng.");
+                return "owner/customerDetail";
+            }
+            // Lấy danh sách đơn hàng của khách hàng
+            List<order> orders = orderService.findByUserId(userId);
+            customer.setOrders(orders);
+
+            model.addAttribute("customer", customer);
+            logger.info("Tìm thấy khách hàng: UserID={}, Email={}", userId, customer.getEmail());
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy thông tin khách hàng UserID {}: {}", userId, e.getMessage());
+            model.addAttribute("error", "Không thể tải thông tin khách hàng. Vui lòng thử lại sau.");
+        }
+        return "owner/customerDetail";
+    }
 
     @PostMapping("/customer/update")
     @PreAuthorize("hasRole('Owner')")

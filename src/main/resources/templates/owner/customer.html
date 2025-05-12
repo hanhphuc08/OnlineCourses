@@ -198,467 +198,555 @@
 
         /* Modal Styles */
         .main-content .modal-content {
-            border-radius: 10px;
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .main-content .modal-header {
-            border-bottom: none;
-            padding-bottom: 0;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
         }
 
         .main-content .modal-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #343a40;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
         }
 
         .main-content .modal-body {
-            padding: 20px;
+            padding: 30px;
+            background-color: #fff;
         }
 
         .main-content .modal-body h5 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #343a40;
-            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3494e6;
+            padding-bottom: 5px;
         }
 
         .main-content .modal-body p {
-            margin-bottom: 5px;
-            color: #343a40;
+            margin-bottom: 10px;
+            color: #4a4a4a;
+            font-size: 15px;
+            line-height: 1.6;
         }
 
-        .main-content .modal-body .btn-save {
-            background-color: #3494e6;
-            border-color: #3494e6;
-            color: #fff;
-        }
-
-        .main-content .modal-body .btn-save:hover {
-            background-color: #2c7ec4;
-            border-color: #2c7ec4;
+        .main-content .modal-body p strong {
+            color: #1a1a1a;
+            font-weight: 600;
+            display: inline-block;
+            width: 120px;
         }
 
         /* Orders Table in Modal */
         .main-content .orders-table table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .main-content .orders-table th,
         .main-content .orders-table td {
-            padding: 12px 15px;
+            padding: 15px 20px;
             text-align: left;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .main-content .orders-table th {
-            background-color: #f8f9fa;
-            color: #6c757d;
+            background-color: #3494e6;
+            color: #fff;
             font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
         }
 
         .main-content .orders-table td {
-            color: #343a40;
+            color: #4a4a4a;
+            font-size: 14px;
+        }
+
+        .main-content .orders-table tr:hover {
+            background-color: #f8f9fa;
+            transition: background-color 0.3s ease;
         }
 
         .main-content .orders-table .status-pending {
-            background-color: #3494e6;
-            color: #fff;
+            background-color: #e6f0fa;
+            color: #3494e6;
             padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .main-content .orders-table .status-pending:hover {
-            background-color: #2c7ec4;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
         }
 
         .main-content .orders-table .status-completed {
-            background-color: #28a745;
-            color: #fff;
+            background-color: #e6f4ea;
+            color: #28a745;
             padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 500;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .main-content .orders-table .status-cancel {
+            background-color: #f8e1e1;
+            color: #dc3545;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
         }
 
         .main-content .orders-table .no-orders {
             text-align: center;
             color: #6c757d;
             padding: 20px;
+            font-style: italic;
         }
 
         .main-content .orders-table .actions a {
             display: flex;
             align-items: center;
-            color: black;
+            color: #3494e6;
             text-decoration: none;
             font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
         }
 
-        .main-content .orders-table .actions a.view:hover {
-            color: #3494e6;
+        .main-content .orders-table .actions a:hover {
+            color: #2c7ec4;
+        }
+        /* Edit Modal Specific Styles */
+        .main-content .modal-body .form-label {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .main-content .modal-body .form-control,
+        .main-content .modal-body .form-select {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #4a4a4a;
+            background-color: #f8f9fa;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .main-content .modal-body .form-control:focus,
+        .main-content .modal-body .form-select:focus {
+            border-color: #3494e6;
+            box-shadow: 0 0 5px rgba(52, 148, 230, 0.2);
+            background-color: #fff;
+        }
+
+        .main-content .modal-body .form-control[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        .main-content .modal-body .mb-3 {
+            margin-bottom: 20px !important;
+        }
+
+        .main-content .modal-body .btn-save {
+            background-color: #3494e6;
+            border-color: #3494e6;
+            color: #fff;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            width: 100%;
+        }
+
+        .main-content .modal-body .btn-save:hover {
+            background-color: #2c7ec4;
+            border-color: #2c7ec4;
+            transform: translateY(-1px);
+        }
+
+        .main-content .modal-body .btn-save:active {
+            transform: translateY(1px);
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
+<!-- Sidebar -->
+<div class="custom-sidebar">
+    <div th:replace="~{owner/sidebar :: sidebar}"></div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Header -->
     <div class="custom-sidebar">
-        <div th:replace="~{owner/sidebar :: sidebar}"></div>
+        <div th:replace="~{owner/sidebar :: header}"></div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Header -->
-        <div class="custom-sidebar">
-            <div th:replace="~{owner/sidebar :: header}"></div>
-        </div>
+    <!-- Customer Header -->
+    <div class="customer-header">
+        <h2>Customers</h2>
+    </div>
 
-        <!-- Customer Header -->
-        <div class="customer-header">
-            <h2>Customers</h2>
-        </div>
+    <!-- Breadcrumb -->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <i class="fas fa-home px-2"></i><a th:href="@{/owner/dashboard}">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active">Customers</li>
+    </ol>
 
-        <!-- Breadcrumb -->
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <i class="fas fa-home px-2"></i><a th:href="@{/owner/dashboard}">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item active">Customers</li>
-        </ol>
-
-        <!-- Filters -->
-        <div class="filters">
-            <div class="search-bar">
-                <input type="text" class="form-control" placeholder="Search Customer" />
-            </div>
-        </div>
-
-        <!-- Customers Table -->
-        <div class="customers-table">
-            <div th:if="${customers == null or customers.isEmpty()}">
-                <p>Không có khách hàng nào để hiển thị.</p>
-            </div>
-            <div th:unless="${customers == null or customers.isEmpty()}">
-                <table>
-                    <thead>
-                    <tr>
-                        <th style="width: 5%">
-                            <input type="checkbox" />
-                        </th>
-                        <th class="col-2">Customer ID</th>
-                        <th class="col-3">Email</th>
-                        <th class="col-2">Họ tên</th>
-                        <th class="col-2">Số điện thoại</th>
-                        <th class="col-2">Giới tính</th>
-                        <th class="col-2">Địa chỉ</th>
-                        <th class="col-2">Trạng thái</th>
-                        <th class="col-2">Hành động</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="customer : ${customers}"
-                        th:attr="data-customer-id=${customer.userID},
-                                 data-name=${customer.fullname},
-                                 data-email=${customer.email},
-                                 data-phone=${customer.phoneNumber},
-                                 data-gender=${customer.gender},
-                                 data-address=${customer.address},
-                                 data-status=${customer.status},
-                                 data-orders='[]'">
-                        <td><input type="checkbox" /></td>
-                        <td>#C<span th:text="${customer.userID}"></span></td>
-                        <td th:text="${customer.email} ?: 'N/A'"></td>
-                        <td th:text="${customer.fullname} ?: 'N/A'"></td>
-                        <td th:text="${customer.phoneNumber} ?: 'N/A'"></td>
-                        <td th:text="${customer.gender} ?: 'N/A'"></td>
-                        <td th:text="${customer.address} ?: 'N/A'"></td>
-                        <td>
-                            <span th:class="${customer.status == 1} ? 'status-active' : 'status-disabled'"
-                                  th:text="${customer.status == 1} ? 'Active' : 'Disabled'"></span>
-                        </td>
-                        <td class="actions">
-                            <div class="actions-item">
-                                <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#customerDetailModal">
-                                    <i class="fas fa-eye me-1"></i> View Detail
-                                </a>
-                                <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#customerEditModal">
-                                    <i class="fas fa-edit me-1"></i> Edit
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <hr />
-            <div class="pagination-container">
-                <span class="pagination-info" th:text="${customers != null} ? ('Showing 1 to ' + ${customers.size()} + ' of ' + ${customers.size()} + ' entries') : 'No entries'"></span>
-                <div class="pagination-buttons">
-                    <button class="pagination-button">Previous</button>
-                    <button class="pagination-button active">1</button>
-                    <button class="pagination-button">Next</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Customer Detail Modal -->
-        <div class="modal fade" id="customerDetailModal" tabindex="-1" aria-labelledby="customerDetailModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="customerDetailModalLabel">Customer Information</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Customer Details -->
-                        <div class="mb-4">
-                            <p><strong>Customer ID:</strong> <span id="modalCustomerIdDetail"></span></p>
-                            <p><strong>Name:</strong> <span id="modalName"></span></p>
-                            <p><strong>Email:</strong> <span id="modalEmail"></span></p>
-                            <p><strong>Phone:</strong> <span id="modalPhone"></span></p>
-                            <p><strong>Gender:</strong> <span id="modalGender"></span></p>
-                            <p><strong>Address:</strong> <span id="modalAddress"></span></p>
-                            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
-                        </div>
-
-                        <!-- Orders Table -->
-                        <div class="orders-table">
-                            <h5>Orders List</h5>
-                            <div id="ordersTableContent"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Customer Edit Modal -->
-        <div class="modal fade" id="customerEditModal" tabindex="-1" aria-labelledby="customerEditModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="customerEditModalLabel">Edit Customer</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editCustomerForm" th:action="@{/owner/customer/update}" th:method="POST">
-                            <input type="hidden" id="editCustomerId" name="userID" />
-                            <div class="mb-3">
-                                <label for="editName" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="editName" name="fullname" readonly />
-                            </div>
-                            <div class="mb-3">
-                                <label for="editEmail" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="editEmail" name="email" readonly />
-                            </div>
-                            <div class="mb-3">
-                                <label for="editPhone" class="form-label">Phone</label>
-                                <input type="text" class="form-control" id="editPhone" name="phoneNumber" readonly />
-                            </div>
-                            <div class="mb-3">
-                                <label for="editGender" class="form-label">Gender</label>
-                                <select class="form-select" id="editGender" name="gender" required>
-                                    <option value="" disabled>Select Gender</option>
-                                    <option value="MALE">Male</option>
-                                    <option value="FEMALE">Female</option>
-                                    <option value="OTHER">Other</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editAddress" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="editAddress" name="address" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="editStatus" class="form-label">Status</label>
-                                <select class="form-select" id="editStatus" name="status">
-                                    <option value="1">Active</option>
-                                    <option value="0">Disabled</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-save">Save</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    <!-- Filters -->
+    <div class="filters">
+        <div class="search-bar">
+            <input type="text" class="form-control" placeholder="Search Customer" />
         </div>
     </div>
 
-
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.min.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/js/glightbox.min.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/object-fit-images/ofi.min.js"></script>
-    <script>
-        var basePath = "";
-    </script>
-    <script src="js/theme.30e7c8f9.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
-    <script src="js/demo.9833433a.js"></script>
-    <script>
-
-        // Check if Bootstrap is loaded
-        if (typeof bootstrap === 'undefined') {
-            console.error("Bootstrap JavaScript is not loaded. Please check if the Bootstrap script is loaded correctly.");
-        }
-
-        // Populate Customer Detail Modal
-        document.querySelectorAll(".view").forEach((button) => {
-            button.addEventListener("click", function () {
-                const customerId = this.closest("tr").getAttribute("data-customer-id");
-                const name = this.closest("tr").getAttribute("data-name");
-                const email = this.closest("tr").getAttribute("data-email");
-                const phone = this.closest("tr").getAttribute("data-phone");
-                const gender = this.closest("tr").getAttribute("data-gender");
-                const address = this.closest("tr").getAttribute("data-address");
-                const status = this.closest("tr").getAttribute("data-status");
-                const orders = JSON.parse(this.closest("tr").getAttribute("data-orders"));
-
-                console.log("View Detail clicked:", {
-                    customerId: customerId,
-                    name: name,
-                    email: email,
-                    phone: phone,
-                    gender: gender,
-                    address: address,
-                    status: status,
-                    orders: orders
-                });
-
-                // Populate customer details
-                document.getElementById("modalCustomerIdDetail").textContent = customerId || "N/A";
-                document.getElementById("modalName").textContent = name || "N/A";
-                document.getElementById("modalEmail").textContent = email || "N/A";
-                document.getElementById("modalPhone").textContent = phone || "N/A";
-                document.getElementById("modalGender").textContent = gender || "N/A";
-                document.getElementById("modalAddress").textContent = address || "N/A";
-
-                const statusValue = parseInt(status, 10);
-                let statusText = "N/A";
-                if (!isNaN(statusValue)) {
-                    statusText = statusValue === 1 ? "Active" : "Disabled";
-                }
-                document.getElementById("modalStatus").textContent = statusText;
-
-                // Populate orders table
-                const ordersTableContent = document.getElementById("ordersTableContent");
-                if (orders.length === 0) {
-                    ordersTableContent.innerHTML = '<div class="no-orders">Chưa có đơn hàng nào</div>';
-                } else {
-                    let tableHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Order Date</th>
-                            <th>Total Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-                    orders.forEach((order) => {
-                        const statusClass = order.status === "Chưa phản hồi" ? "status-pending" : "status-completed";
-                        tableHTML += `
-                    <tr>
-                        <td>#${order.id}</td>
-                        <td>${order.date}</td>
-                        <td>${order.total}</td>
-                        <td><span class="${statusClass}">${order.status}</span></td>
-                        <td class="actions">
-                            <a class="view" href="/orders/view/${order.id}">
+    <div class="customers-table">
+        <div th:if="${customers == null or customers.isEmpty()}">
+            <p>Không có khách hàng nào để hiển thị.</p>
+        </div>
+        <div th:unless="${customers == null or customers.isEmpty()}">
+            <table>
+                <thead>
+                <tr>
+                    <th style="width: 5%">
+                        <input type="checkbox" />
+                    </th>
+                    <th class="col-2">Customer ID</th>
+                    <th class="col-3">Email</th>
+                    <th class="col-2">Họ tên</th>
+                    <th class="col-2">Số điện thoại</th>
+                    <th class="col-2">Giới tính</th>
+                    <th class="col-2">Địa chỉ</th>
+                    <th class="col-2">Trạng thái</th>
+                    <th class="col-2">Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="customer : ${customers}">
+                    <td><input type="checkbox" /></td>
+                    <td>#C<span th:text="${customer.userID}"></span></td>
+                    <td th:text="${customer.email} ?: 'N/A'"></td>
+                    <td th:text="${customer.fullname} ?: 'N/A'"></td>
+                    <td th:text="${customer.phoneNumber} ?: 'N/A'"></td>
+                    <td th:text="${customer.gender} ?: 'N/A'"></td>
+                    <td th:text="${customer.address} ?: 'N/A'"></td>
+                    <td>
+                    <span th:class="${customer.status == 1} ? 'status-active' : 'status-disabled'"
+                          th:text="${customer.status == 1} ? 'Active' : 'Disabled'"></span>
+                    </td>
+                    <td class="actions">
+                        <div class="actions-item">
+                            <a class="view" href="#" data-bs-toggle="modal"
+                               th:attr="data-bs-target='#customerDetailModal-' + ${customer.userID}">
                                 <i class="fas fa-eye me-1"></i> View Detail
                             </a>
-                        </td>
-                    </tr>
-                `;
-                    });
-                    tableHTML += `
-                    </tbody>
-                </table>
-            `;
-                    ordersTableContent.innerHTML = tableHTML;
-                }
+                            <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#customerEditModal"
+                               th:attr="data-customer-id=${customer.userID},
+            data-name=${customer.fullname},
+            data-email=${customer.email},
+            data-phone=${customer.phoneNumber},
+            data-gender=${customer.gender},
+            data-address=${customer.address},
+            data-status=${customer.status}">
+                                <i class="fas fa-edit me-1"></i> Edit
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr />
+        <div class="pagination-container">
+            <span class="pagination-info" th:text="${customers != null} ? ('Showing 1 to ' + ${customers.size()} + ' of ' + ${customers.size()} + ' entries') : 'No entries'"></span>
+            <div class="pagination-buttons">
+                <button class="pagination-button">Previous</button>
+                <button class="pagination-button active">1</button>
+                <button class="pagination-button">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Detail Modal -->
+    <div th:each="customer : ${customers}"
+         class="modal fade"
+         th:id="'customerDetailModal-' + ${customer.userID}"
+         tabindex="-1"
+         th:attr="aria-labelledby='customerDetailModalLabel-' + ${customer.userID}"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:id="'customerDetailModalLabel-' + ${customer.userID}">
+                        <i class="fas fa-user me-2"></i> Thông tin khách hàng
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Customer Details -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Thông tin cá nhân</h5>
+                            <p><strong>ID khách hàng:</strong> <span th:text="${customer.userID}"></span></p>
+                            <p><strong>Họ tên:</strong> <span th:text="${customer.fullname} ?: 'N/A'"></span></p>
+                            <p><strong>Email:</strong> <span th:text="${customer.email} ?: 'N/A'"></span></p>
+                            <p><strong>Số điện thoại:</strong> <span th:text="${customer.phoneNumber} ?: 'N/A'"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Thông tin bổ sung</h5>
+                            <p><strong>Giới tính:</strong> <span th:text="${customer.gender} ?: 'N/A'"></span></p>
+                            <p><strong>Địa chỉ:</strong> <span th:text="${customer.address} ?: 'N/A'"></span></p>
+                            <p><strong>Trạng thái:</strong> <span th:text="${customer.status == 1} ? 'Kích hoạt' : 'Vô hiệu hóa'"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- Orders Table -->
+                    <div class="orders-table">
+                        <h5><i class="fas fa-shopping-cart me-2"></i> Danh sách đơn hàng</h5>
+                        <table th:if="${customer.orders != null and !#lists.isEmpty(customer.orders)}">
+                            <thead>
+                            <tr>
+                                <th>Mã đơn hàng</th>
+                                <th>Ngày đặt</th>
+                                <th>Khóa học</th>
+                                <th>Giá gốc</th>
+                                <th>Mã giảm giá</th>
+                                <th>Giảm</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="order : ${customer.orders}">
+                                <td th:text="'#' + ${order.orderID}"></td>
+                                <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></td>
+                                <td>
+                                    <span th:if="${order.orderDetails != null and !#lists.isEmpty(order.orderDetails)}">
+                                        <span th:each="detail : ${order.orderDetails}" th:if="${detail.course != null}">
+                                            <div th:text="${detail.course.title} ?: 'Unknown'"></div>
+                                        </span>
+                                    </span>
+                                    <span th:if="${order.orderDetails == null or #lists.isEmpty(order.orderDetails)}">
+                                        Không có khóa học
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:if="${order.orderDetails != null and !#lists.isEmpty(order.orderDetails)}">
+                                        <span th:each="detail : ${order.orderDetails}" th:if="${detail.course != null}">
+                                            <div th:text="${#numbers.formatDecimal(detail.price, 0, 0, 'COMMA')} + ' VNĐ'"></div>
+                                        </span>
+                                    </span>
+                                    <span th:if="${order.orderDetails == null or #lists.isEmpty(order.orderDetails)}">
+                                        0 VNĐ
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:if="${order.orderDetails != null and !#lists.isEmpty(order.orderDetails)}">
+                                        <span th:each="detail : ${order.orderDetails}" th:if="${detail.course != null}">
+                                            <div th:text="${detail.promotionID != null ? detail.promotionID : 'Không có'}"></div>
+                                        </span>
+                                    </span>
+                                    <span th:if="${order.orderDetails == null or #lists.isEmpty(order.orderDetails)}">
+                                        Không có
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:if="${order.orderDetails != null and !#lists.isEmpty(order.orderDetails)}">
+                                        <span th:each="detail : ${order.orderDetails}" th:if="${detail.course != null}">
+                                            <div th:with="discount=${detail.promotionID != null ? detail.price * 0.1 : 0}"
+                                                 th:text="${#numbers.formatDecimal(discount, 0, 0, 'COMMA')} + ' VNĐ'"></div>
+                                        </span>
+                                    </span>
+                                    <span th:if="${order.orderDetails == null or #lists.isEmpty(order.orderDetails)}">
+                                        0 VNĐ
+                                    </span>
+                                </td>
+                                <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 0, 'COMMA')} + ' VNĐ'"></td>
+                                <td>
+                                    <span th:switch="${order.orderStatus}">
+                                        <span th:case="'PENDING'" class="status-pending">Chưa phản hồi</span>
+                                        <span th:case="'CONFIRM'" class="status-completed">Đã xác nhận</span>
+                                        <span th:case="'CANCEL'" class="status-cancel">Đã hủy</span>
+                                        <span th:case="*" class="status-pending">Không xác định</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="no-orders" th:if="${customer.orders == null or #lists.isEmpty(customer.orders)}">
+                            Chưa có đơn hàng nào
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Edit Modal -->
+    <div class="modal fade" id="customerEditModal" tabindex="-1" aria-labelledby="customerEditModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customerEditModalLabel"><i class="fas fa-user-edit me-2"></i> Chỉnh sửa thông tin khách hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCustomerForm" th:action="@{/owner/customer/update}" th:method="POST">
+                        <input type="hidden" id="editCustomerId" name="userID" />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editName" class="form-label">Họ tên</label>
+                                    <input type="text" class="form-control" id="editName" name="fullname" readonly />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="editEmail" name="email" readonly />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editPhone" class="form-label">Số điện thoại</label>
+                                    <input type="text" class="form-control" id="editPhone" name="phoneNumber" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editGender" class="form-label">Giới tính</label>
+                                    <select class="form-select" id="editGender" name="gender" required>
+                                        <option value="" disabled>Chọn giới tính</option>
+                                        <option value="MALE">Nam</option>
+                                        <option value="FEMALE">Nữ</option>
+                                        <option value="OTHER">Khác</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editAddress" class="form-label">Địa chỉ</label>
+                                    <input type="text" class="form-control" id="editAddress" name="address" placeholder="Nhập địa chỉ..." />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editStatus" class="form-label">Trạng thái</label>
+                                    <select class="form-select" id="editStatus" name="status">
+                                        <option value="1">Kích hoạt</option>
+                                        <option value="0">Vô hiệu hóa</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-save mt-3"><i class="fas fa-save me-2"></i> Lưu thay đổi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.min.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/object-fit-images/ofi.min.js"></script>
+<script>
+    var basePath = "";
+</script>
+<script src="js/theme.30e7c8f9.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
+<script src="js/demo.9833433a.js"></script>
+<script>
+    // Check if Bootstrap is loaded
+    if (typeof bootstrap === 'undefined') {
+        console.error("Bootstrap JavaScript is not loaded. Please check if the Bootstrap script is loaded correctly.");
+    }
+
+    // Populate Customer Edit Modal
+    document.querySelectorAll(".edit").forEach((button) => {
+        button.addEventListener("click", function () {
+            const customerId = this.getAttribute("data-customer-id");
+            const name = this.getAttribute("data-name");
+            const email = this.getAttribute("data-email");
+            const phone = this.getAttribute("data-phone");
+            const gender = this.getAttribute("data-gender");
+            const address = this.getAttribute("data-address");
+            const status = this.getAttribute("data-status");
+
+            console.log("Edit clicked:", {
+                customerId: customerId,
+                name: name,
+                email: email,
+                phone: phone,
+                gender: gender,
+                address: address,
+                status: status
             });
-        });
 
-        // Populate Customer Edit Modal
-        document.querySelectorAll(".edit").forEach((button) => {
-            button.addEventListener("click", function () {
-                const customerId = this.closest("tr").getAttribute("data-customer-id");
-                const name = this.closest("tr").getAttribute("data-name");
-                const email = this.closest("tr").getAttribute("data-email");
-                const phone = this.closest("tr").getAttribute("data-phone");
-                const gender = this.closest("tr").getAttribute("data-gender");
-                const address = this.closest("tr").getAttribute("data-address");
-                const status = this.closest("tr").getAttribute("data-status");
+            document.getElementById("editCustomerId").value = customerId || "";
+            document.getElementById("editName").value = name || "N/A";
+            document.getElementById("editEmail").value = email || "N/A";
+            document.getElementById("editPhone").value = phone || "N/A";
+            document.getElementById("editAddress").value = address || "";
 
-                console.log("Edit clicked:", {
-                    customerId: customerId,
-                    name: name,
-                    email: email,
-                    phone: phone,
-                    gender: gender,
-                    address: address,
-                    status: status
-                });
+            const statusValue = parseInt(status, 10);
+            const statusSelect = document.getElementById("editStatus");
+            statusSelect.value = !isNaN(statusValue) && statusValue === 1 ? "1" : "0";
 
-                document.getElementById("editCustomerId").value = customerId;
-                document.getElementById("editName").value = name || "N/A";
-                document.getElementById("editEmail").value = email || "N/A";
-                document.getElementById("editPhone").value = phone || "N/A";
-                document.getElementById("editAddress").value = address || "";
-
-                const statusValue = parseInt(status, 10);
-                const statusSelect = document.getElementById("editStatus");
-                statusSelect.value = !isNaN(statusValue) && statusValue === 1 ? "1" : "0";
-
-                const genderSelect = document.getElementById("editGender");
-                const normalizedGender = gender ? gender.toUpperCase() : "";
-                genderSelect.value = normalizedGender;
-                if (!normalizedGender || !["MALE", "FEMALE", "OTHER"].includes(normalizedGender)) {
-                    genderSelect.value = "";
-                }
-            });
-        });
-
-        // Handle form submission with AJAX
-        document.getElementById("editCustomerForm").addEventListener("submit", function (event) {
-            event.preventDefault();
-            console.log("Edit form submitted");
-
-            const formData = new FormData(this);
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ": " + pair[1]);
+            const genderSelect = document.getElementById("editGender");
+            const normalizedGender = gender ? gender.toUpperCase() : "";
+            genderSelect.value = normalizedGender;
+            if (!normalizedGender || !["MALE", "FEMALE", "OTHER"].includes(normalizedGender)) {
+                genderSelect.value = "";
             }
-
-            fetch(this.action, {
-                method: "POST",
-                body: formData
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Failed to update customer");
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    alert("Customer updated successfully!");
-                    location.reload();
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("Failed to update customer: " + error.message);
-                });
         });
-    </script>
+    });
+
+    // Handle form submission with AJAX
+    document.getElementById("editCustomerForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        console.log("Edit form submitted");
+
+        const formData = new FormData(this);
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ": " + pair[1]);
+        }
+
+        fetch(this.action, {
+            method: "POST",
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to update customer");
+                }
+                return response.text();
+            })
+            .then(data => {
+                alert("Customer updated successfully!");
+                location.reload();
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Failed to update customer: " + error.message);
+            });
+    });
+</script>
 </body>
 </html>
