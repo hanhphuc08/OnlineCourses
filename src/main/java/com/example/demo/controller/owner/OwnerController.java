@@ -13,6 +13,7 @@ import com.example.demo.model.*;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.CourseRepository;
 import com.example.demo.service.CourseService;
+import com.example.demo.service.OrderService;
 import com.example.demo.service.PromotionService;
 import com.example.demo.service.UserService;
 import org.slf4j.Logger;
@@ -64,6 +65,8 @@ public class OwnerController {
     
     @Autowired
     private PromotionService promotionService;
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/home")
     public String ownerHome() {
@@ -77,6 +80,27 @@ public class OwnerController {
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_Owner"))) {
             logger.warn("Không có quyền truy cập dashboard: {}", authentication != null ? authentication.getName() : "Chưa đăng nhập");
             return "redirect:/login";
+        }
+        try {
+            model.addAttribute("totalCourses", courseService.countAllCourses());
+            model.addAttribute("totalStudents", userService.countAllStudents());
+            model.addAttribute("activeCourses", courseService.countActiveCourses());
+            model.addAttribute("pendingOrders", orderService.countPendingOrders());
+            model.addAttribute("totalReviews", 0); 
+            
+            // Top khóa học bán chạy
+            List<Object[]> topCourses = courseService.findTopCoursesByEnrollments(5);
+            model.addAttribute("topCourses", topCourses);
+            logger.info("Top khóa học: {}", topCourses.size());
+            
+            // Đơn hàng gần đây
+            List<Object[]> recentOrders = orderService.findRecentOrders(5);
+            model.addAttribute("recentOrders", recentOrders);
+            logger.info("Đơn hàng gần đây: {}", recentOrders.size());
+            
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy dữ liệu thống kê: {}", e.getMessage());
+            model.addAttribute("error", "Không thể tải dữ liệu thống kê. Vui lòng thử lại sau.");
         }
         return "owner/dashboard";
     }
@@ -241,7 +265,7 @@ public class OwnerController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
 
-            // Update fields (fullname, email, phoneNumber are readonly in UI, but we keep them unchanged here)
+            
             existingUser.setFullname(updatedUser.getFullname());
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());

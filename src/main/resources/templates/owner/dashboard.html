@@ -345,7 +345,7 @@
                         <div class="icon">
                             <i class="fas fa-book"></i>
                         </div>
-                        <h3>15</h3>
+                        <h3 th:text="${#numbers.formatInteger(totalCourses, 0, 'COMMA')}">0</h3>
                         <p>Tổng số khóa học</p>
                     </div>
                 </div>
@@ -354,7 +354,7 @@
                         <div class="icon">
                             <i class="fas fa-user-graduate"></i>
                         </div>
-                        <h3>567</h3>
+                        <h3 th:text="${#numbers.formatInteger(totalStudents, 0, 'COMMA')}">0</h3>
                         <p>Số lượng học viên</p>
                     </div>
                 </div>
@@ -363,7 +363,7 @@
                         <div class="icon">
                             <i class="fas fa-star"></i>
                         </div>
-                        <h3>320</h3>
+                        <h3 th:text="${#numbers.formatInteger(totalReviews, 0, 'COMMA')}">0</h3>
                         <p>Số lượng đánh giá</p>
                     </div>
                 </div>
@@ -372,7 +372,7 @@
                         <div class="icon">
                             <i class="fas fa-book-open"></i>
                         </div>
-                        <h3>11</h3>
+                        <h3 th:text="${#numbers.formatInteger(activeCourses, 0, 'COMMA')}">0</h3>
                         <p>Khóa học đang hoạt động</p>
                     </div>
                 </div>
@@ -381,7 +381,7 @@
                         <div class="icon">
                             <i class="fas fa-shopping-cart"></i>
                         </div>
-                        <h3>3</h3>
+                        <h3 th:text="${#numbers.formatInteger(pendingOrders, 0, 'COMMA')}">0</h3>
                         <p>Đơn hàng đang chờ xử lý</p>
                     </div>
                 </div>
@@ -394,41 +394,22 @@
                 <div class="top-courses">
                     <h5>Top khóa học bán chạy nhất</h5>
                     <ul>
-                        <li>
+                        <li th:each="course : ${topCourses}">
                             <div class="course-info">
-                                <span class="course-name">Lập trình Java từ cơ bản đến nâng cao</span>
+                                <span class="course-name" th:text="${course[1]}"></span>
                             </div>
-                            <span class="enrollments">230 học viên</span>
+                            <span class="enrollments" th:text="${#numbers.formatInteger(course[2], 0, 'COMMA')} + ' học viên'">0 học viên</span>
                         </li>
-                        <li>
+                        <li th:if="${#lists.isEmpty(topCourses)}">
                             <div class="course-info">
-                                <span class="course-name">Thiết kế UI/UX chuyên nghiệp</span>
+                                <span class="course-name">Chưa có khóa học nào</span>
                             </div>
-                            <span class="enrollments">180 học viên</span>
-                        </li>
-                        <li>
-                            <div class="course-info">
-                                <span class="course-name">Phát triển Web với ReactJS</span>
-                            </div>
-                            <span class="enrollments">150 học viên</span>
-                        </li>
-                        <li>
-                            <div class="course-info">
-                                <span class="course-name">Lập trình Python cơ bản</span>
-                            </div>
-                            <span class="enrollments">120 học viên</span>
-                        </li>
-                        <li>
-                            <div class="course-info">
-                                <span class="course-name">Học Data Science với Python</span>
-                            </div>
-                            <span class="enrollments">100 học viên</span>
+                            <span class="enrollments">0 học viên</span>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-
         <!-- Recent Orders -->
         <div class="recent-orders">
             <h5>Đơn hàng gần đây</h5>
@@ -436,39 +417,29 @@
                 <thead>
                     <tr>
                         <th>Mã đơn hàng</th>
-                        <th>Học viên</th>
-                        <th>Khóa học</th>
                         <th>Ngày đặt</th>
-                        <th>Hành động</th>
+                        <th>Trạng thái</th>
+                        <th>Học viên</th>
+                        <th>Khoá học</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>#1234</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>Lập trình Java</td>
-                        <td>2025-04-28 10:30</td>
+                    <tr th:each="order : ${recentOrders}">
+                        <td th:text="'#' + ${order[0]}"></td>
+                        <td th:text="${#temporals.format(order[1], 'yyyy-MM-dd HH:mm')}"></td>
                         <td>
-                            <button class="btn-reply replied" data-order-id="1234">Đã phản hồi</button>
+                            <span th:switch="${order[2]}">
+                                <span th:case="'PENDING'" class="status-pending">Chưa phản hồi</span>
+                                <span th:case="'CONFIRM'" class="status-confirm">Đã xác nhận</span>
+                                <span th:case="'CANCEL'" class="status-cancel">Đã hủy</span>
+                                <span th:case="*" class="status-pending">Không xác định</span>
+                            </span>
                         </td>
+                        <td th:text="${order[3]}"></td>
+                        <td th:text="${order[4]}"></td>
                     </tr>
-                    <tr>
-                        <td>#1235</td>
-                        <td>Trần Thị B</td>
-                        <td>Thiết kế UI/UX</td>
-                        <td>2025-04-28 09:15</td>
-                        <td>
-                            <button class="btn-reply" data-order-id="1235">Phản hồi</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#1236</td>
-                        <td>Lê Văn C</td>
-                        <td>Phát triển Web</td>
-                        <td>2025-04-27 15:45</td>
-                        <td>
-                            <button class="btn-reply" data-order-id="1236">Phản hồi</button>
-                        </td>
+                    <tr th:if="${#lists.isEmpty(recentOrders)}">
+                        <td colspan="5" class="text-center">Không có đơn hàng nào</td>
                     </tr>
                 </tbody>
             </table>
