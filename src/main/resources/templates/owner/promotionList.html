@@ -186,6 +186,12 @@
         .main-content .promotions-table .pagination-button.active:hover {
             background-color: #2c7ec4;
         }
+        .main-content .promotions-table .pagination-button.disabled {
+            color: #6c757d;
+            cursor: not-allowed;
+            border-color: #e0e0e0;
+            background-color: #f8f9fa;
+        }
         .main-content .modal-title-cus {
             text-transform: uppercase;
             font-weight: 600;
@@ -217,65 +223,72 @@
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
+<!-- Sidebar -->
+<div class="custom-sidebar">
+    <div th:replace="~{owner/sidebar :: sidebar}"></div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Header -->
     <div class="custom-sidebar">
-        <div th:replace="~{owner/sidebar :: sidebar}"></div>
+        <div th:replace="~{owner/sidebar :: header}"></div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Header -->
-        <div class="custom-sidebar">
-            <div th:replace="~{owner/sidebar :: header}"></div>
-        </div>
+    <!-- Promotion Header -->
+    <div class="promotion-header">
+        <h2>Khuyến mãi</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPromotionModal">Thêm khuyến mãi mới</button>
+    </div>
 
-        <!-- Promotion Header -->
-        <div class="promotion-header">
-            <h2>Khuyến mãi</h2>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPromotionModal">Thêm khuyến mãi mới</button>
-        </div>
+    <!-- Breadcrumb -->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><i class="fas fa-home px-2"></i><a th:href="@{/owner/dashboard}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Khuyến mãi</li>
+    </ol>
 
-        <!-- Breadcrumb -->
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><i class="fas fa-home px-2"></i><a th:href="@{/owner/dashboard}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Khuyến mãi</li>
-        </ol>
-
-        <!-- Filters -->
-        <div class="filters">
-            <div class="search-bar">
-                <input type="text" class="form-control" placeholder="Tìm kiếm mã khuyến mãi" />
+    <!-- Filters -->
+    <div class="filters">
+        <form th:action="@{/owner/promotionList}" method="get" id="filterForm">
+            <div class="d-flex gap-3">
+                <div class="search-bar">
+                    <input type="text" class="form-control" name="search"
+                           th:value="${search}" placeholder="Tìm kiếm mã khuyến mãi" />
+                </div>
+                <div class="status-filter">
+                    <select class="form-select" name="status" onchange="this.form.submit()">
+                        <option value="all" th:selected="${status == 'all'}">Tất cả trạng thái</option>
+                        <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">Kích hoạt</option>
+                        <option value="EXPIRED" th:selected="${status == 'EXPIRED'}">Hết hạn</option>
+                        <option value="USED_OUT" th:selected="${status == 'USED_OUT'}">Hết lượt</option>
+                    </select>
+                </div>
             </div>
-            <div class="status-filter">
-                <select class="form-select">
-                    <option selected>Trạng thái</option>
-                    <option value="ACTIVE">Kích hoạt</option>
-                    <option value="EXPIRED">Hết hạn</option>
-                    <option value="USED_OUT">Hết lượt</option>
-                </select>
-            </div>
-        </div>
+            <input type="hidden" name="page" value="0" />
+            <input type="hidden" name="size" value="10" />
+        </form>
+    </div>
 
-        <!-- Promotions Table -->
-        <div class="promotions-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 5%"><input type="checkbox" id="selectAll" /></th>
-                        <th class="col-2">Mã khuyến mãi</th>
-                        <th class="col-2">Phần trăm giảm</th>
-                        <th class="col-2">Ngày hết hạn</th>
-                        <th class="col-2">Khóa học</th>
-                        <th class="col-2">Trạng thái</th>
-                        <th class="col-2">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:if="${promotions.isEmpty}">
-                        <td colspan="7">Không có khuyến mãi nào.</td>
-                    </tr>
-                    <tr th:each="promotion : ${promotions}"
-                        th:attr="data-promotionid=${promotion.promotionID},
+    <!-- Promotions Table -->
+    <div class="promotions-table">
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 5%"><input type="checkbox" id="selectAll" /></th>
+                <th class="col-2">Mã khuyến mãi</th>
+                <th class="col-2">Phần trăm giảm</th>
+                <th class="col-2">Ngày hết hạn</th>
+                <th class="col-2">Khóa học</th>
+                <th class="col-2">Trạng thái</th>
+                <th class="col-2">Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${!hasPromotions}">
+                <td colspan="7">Không có khuyến mãi nào.</td>
+            </tr>
+            <tr th:each="promotion : ${promotions}"
+                th:attr="data-promotionid=${promotion.promotionID},
                                  data-code=${promotion.code},
                                  data-discountpercentage=${promotion.discountPercentage},
                                  data-expirationdate=${#temporals.format(promotion.expirationDate, 'yyyy-MM-dd''T''HH:mm')},
@@ -285,392 +298,400 @@
                                  data-usagelimit=${promotion.usageLimit},
                                  data-usagecount=${promotion.usageCount},
                                  data-createat=${#temporals.format(promotion.createAt, 'dd/MM/yyyy HH:mm')}">
-                        <td><input type="checkbox" class="promotion-checkbox" /></td>
-                        <td th:text="${promotion.code}"></td>
-                        <td th:text="${promotion.discountPercentage + '%'}"></td>
-                        <td th:text="${#temporals.format(promotion.expirationDate, 'dd/MM/yyyy HH:mm')}"></td>
-                        <td th:text="${promotion.course?.title ?: 'Không có khóa học'}"></td>
-                        <td>
+                <td><input type="checkbox" class="promotion-checkbox" /></td>
+                <td th:text="${promotion.code}"></td>
+                <td th:text="${promotion.discountPercentage + '%'}"></td>
+                <td th:text="${#temporals.format(promotion.expirationDate, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${promotion.course?.title ?: 'Không có khóa học'}"></td>
+                <td>
                             <span th:class="${promotion.status == 'ACTIVE' ? 'status-active' : (promotion.status == 'EXPIRED' ? 'status-expired' : 'status-used-out')}"
                                   th:text="${promotion.status == 'ACTIVE' ? 'Kích hoạt' : (promotion.status == 'EXPIRED' ? 'Hết hạn' : 'Hết lượt')}"></span>
-                        </td>
-                        <td class="actions">
-                            <div class="actions-item">
-                                <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#editPromotionModal" th:attr="data-promotion-id=${promotion.promotionID}">
-                                    <i class="fas fa-edit me-1"></i> Sửa
-                                </a>
-                                <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#viewPromotionModal" th:attr="data-promotion-id=${promotion.promotionID}">
-                                    <i class="fas fa-eye me-1"></i> Xem
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                </td>
+                <td class="actions">
+                    <div class="actions-item">
+                        <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#editPromotionModal" th:attr="data-promotion-id=${promotion.promotionID}">
+                            <i class="fas fa-edit me-1"></i> Sửa
+                        </a>
+                        <a class="view" href="#" data-bs-toggle="modal" data-bs-target="#viewPromotionModal" th:attr="data-promotion-id=${promotion.promotionID}">
+                            <i class="fas fa-eye me-1"></i> Xem
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-            <hr />
-            <div class="pagination-container">
-                <span class="pagination-info">Hiển thị 1 đến 10 của <span th:text="${totalPromotions}"></span> mục</span>
-                <div class="pagination-buttons">
-                    <button class="pagination-button">Trước</button>
-                    <button class="pagination-button active">1</button>
-                    <button class="pagination-button">2</button>
-                    <button class="pagination-button">Sau</button>
-                </div>
+        <hr />
+        <div class="pagination-container">
+                <span class="pagination-info"
+                      th:text="'Hiển thị ' + ${(currentPage * pageSize + 1)} + ' đến ' + ${(currentPage * pageSize + #lists.size(promotions))} + ' của ' + ${totalPromotions} + ' mục'"></span>
+            <div class="pagination-buttons">
+                <a th:href="@{/owner/promotionList(page=${currentPage - 1}, size=${pageSize}, search=${search}, status=${status})}"
+                   th:class="'pagination-button' + (${currentPage == 0} ? ' disabled' : '')"
+                   th:unless="${currentPage == 0}">Trước</a>
+                <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                    <a th:href="@{/owner/promotionList(page=${i}, size=${pageSize}, search=${search}, status=${status})}"
+                       th:class="'pagination-button' + (${i == currentPage} ? ' active' : '')"
+                       th:text="${i + 1}"></a>
+                </th:block>
+                <a th:href="@{/owner/promotionList(page=${currentPage + 1}, size=${pageSize}, search=${search}, status=${status})}"
+                   th:class="'pagination-button' + (${currentPage >= totalPages - 1} ? ' disabled' : '')"
+                   th:unless="${currentPage >= totalPages - 1}">Sau</a>
             </div>
         </div>
+    </div>
 
-        <!-- Add Promotion Modal -->
-        <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title-cus" id="addPromotionModalLabel">Thêm khuyến mãi mới</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="modal-two-columns">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="addCode">Mã khuyến mãi</label>
-                                    <input type="text" class="form-control" id="addCode" name="code" placeholder="Nhập mã khuyến mãi" required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="addDiscountPercentage">Phần trăm giảm giá (%)</label>
-                                    <input type="number" step="0.01" min="0" max="100" class="form-control" id="addDiscountPercentage" name="discountPercentage" placeholder="Nhập phần trăm giảm giá" required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="addExpirationDate">Ngày hết hạn</label>
-                                    <input type="datetime-local" class="form-control" id="addExpirationDate" name="expirationDate" required />
-                                </div>
+    <!-- Add Promotion Modal -->
+    <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title-cus" id="addPromotionModalLabel">Thêm khuyến mãi mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-two-columns">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="addCode">Mã khuyến mãi</label>
+                                <input type="text" class="form-control" id="addCode" name="code" placeholder="Nhập mã khuyến mãi" required />
                             </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="addCourseID">Khóa học áp dụng</label>
-                                    <select class="form-select" id="addCourseID" name="courseID" required>
-                                        <option value="" disabled selected>Chọn khóa học</option>
-                                        <option th:each="course : ${courses}" 
-                                                th:value="${course.courseID}" 
-                                                th:text="${course.title}"></option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="addStatus">Trạng thái</label>
-                                    <select class="form-select" id="addStatus" name="status" required>
-                                        <option value="ACTIVE">Kích hoạt</option>
-                                        <option value="EXPIRED">Hết hạn</option>
-                                        <option value="USED_OUT">Hết lượt</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="addUsageLimit">Giới hạn sử dụng</label>
-                                    <input type="number" min="1" class="form-control" id="addUsageLimit" name="usageLimit" placeholder="Nhập giới hạn sử dụng" required />
-                                </div>
+                            <div class="form-group">
+                                <label for="addDiscountPercentage">Phần trăm giảm giá (%)</label>
+                                <input type="number" step="0.01" min="0" max="100" class="form-control" id="addDiscountPercentage" name="discountPercentage" placeholder="Nhập phần trăm giảm giá" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="addExpirationDate">Ngày hết hạn</label>
+                                <input type="datetime-local" class="form-control" id="addExpirationDate" name="expirationDate" required />
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="addCourseID">Khóa học áp dụng</label>
+                                <select class="form-select" id="addCourseID" name="courseID" required>
+                                    <option value="" disabled selected>Chọn khóa học</option>
+                                    <option th:each="course : ${courses}"
+                                            th:value="${course.courseID}"
+                                            th:text="${course.title}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="addStatus">Trạng thái</label>
+                                <select class="form-select" id="addStatus" name="status" required>
+                                    <option value="ACTIVE">Kích hoạt</option>
+                                    <option value="EXPIRED">Hết hạn</option>
+                                    <option value="USED_OUT">Hết lượt</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="addUsageLimit">Giới hạn sử dụng</label>
+                                <input type="number" min="1" class="form-control" id="addUsageLimit" name="usageLimit" placeholder="Nhập giới hạn sử dụng" required />
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="button" class="btn btn-primary" id="saveAddPromotion">Lưu khuyến mãi</button>
-                    </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Edit Promotion Modal -->
-        <div class="modal fade" id="editPromotionModal" tabindex="-1" aria-labelledby="editPromotionModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title-cus" id="editPromotionModalLabel">Chỉnh sửa khuyến mãi</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="modal-two-columns">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="editPromotionID">ID khuyến mãi</label>
-                                    <input type="text" class="form-control" id="editPromotionID" name="promotionID" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label for="editCode">Mã khuyến mãi</label>
-                                    <input type="text" class="form-control" id="editCode" name="code" placeholder="Nhập mã khuyến mãi" required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="editDiscountPercentage">Phần trăm giảm giá (%)</label>
-                                    <input type="number" step="0.01" min="0" max="100" class="form-control" id="editDiscountPercentage" name="discountPercentage" placeholder="Nhập phần trăm giảm giá" required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="editExpirationDate">Ngày hết hạn</label>
-                                    <input type="datetime-local" class="form-control" id="editExpirationDate" name="expirationDate" required />
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="editCourseID">Khóa học áp dụng</label>
-                                    <select class="form-select" id="editCourseID" name="courseID" required>
-                                        <option value="" disabled>Chọn khóa học</option>
-                                        <option th:each="course : ${courses}" 
-                                                th:value="${course.courseID}" 
-                                                th:text="${course.title}"></option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editStatus">Trạng thái</label>
-                                    <select class="form-select" id="editStatus" name="status" required>
-                                        <option value="ACTIVE">Kích hoạt</option>
-                                        <option value="EXPIRED">Hết hạn</option>
-                                        <option value="USED_OUT">Hết lượt</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editUsageLimit">Giới hạn sử dụng</label>
-                                    <input type="number" min="1" class="form-control" id="editUsageLimit" name="usageLimit" placeholder="Nhập giới hạn sử dụng" required />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="button" class="btn btn-primary" id="saveEditPromotion">Lưu thay đổi</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- View Promotion Modal -->
-        <div class="modal fade" id="viewPromotionModal" tabindex="-1" aria-labelledby="viewPromotionModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title-cus" id="viewPromotionModalLabel">Chi tiết khuyến mãi</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="modal-two-columns">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="viewPromotionID">ID khuyến mãi</label>
-                                    <input type="text" class="form-control" id="viewPromotionID" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label for="viewCode">Mã khuyến mãi</label>
-                                    <input type="text" class="form-control" id="viewCode" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label for="viewDiscountPercentage">Phần trăm giảm giá</label>
-                                    <input type="text" class="form-control" id="viewDiscountPercentage" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label for="viewExpirationDate">Ngày hết hạn</label>
-                                    <input type="text" class="form-control" id="viewExpirationDate" readonly />
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="viewCourseName">Khóa học áp dụng</label>
-                                    <input type="text" class="form-control" id="viewCourseName" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label for="viewStatus">Trạng thái</label>
-                                    <input type="text" class="form-control" id="viewStatus" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label for="viewUsageLimit">Giới hạn sử dụng</label>
-                                    <input type="text" class="form-control" id="viewUsageLimit" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label for="viewUsageCount">Số lượt đã sử dụng</label>
-                                    <input type="text" class="form-control" id="viewUsageCount" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label for="viewCreateAt">Ngày tạo</label>
-                                    <input type="text" class="form-control" id="viewCreateAt" readonly />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="saveAddPromotion">Lưu khuyến mãi</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript files -->
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script th:inline="javascript">
-        document.addEventListener("DOMContentLoaded", function () {
-            // Handle "Select All" checkbox
-            document.getElementById("selectAll").addEventListener("change", function () {
-                document.querySelectorAll(".promotion-checkbox").forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
-            });
+    <!-- Edit Promotion Modal -->
+    <div class="modal fade" id="editPromotionModal" tabindex="-1" aria-labelledby="editPromotionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title-cus" id="editPromotionModalLabel">Chỉnh sửa khuyến mãi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-two-columns">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="editPromotionID">ID khuyến mãi</label>
+                                <input type="text" class="form-control" id="editPromotionID" name="promotionID" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="editCode">Mã khuyến mãi</label>
+                                <input type="text" class="form-control" id="editCode" name="code" placeholder="Nhập mã khuyến mãi" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="editDiscountPercentage">Phần trăm giảm giá (%)</label>
+                                <input type="number" step="0.01" min="0" max="100" class="form-control" id="editDiscountPercentage" name="discountPercentage" placeholder="Nhập phần trăm giảm giá" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="editExpirationDate">Ngày hết hạn</label>
+                                <input type="datetime-local" class="form-control" id="editExpirationDate" name="expirationDate" required />
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="editCourseID">Khóa học áp dụng</label>
+                                <select class="form-select" id="editCourseID" name="courseID" required>
+                                    <option value="" disabled>Chọn khóa học</option>
+                                    <option th:each="course : ${courses}"
+                                            th:value="${course.courseID}"
+                                            th:text="${course.title}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editStatus">Trạng thái</label>
+                                <select class="form-select" id="editStatus" name="status" required>
+                                    <option value="ACTIVE">Kích hoạt</option>
+                                    <option value="EXPIRED">Hết hạn</option>
+                                    <option value="USED_OUT">Hết lượt</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editUsageLimit">Giới hạn sử dụng</label>
+                                <input type="number" min="1" class="form-control" id="editUsageLimit" name="usageLimit" placeholder="Nhập giới hạn sử dụng" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="saveEditPromotion">Lưu thay đổi</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            // Handle Add Promotion Modal
-            document.getElementById("saveAddPromotion").addEventListener("click", function () {
-                const formData = new FormData();
-                formData.append("code", document.getElementById("addCode").value);
-                formData.append("discountPercentage", document.getElementById("addDiscountPercentage").value);
-                formData.append("expirationDate", document.getElementById("addExpirationDate").value);
-                formData.append("courseID", document.getElementById("addCourseID").value);
-                formData.append("status", document.getElementById("addStatus").value);
-                formData.append("usageLimit", document.getElementById("addUsageLimit").value);
+    <!-- View Promotion Modal -->
+    <div class="modal fade" id="viewPromotionModal" tabindex="-1" aria-labelledby="viewPromotionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title-cus" id="viewPromotionModalLabel">Chi tiết khuyến mãi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-two-columns">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="viewPromotionID">ID khuyến mãi</label>
+                                <input type="text" class="form-control" id="viewPromotionID" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="viewCode">Mã khuyến mãi</label>
+                                <input type="text" class="form-control" id="viewCode" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="viewDiscountPercentage">Phần trăm giảm giá</label>
+                                <input type="text" class="form-control" id="viewDiscountPercentage" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="viewExpirationDate">Ngày hết hạn</label>
+                                <input type="text" class="form-control" id="viewExpirationDate" readonly />
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="viewCourseName">Khóa học áp dụng</label>
+                                <input type="text" class="form-control" id="viewCourseName" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="viewStatus">Trạng thái</label>
+                                <input type="text" class="form-control" id="viewStatus" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="viewUsageLimit">Giới hạn sử dụng</label>
+                                <input type="text" class="form-control" id="viewUsageLimit" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="viewUsageCount">Số lượt đã sử dụng</label>
+                                <input type="text" class="form-control" id="viewUsageCount" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="viewCreateAt">Ngày tạo</label>
+                                <input type="text" class="form-control" id="viewCreateAt" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                console.log("Sending add promotion data:", [...formData]);
-
-                fetch("/owner/promotion/add", {
-                    method: "POST",
-                    body: formData
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.text().then(text => {
-                                throw new Error(`HTTP ${response.status}: ${text}`);
-                            });
-                        }
-                        return response.text();
-                    })
-                    .then(data => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Thành công',
-                            text: data,
-                            confirmButtonText: 'OK',
-                            timer: 3000,
-                            timerProgressBar: true
-                        }).then(() => {
-                            location.reload();
-                        });
-                        bootstrap.Modal.getInstance(document.getElementById("addPromotionModal")).hide();
-                    })
-                    .catch(error => {
-                        console.error("Lỗi:", error.message);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Lỗi',
-                            text: error.message,
-                            confirmButtonText: 'OK'
-                        });
-                    });
-            });
-
-            // Handle Edit Promotion Modal
-            document.querySelectorAll('[data-bs-target="#editPromotionModal"]').forEach(button => {
-                button.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    const promotionId = this.getAttribute("data-promotion-id");
-                    const row = this.closest("tr");
-                    document.getElementById("editPromotionID").value = promotionId;
-                    document.getElementById("editCode").value = row.getAttribute("data-code");
-                    document.getElementById("editDiscountPercentage").value = row.getAttribute("data-discountpercentage");
-                    document.getElementById("editExpirationDate").value = row.getAttribute("data-expirationdate");
-                    document.getElementById("editCourseID").value = row.getAttribute("data-courseid");
-                    document.getElementById("editStatus").value = row.getAttribute("data-status");
-                    document.getElementById("editUsageLimit").value = row.getAttribute("data-usagelimit");
-
-                    const editModal = new bootstrap.Modal(document.getElementById("editPromotionModal"));
-                    editModal.show();
-
-                    document.getElementById("editPromotionModal").addEventListener("hidden.bs.modal", function () {
-                        document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
-                        document.body.classList.remove("modal-open");
-                        document.body.style.overflow = "auto";
-                    }, { once: true });
-                });
-            });
-
-            // Handle Save Edit Promotion
-            document.getElementById("saveEditPromotion").addEventListener("click", function () {
-                const formData = new FormData();
-                formData.append("promotionID", document.getElementById("editPromotionID").value);
-                formData.append("code", document.getElementById("editCode").value);
-                formData.append("discountPercentage", document.getElementById("editDiscountPercentage").value);
-                formData.append("expirationDate", document.getElementById("editExpirationDate").value);
-                formData.append("courseID", document.getElementById("editCourseID").value);
-                formData.append("status", document.getElementById("editStatus").value);
-                formData.append("usageLimit", document.getElementById("editUsageLimit").value);
-
-                console.log("Sending edit promotion data:", [...formData]);
-
-                fetch("/owner/promotion/edit", {
-                    method: "POST",
-                    body: formData
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.text().then(text => {
-                                throw new Error(`HTTP ${response.status}: ${text}`);
-                            });
-                        }
-                        return response.text();
-                    })
-                    .then(data => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Thành công',
-                            text: data,
-                            confirmButtonText: 'OK',
-                            timer: 3000,
-                            timerProgressBar: true
-                        }).then(() => {
-                            location.reload();
-                        });
-                        bootstrap.Modal.getInstance(document.getElementById("editPromotionModal")).hide();
-                    })
-                    .catch(error => {
-                        console.error("Lỗi:", error.message);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Lỗi',
-                            text: error.message,
-                            confirmButtonText: 'OK'
-                        });
-                    });
-            });
-
-            // Handle View Promotion Modal
-            document.querySelectorAll('[data-bs-target="#viewPromotionModal"]').forEach(button => {
-                button.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    const promotionId = this.getAttribute("data-promotion-id");
-                    const row = this.closest("tr");
-                    document.getElementById("viewPromotionID").value = promotionId;
-                    document.getElementById("viewCode").value = row.getAttribute("data-code");
-                    document.getElementById("viewDiscountPercentage").value = row.getAttribute("data-discountpercentage") + "%";
-                    document.getElementById("viewExpirationDate").value = row.getAttribute("data-expirationdate").replace("T", " ");
-                    document.getElementById("viewCourseName").value = row.getAttribute("data-coursename");
-                    document.getElementById("viewStatus").value = row.getAttribute("data-status") === "ACTIVE" ? "Kích hoạt" :
-                                                                  row.getAttribute("data-status") === "EXPIRED" ? "Hết hạn" : "Hết lượt";
-                    document.getElementById("viewUsageLimit").value = row.getAttribute("data-usagelimit");
-                    document.getElementById("viewUsageCount").value = row.getAttribute("data-usagecount");
-                    document.getElementById("viewCreateAt").value = row.getAttribute("data-createat");
-
-                    const viewModal = new bootstrap.Modal(document.getElementById("viewPromotionModal"));
-                    viewModal.show();
-
-                    document.getElementById("viewPromotionModal").addEventListener("hidden.bs.modal", function () {
-                        document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
-                        document.body.classList.remove("modal-open");
-                        document.body.style.overflow = "auto";
-                    }, { once: true });
-                });
+<!-- JavaScript files -->
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        // Handle "Select All" checkbox
+        document.getElementById("selectAll").addEventListener("change", function () {
+            document.querySelectorAll(".promotion-checkbox").forEach(checkbox => {
+                checkbox.checked = this.checked;
             });
         });
-    </script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.min.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/js/glightbox.min.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/object-fit-images/ofi.min.js"></script>
-    <script src="/js/theme.30e7c8f9.js"></script>
-    <script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
-    <script src="/js/demo.9833433a.js"></script>
+
+        // Handle Add Promotion Modal
+        document.getElementById("saveAddPromotion").addEventListener("click", function () {
+            const formData = new FormData();
+            formData.append("code", document.getElementById("addCode").value);
+            formData.append("discountPercentage", document.getElementById("addDiscountPercentage").value);
+            formData.append("expirationDate", document.getElementById("addExpirationDate").value);
+            formData.append("courseID", document.getElementById("addCourseID").value);
+            formData.append("status", document.getElementById("addStatus").value);
+            formData.append("usageLimit", document.getElementById("addUsageLimit").value);
+
+            console.log("Sending add promotion data:", [...formData]);
+
+            fetch("/owner/promotion/add", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(`HTTP ${response.status}: ${text}`);
+                        });
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công',
+                        text: data,
+                        confirmButtonText: 'OK',
+                        timer: 3000,
+                        timerProgressBar: true
+                    }).then(() => {
+                        location.reload();
+                    });
+                    bootstrap.Modal.getInstance(document.getElementById("addPromotionModal")).hide();
+                })
+                .catch(error => {
+                    console.error("Lỗi:", error.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: error.message,
+                        confirmButtonText: 'OK'
+                    });
+                });
+        });
+
+        // Handle Edit Promotion Modal
+        document.querySelectorAll('[data-bs-target="#editPromotionModal"]').forEach(button => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                const promotionId = this.getAttribute("data-promotion-id");
+                const row = this.closest("tr");
+                document.getElementById("editPromotionID").value = promotionId;
+                document.getElementById("editCode").value = row.getAttribute("data-code");
+                document.getElementById("editDiscountPercentage").value = row.getAttribute("data-discountpercentage");
+                document.getElementById("editExpirationDate").value = row.getAttribute("data-expirationdate");
+                document.getElementById("editCourseID").value = row.getAttribute("data-courseid");
+                document.getElementById("editStatus").value = row.getAttribute("data-status");
+                document.getElementById("editUsageLimit").value = row.getAttribute("data-usagelimit");
+
+                const editModal = new bootstrap.Modal(document.getElementById("editPromotionModal"));
+                editModal.show();
+
+                document.getElementById("editPromotionModal").addEventListener("hidden.bs.modal", function () {
+                    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove("modal-open");
+                    document.body.style.overflow = "auto";
+                }, { once: true });
+            });
+        });
+
+        // Handle Save Edit Promotion
+        document.getElementById("saveEditPromotion").addEventListener("click", function () {
+            const formData = new FormData();
+            formData.append("promotionID", document.getElementById("editPromotionID").value);
+            formData.append("code", document.getElementById("editCode").value);
+            formData.append("discountPercentage", document.getElementById("editDiscountPercentage").value);
+            formData.append("expirationDate", document.getElementById("editExpirationDate").value);
+            formData.append("courseID", document.getElementById("editCourseID").value);
+            formData.append("status", document.getElementById("editStatus").value);
+            formData.append("usageLimit", document.getElementById("editUsageLimit").value);
+
+            console.log("Sending edit promotion data:", [...formData]);
+
+            fetch("/owner/promotion/edit", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(`HTTP ${response.status}: ${text}`);
+                        });
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công',
+                        text: data,
+                        confirmButtonText: 'OK',
+                        timer: 3000,
+                        timerProgressBar: true
+                    }).then(() => {
+                        location.reload();
+                    });
+                    bootstrap.Modal.getInstance(document.getElementById("editPromotionModal")).hide();
+                })
+                .catch(error => {
+                    console.error("Lỗi:", error.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: error.message,
+                        confirmButtonText: 'OK'
+                    });
+                });
+        });
+
+        // Handle View Promotion Modal
+        document.querySelectorAll('[data-bs-target="#viewPromotionModal"]').forEach(button => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                const promotionId = this.getAttribute("data-promotion-id");
+                const row = this.closest("tr");
+                document.getElementById("viewPromotionID").value = promotionId;
+                document.getElementById("viewCode").value = row.getAttribute("data-code");
+                document.getElementById("viewDiscountPercentage").value = row.getAttribute("data-discountpercentage") + "%";
+                document.getElementById("viewExpirationDate").value = row.getAttribute("data-expirationdate").replace("T", " ");
+                document.getElementById("viewCourseName").value = row.getAttribute("data-coursename");
+                document.getElementById("viewStatus").value = row.getAttribute("data-status") === "ACTIVE" ? "Kích hoạt" :
+                    row.getAttribute("data-status") === "EXPIRED" ? "Hết hạn" : "Hết lượt";
+                document.getElementById("viewUsageLimit").value = row.getAttribute("data-usagelimit");
+                document.getElementById("viewUsageCount").value = row.getAttribute("data-usagecount");
+                document.getElementById("viewCreateAt").value = row.getAttribute("data-createat");
+
+                const viewModal = new bootstrap.Modal(document.getElementById("viewPromotionModal"));
+                viewModal.show();
+
+                document.getElementById("viewPromotionModal").addEventListener("hidden.bs.modal", function () {
+                    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove("modal-open");
+                    document.body.style.overflow = "auto";
+                }, { once: true });
+            });
+        });
+    });
+</script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel/owl.carousel.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/nouislider/nouislider.min.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/object-fit-images/ofi.min.js"></script>
+<script src="/js/theme.30e7c8f9.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/sell/2-0-1/vendor/jquery.cookie/jquery.cookie.js"></script>
+<script src="/js/demo.9833433a.js"></script>
 </body>
 </html>

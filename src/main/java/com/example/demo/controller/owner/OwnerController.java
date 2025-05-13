@@ -117,8 +117,13 @@ public class OwnerController {
     }
 
     @GetMapping("/productsList")
-    public String productsList(Model model, Authentication authentication) {
-    	logger.info("Bắt đầu xử lý /owner/productsList");
+    public String productsList(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "status", defaultValue = "all") String status,
+            Model model, Authentication authentication) {
+        logger.info("Bắt đầu xử lý /owner/productsList: page={}, size={}, search={}, status={}", page, size, search, status);
         if (authentication == null || !authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_Owner"))) {
             logger.warn("Không có quyền truy cập productsList: {}", authentication != null ? authentication.getName() : "Chưa đăng nhập");
@@ -126,12 +131,21 @@ public class OwnerController {
         }
 
         try {
-            List<course> courseList = courseService.getAllCourses1();
+            List<course> courseList = courseService.getCoursesPaginated(page, size, search, status);
             List<category> categories = categoryRepository.findAllCategories();
+            long totalCourses = courseService.countCourses(search, status);
+            int totalPages = (int) Math.ceil((double) totalCourses / size);
+
             model.addAttribute("courses", courseList);
             model.addAttribute("categories", categories);
             model.addAttribute("hasCourses", !courseList.isEmpty());
-            logger.info("Danh sách khóa học: {}, danh mục: {}", courseList.size(), categories.size());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("pageSize", size);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("totalCourses", totalCourses);
+            model.addAttribute("search", search);
+            model.addAttribute("status", status);
+            logger.info("Danh sách khóa học: {}, danh mục: {}, tổng số trang: {}", courseList.size(), categories.size(), totalPages);
         } catch (Exception e) {
             logger.error("Lỗi khi lấy danh sách khóa học hoặc danh mục: {}", e.getMessage());
             model.addAttribute("error", "Không thể tải danh sách khóa học hoặc danh mục. Vui lòng thử lại sau.");
@@ -268,8 +282,13 @@ public class OwnerController {
     }
 
     @GetMapping("/customer")
-    public String getCustomers(Model model, Authentication authentication) {
-        logger.info("Bắt đầu xử lý /owner/customer");
+    public String getCustomers(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "status", required = false) Integer status,
+            Model model, Authentication authentication) {
+        logger.info("Bắt đầu xử lý /owner/customer: page={}, size={}, search={}, status={}", page, size, search, status);
         if (authentication == null || !authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_Owner"))) {
             logger.warn("Không có quyền truy cập customer: {}", authentication != null ? authentication.getName() : "Chưa đăng nhập");
@@ -277,14 +296,18 @@ public class OwnerController {
         }
 
         try {
-            List<users> customers = userService.findAllCustomers();
-            // Lấy danh sách đơn hàng cho từng khách hàng
-            for (users customer : customers) {
-                List<order> orders = orderService.findByUserId(customer.getUserID());
-                customer.setOrders(orders);
-            }
+            List<users> customers = userService.getCustomersPaginated(page, size, search, status);
+            long totalCustomers = userService.countCustomers(search, status);
+            int totalPages = (int) Math.ceil((double) totalCustomers / size);
+
             model.addAttribute("customers", customers);
-            logger.info("Danh sách khách hàng: {}", customers.size());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("pageSize", size);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("totalCustomers", totalCustomers);
+            model.addAttribute("search", search);
+            model.addAttribute("status", status);
+            logger.info("Danh sách khách hàng: {}, tổng số: {}", customers.size(), totalCustomers);
         } catch (Exception e) {
             logger.error("Lỗi khi lấy danh sách khách hàng: {}", e.getMessage());
             model.addAttribute("error", "Không thể tải danh sách khách hàng. Vui lòng thử lại sau.");
@@ -582,31 +605,43 @@ public class OwnerController {
 
         return "redirect:/owner/productsList";
     }
-    
-    
+
+
     @GetMapping("/promotionList")
-    public String promotionList(Model model, Authentication authentication) {
-        logger.info("Bắt đầu xử lý /owner/promotionList");
+    public String promotionList(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "status", defaultValue = "all") String status,
+            Model model, Authentication authentication) {
+        logger.info("Bắt đầu xử lý /owner/promotionList: page={}, size={}, search={}, status={}", page, size, search, status);
         if (authentication == null || !authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_Owner"))) {
             logger.warn("Không có quyền truy cập promotionList: {}", authentication != null ? authentication.getName() : "Chưa đăng nhập");
             return "redirect:/login";
         }
         try {
-            List<promotion> promotionList = promotionService.getAllPromotions();
+            List<promotion> promotionList = promotionService.getPromotionsPaginated(page, size, search, status);
             List<course> courseList = courseService.getAllCourses();
+            long totalPromotions = promotionService.countPromotions(search, status);
+            int totalPages = (int) Math.ceil((double) totalPromotions / size);
+
             model.addAttribute("promotions", promotionList);
             model.addAttribute("courses", courseList);
-            model.addAttribute("totalPromotions", promotionList.size());
+            model.addAttribute("totalPromotions", totalPromotions);
             model.addAttribute("hasPromotions", !promotionList.isEmpty());
-            logger.info("Danh sách khuyến mãi: {}", promotionList.size());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("pageSize", size);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("search", search);
+            model.addAttribute("status", status);
+            logger.info("Danh sách khuyến mãi: {}, tổng số: {}", promotionList.size(), totalPromotions);
         } catch (Exception e) {
             logger.error("Lỗi khi lấy danh sách khuyến mãi: {}", e.getMessage());
             model.addAttribute("error", "Không thể tải danh sách khuyến mãi. Vui lòng thử lại sau.");
         }
         return "owner/promotionList";
     }
-    
     
     @PostMapping("/promotion/add")
     public ResponseEntity<?> addPromotion(
@@ -744,18 +779,32 @@ public class OwnerController {
 
 
     @GetMapping("/staffsList")
-    public String staffList(Model model) {
-        logger.info("Fetching staff list for display");
-        List<users> staffList = userService.findAllStaff();
-        logger.info("Staff list fetched: {} staff members", staffList.size());
-        if (staffList.isEmpty()) {
-            logger.warn("Staff list is empty. Check UserService.findAllStaff() and database data.");
-        } else {
-            staffList.forEach(staff -> logger.info("Staff: ID={}, Email={}, Status={}, Role={}",
-                    staff.getUserID(), staff.getEmail(), staff.getStatus(), staff.getRole().getRoleID()));
+    public String staffList(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "status", required = false) Integer status,
+            Model model) {
+        logger.info("Bắt đầu xử lý /owner/staffsList: page={}, size={}, search={}, status={}", page, size, search, status);
+
+        try {
+            List<users> staffList = userService.getStaffPaginated(page, size, search, status);
+            long totalStaff = userService.countStaff(search, status);
+            int totalPages = (int) Math.ceil((double) totalStaff / size);
+
+            model.addAttribute("staffList", staffList);
+            model.addAttribute("hasStaff", !staffList.isEmpty());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("pageSize", size);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("totalStaff", totalStaff);
+            model.addAttribute("search", search);
+            model.addAttribute("status", status);
+            logger.info("Danh sách nhân viên: {}, tổng số: {}", staffList.size(), totalStaff);
+        } catch (Exception e) {
+            logger.error("Lỗi khi lấy danh sách nhân viên: {}", e.getMessage());
+            model.addAttribute("error", "Không thể tải danh sách nhân viên. Vui lòng thử lại sau.");
         }
-        model.addAttribute("staffList", staffList);
-        model.addAttribute("hasStaff", !staffList.isEmpty());
         return "owner/staffsList";
     }
 

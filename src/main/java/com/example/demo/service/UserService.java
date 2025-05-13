@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.model.order;
 import com.example.demo.model.role;
 import com.example.demo.model.users;
 import com.example.demo.repository.UserRepository;
@@ -28,6 +29,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private OrderService orderService;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -392,7 +396,31 @@ public class UserService implements UserDetailsService {
         logger.info("Đếm tổng số học viên");
         return userRepository.countAllStudents();
     }
-    
-    
-    
+
+    public List<users> getCustomersPaginated(int page, int size, String search, Integer status) {
+        logger.info("Lấy danh sách khách hàng với phân trang: page={}, size={}, search={}, status={}", page, size, search, status);
+        List<users> customers = userRepository.findCustomersPaginated(page, size, search, status);
+
+        for (users customer : customers) {
+            List<order> orders = orderService.findByUserId(customer.getUserID());
+            customer.setOrders(orders);
+        }
+
+        return customers;
+    }
+
+    public long countCustomers(String search, Integer status) {
+        logger.info("Đếm số khách hàng: search={}, status={}", search, status);
+        return userRepository.countCustomers(search, status);
+    }
+
+    public List<users> getStaffPaginated(int page, int size, String search, Integer status) {
+        logger.info("Lấy danh sách nhân viên với phân trang: page={}, size={}, search={}, status={}", page, size, search, status);
+        return userRepository.findStaffPaginated(page, size, search, status);
+    }
+
+    public long countStaff(String search, Integer status) {
+        logger.info("Đếm số nhân viên: search={}, status={}", search, status);
+        return userRepository.countStaff(search, status);
+    }
 } 

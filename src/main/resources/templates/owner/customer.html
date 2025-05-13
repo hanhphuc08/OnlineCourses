@@ -413,11 +413,26 @@
 
     <!-- Filters -->
     <div class="filters">
-        <div class="search-bar">
-            <input type="text" class="form-control" placeholder="Search Customer" />
-        </div>
+        <form th:action="@{/owner/customer}" method="get" id="filterForm">
+            <div class="d-flex gap-3">
+                <div class="search-bar">
+                    <input type="text" class="form-control" name="search"
+                           th:value="${search}" placeholder="Search Customer" />
+                </div>
+                <div class="status-filter">
+                    <select class="form-select" name="status" onchange="this.form.submit()">
+                        <option value="" th:selected="${status == null}">All Status</option>
+                        <option value="1" th:selected="${status == 1}">Active</option>
+                        <option value="0" th:selected="${status == 0}">Disabled</option>
+                    </select>
+                </div>
+            </div>
+            <input type="hidden" name="page" value="0" />
+            <input type="hidden" name="size" value="10" />
+        </form>
     </div>
 
+    <!-- Customers Table -->
     <div class="customers-table">
         <div th:if="${customers == null or customers.isEmpty()}">
             <p>Không có khách hàng nào để hiển thị.</p>
@@ -426,9 +441,7 @@
             <table>
                 <thead>
                 <tr>
-                    <th style="width: 5%">
-                        <input type="checkbox" />
-                    </th>
+                    <th style="width: 5%"><input type="checkbox" id="selectAll" /></th>
                     <th class="col-2">Customer ID</th>
                     <th class="col-3">Email</th>
                     <th class="col-2">Họ tên</th>
@@ -441,7 +454,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="customer : ${customers}">
-                    <td><input type="checkbox" /></td>
+                    <td><input type="checkbox" class="customer-checkbox" /></td>
                     <td>#C<span th:text="${customer.userID}"></span></td>
                     <td th:text="${customer.email} ?: 'N/A'"></td>
                     <td th:text="${customer.fullname} ?: 'N/A'"></td>
@@ -460,12 +473,12 @@
                             </a>
                             <a class="edit" href="#" data-bs-toggle="modal" data-bs-target="#customerEditModal"
                                th:attr="data-customer-id=${customer.userID},
-            data-name=${customer.fullname},
-            data-email=${customer.email},
-            data-phone=${customer.phoneNumber},
-            data-gender=${customer.gender},
-            data-address=${customer.address},
-            data-status=${customer.status}">
+                                    data-name=${customer.fullname},
+                                    data-email=${customer.email},
+                                    data-phone=${customer.phoneNumber},
+                                    data-gender=${customer.gender},
+                                    data-address=${customer.address},
+                                    data-status=${customer.status}">
                                 <i class="fas fa-edit me-1"></i> Edit
                             </a>
                         </div>
@@ -476,11 +489,20 @@
         </div>
         <hr />
         <div class="pagination-container">
-            <span class="pagination-info" th:text="${customers != null} ? ('Showing 1 to ' + ${customers.size()} + ' of ' + ${customers.size()} + ' entries') : 'No entries'"></span>
+        <span class="pagination-info"
+              th:text="'Showing ' + ${(currentPage * pageSize + 1)} + ' to ' + ${(currentPage * pageSize + #lists.size(customers))} + ' of ' + ${totalCustomers} + ' entries'"></span>
             <div class="pagination-buttons">
-                <button class="pagination-button">Previous</button>
-                <button class="pagination-button active">1</button>
-                <button class="pagination-button">Next</button>
+                <a th:href="@{/owner/customer(page=${currentPage - 1}, size=${pageSize}, search=${search}, status=${status})}"
+                   th:class="'pagination-button' + (${currentPage == 0} ? ' disabled' : '')"
+                   th:unless="${currentPage == 0}">Previous</a>
+                <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                    <a th:href="@{/owner/customer(page=${i}, size=${pageSize}, search=${search}, status=${status})}"
+                       th:class="'pagination-button' + (${i == currentPage} ? ' active' : '')"
+                       th:text="${i + 1}"></a>
+                </th:block>
+                <a th:href="@{/owner/customer(page=${currentPage + 1}, size=${pageSize}, search=${search}, status=${status})}"
+                   th:class="'pagination-button' + (${currentPage >= totalPages - 1} ? ' disabled' : '')"
+                   th:unless="${currentPage >= totalPages - 1}">Next</a>
             </div>
         </div>
     </div>

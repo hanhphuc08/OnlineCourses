@@ -24,11 +24,12 @@
                     z-index: 1000;
                 }
 
-                .custom-sidebar .sidebar .logo {
+                .custom-sidebar .sidebar .logo a{
                     font-size: 24px;
                     font-weight: 700;
                     color: #3494e6;
                     margin-bottom: 30px;
+                    text-decoration: none;
                 }
 
                 .custom-sidebar .sidebar .section-title {
@@ -67,7 +68,9 @@
                     text-decoration: none;
                 }
             </style>
-            <div class="logo">P2TS</div>
+            <div class="logo">
+                <a href="http://localhost:8088/">P2TS</a>
+            </div>
             <ul class="nav flex-column">
                 <li class="nav-item"><a class="nav-link active" th:href="@{/staff/dashboard}"> <i class="fas fa-tachometer-alt"></i> Dashboard </a></li>
                 <hr class="" />

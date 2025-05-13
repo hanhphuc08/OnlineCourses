@@ -278,5 +278,159 @@ public class UserRepository {
             throw new RuntimeException("Lỗi khi đếm tổng số học viên: " + e.getMessage());
         }
     }
-    
+    // Thêm phương thức để lấy danh sách khách hàng với phân trang và bộ lọc
+    public List<users> findCustomersPaginated(int page, int size, String search, Integer status) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT u.*, r.RoleName " +
+                        "FROM users u " +
+                        "JOIN roles r ON u.RoleID = r.RoleID " +
+                        "WHERE r.RoleID = 'Customer' "
+        );
+
+        List<Object> params = new ArrayList<>();
+        boolean hasWhereClause = true; // Đã có điều kiện WHERE r.RoleID = 'Customer'
+
+        // Thêm điều kiện tìm kiếm theo từ khóa
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("(LOWER(u.Fullname) LIKE ? OR LOWER(u.Email) LIKE ?)");
+            params.add("%" + search.toLowerCase() + "%");
+            params.add("%" + search.toLowerCase() + "%");
+            hasWhereClause = true;
+        }
+
+        // Thêm điều kiện lọc theo trạng thái
+        if (status != null) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("u.Status = ?");
+            params.add(status);
+        }
+
+        // Thêm phân trang
+        sql.append(" ORDER BY u.UserID LIMIT ? OFFSET ?");
+        params.add(size);
+        params.add(page * size);
+
+        try {
+            logger.info("Executing query to find customers: {}", sql.toString());
+            return jdbcTemplate.query(sql.toString(), params.toArray(), userRowMapper);
+        } catch (Exception e) {
+            logger.error("Error fetching paginated customers: {}", e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    // Thêm phương thức để đếm tổng số khách hàng với bộ lọc
+    public long countCustomers(String search, Integer status) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) " +
+                        "FROM users u " +
+                        "JOIN roles r ON u.RoleID = r.RoleID " +
+                        "WHERE r.RoleID = 'Customer' "
+        );
+
+        List<Object> params = new ArrayList<>();
+        boolean hasWhereClause = true; // Đã có điều kiện WHERE r.RoleID = 'Customer'
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("(LOWER(u.Fullname) LIKE ? OR LOWER(u.Email) LIKE ?)");
+            params.add("%" + search.toLowerCase() + "%");
+            params.add("%" + search.toLowerCase() + "%");
+            hasWhereClause = true;
+        }
+
+        if (status != null) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("u.Status = ?");
+            params.add(status);
+        }
+
+        try {
+            Long count = jdbcTemplate.queryForObject(sql.toString(), params.toArray(), Long.class);
+            logger.info("Counted {} customers", count);
+            return count != null ? count : 0;
+        } catch (Exception e) {
+            logger.error("Error counting customers: {}", e.getMessage());
+            throw new RuntimeException("Error counting customers: " + e.getMessage());
+        }
+    }
+
+    // Thêm phương thức để lấy danh sách nhân viên với phân trang và bộ lọc
+    public List<users> findStaffPaginated(int page, int size, String search, Integer status) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT u.*, r.RoleName " +
+                        "FROM users u " +
+                        "JOIN roles r ON u.RoleID = r.RoleID " +
+                        "WHERE r.RoleID = 'Staff' "
+        );
+
+        List<Object> params = new ArrayList<>();
+        boolean hasWhereClause = true; // Đã có điều kiện WHERE r.RoleID = 'Staff'
+
+        // Thêm điều kiện tìm kiếm theo từ khóa
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("(LOWER(u.Fullname) LIKE ? OR LOWER(u.Email) LIKE ?)");
+            params.add("%" + search.toLowerCase() + "%");
+            params.add("%" + search.toLowerCase() + "%");
+            hasWhereClause = true;
+        }
+
+        // Thêm điều kiện lọc theo trạng thái
+        if (status != null) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("u.Status = ?");
+            params.add(status);
+        }
+
+        // Thêm phân trang
+        sql.append(" ORDER BY u.UserID LIMIT ? OFFSET ?");
+        params.add(size);
+        params.add(page * size);
+
+        try {
+            logger.info("Executing query to find staff: {}", sql.toString());
+            return jdbcTemplate.query(sql.toString(), params.toArray(), userRowMapper);
+        } catch (Exception e) {
+            logger.error("Error fetching paginated staff: {}", e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    // Thêm phương thức để đếm tổng số nhân viên với bộ lọc
+    public long countStaff(String search, Integer status) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) " +
+                        "FROM users u " +
+                        "JOIN roles r ON u.RoleID = r.RoleID " +
+                        "WHERE r.RoleID = 'Staff' "
+        );
+
+        List<Object> params = new ArrayList<>();
+        boolean hasWhereClause = true; // Đã có điều kiện WHERE r.RoleID = 'Staff'
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("(LOWER(u.Fullname) LIKE ? OR LOWER(u.Email) LIKE ?)");
+            params.add("%" + search.toLowerCase() + "%");
+            params.add("%" + search.toLowerCase() + "%");
+            hasWhereClause = true;
+        }
+
+        if (status != null) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("u.Status = ?");
+            params.add(status);
+        }
+
+        try {
+            Long count = jdbcTemplate.queryForObject(sql.toString(), params.toArray(), Long.class);
+            logger.info("Counted {} staff", count);
+            return count != null ? count : 0;
+        } catch (Exception e) {
+            logger.error("Error counting staff: {}", e.getMessage());
+            throw new RuntimeException("Error counting staff: " + e.getMessage());
+        }
+    }
 } 

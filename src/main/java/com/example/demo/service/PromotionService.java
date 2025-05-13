@@ -45,4 +45,11 @@ public class PromotionService {
         promotionRepository.saveUserPromotion(promotionId, userId);
     }
 
+    public List<promotion> getPromotionsPaginated(int page, int size, String search, String status) {
+        return promotionRepository.findPromotionsPaginated(page, size, search, status);
+    }
+
+    public long countPromotions(String search, String status) {
+        return promotionRepository.countPromotions(search, status);
+    }
 }

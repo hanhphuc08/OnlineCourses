@@ -59,6 +59,9 @@
         .main-content .filters .search-bar {
             width: 300px;
         }
+        .main-content .filters .status-filter {
+            width: 150px;
+        }
         .main-content .staff-table {
             background-color: #fff;
             border-radius: 10px;
@@ -155,39 +158,11 @@
         .main-content .staff-table .pagination-button.active:hover {
             background-color: #2c7ec4;
         }
-        .main-content .modal-content {
-            border-radius: 10px;
-        }
-        .main-content .modal-header {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        .main-content .modal-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #343a40;
-        }
-        .main-content .modal-body {
-            padding: 20px;
-        }
-        .main-content .modal-body h5 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #343a40;
-            margin-bottom: 15px;
-        }
-        .main-content .modal-body p {
-            margin-bottom: 5px;
-            color: #343a40;
-        }
-        .main-content .modal-body .btn-save {
-            background-color: #3494e6;
-            border-color: #3494e6;
-            color: #fff;
-        }
-        .main-content .modal-body .btn-save:hover {
-            background-color: #2c7ec4;
-            border-color: #2c7ec4;
+        .main-content .staff-table .pagination-button.disabled {
+            color: #6c757d;
+            cursor: not-allowed;
+            border-color: #e0e0e0;
+            background-color: #f8f9fa;
         }
         /* Modal Styles */
         .main-content .modal-content {
@@ -195,7 +170,6 @@
             border: none;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
-
         .main-content .modal-header {
             border-bottom: 1px solid #e0e0e0;
             padding: 20px 30px;
@@ -203,18 +177,15 @@
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
         }
-
         .main-content .modal-title {
             font-size: 24px;
             font-weight: 700;
             color: #1a1a1a;
         }
-
         .main-content .modal-body {
             padding: 30px;
             background-color: #fff;
         }
-
         .main-content .modal-body h5 {
             font-size: 20px;
             font-weight: 700;
@@ -223,14 +194,12 @@
             border-bottom: 2px solid #3494e6;
             padding-bottom: 5px;
         }
-
         .main-content .modal-body p {
             margin-bottom: 10px;
             color: #4a4a4a;
             font-size: 15px;
             line-height: 1.6;
         }
-
         .main-content .modal-body p strong {
             color: #1a1a1a;
             font-weight: 600;
@@ -244,7 +213,6 @@
             margin-bottom: 8px;
             font-size: 15px;
         }
-
         .main-content .modal-body .form-control,
         .main-content .modal-body .form-select {
             border-radius: 8px;
@@ -255,23 +223,19 @@
             background-color: #f8f9fa;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-
         .main-content .modal-body .form-control:focus,
         .main-content .modal-body .form-select:focus {
             border-color: #3494e6;
             box-shadow: 0 0 5px rgba(52, 148, 230, 0.2);
             background-color: #fff;
         }
-
         .main-content .modal-body .form-control[readonly] {
             background-color: #e9ecef;
             cursor: not-allowed;
         }
-
         .main-content .modal-body .mb-3 {
             margin-bottom: 20px !important;
         }
-
         .main-content .modal-body .btn-save {
             background-color: #3494e6;
             border-color: #3494e6;
@@ -282,13 +246,11 @@
             transition: background-color 0.3s ease, transform 0.1s ease;
             width: 100%;
         }
-
         .main-content .modal-body .btn-save:hover {
             background-color: #2c7ec4;
             border-color: #2c7ec4;
             transform: translateY(-1px);
         }
-
         .main-content .modal-body .btn-save:active {
             transform: translateY(1px);
         }
@@ -310,7 +272,7 @@
     <!-- Staff Header -->
     <div class="staff-header">
         <h2>Staff</h2>
-        <a th:href="@{/owner/addStaffs}" class="btn btn-add">Add Staff</a>
+        <a th:href="@{/owner/staff/add}" class="btn btn-add">Add Staff</a>
     </div>
 
     <!-- Breadcrumb -->
@@ -323,9 +285,23 @@
 
     <!-- Filters -->
     <div class="filters">
-        <div class="search-bar">
-            <input type="text" class="form-control" placeholder="Search Staff" />
-        </div>
+        <form th:action="@{/owner/staffsList}" method="get" id="filterForm">
+            <div class="d-flex gap-3">
+                <div class="search-bar">
+                    <input type="text" class="form-control" name="search"
+                           th:value="${search}" placeholder="Search Staff" />
+                </div>
+                <div class="status-filter">
+                    <select class="form-select" name="status" onchange="this.form.submit()">
+                        <option value="" th:selected="${status == null}">All Status</option>
+                        <option value="1" th:selected="${status == 1}">Active</option>
+                        <option value="0" th:selected="${status == 0}">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <input type="hidden" name="page" value="0" />
+            <input type="hidden" name="size" value="10" />
+        </form>
     </div>
 
     <!-- Staff Table -->
@@ -333,9 +309,7 @@
         <table>
             <thead>
             <tr>
-                <th style="width: 5%">
-                    <input type="checkbox" />
-                </th>
+                <th style="width: 5%"><input type="checkbox" id="selectAll" /></th>
                 <th class="col-2">Staff ID</th>
                 <th class="col-3">Email</th>
                 <th class="col-2">Phone</th>
@@ -345,7 +319,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${staffList != null}" th:each="staff : ${staffList}"
+            <tr th:if="${!hasStaff}">
+                <td colspan="7" class="text-center">No staff found.</td>
+            </tr>
+            <tr th:each="staff : ${staffList}"
                 th:attr="data-staff-id=${staff.userID},
                          data-name=${staff.fullname},
                          data-email=${staff.email},
@@ -353,7 +330,7 @@
                          data-gender=${staff.gender},
                          data-address=${staff.address},
                          data-status=${staff.status}">
-                <td><input type="checkbox" /></td>
+                <td><input type="checkbox" class="staff-checkbox" /></td>
                 <td>#S<span th:text="${staff.userID}"></span></td>
                 <td th:text="${staff.email}"></td>
                 <td th:text="${staff.phoneNumber}"></td>
@@ -373,19 +350,25 @@
                     </div>
                 </td>
             </tr>
-            <tr th:if="${!hasStaff}">
-                <td colspan="7" class="text-center">No staff found.</td>
-            </tr>
             </tbody>
         </table>
 
         <hr />
         <div class="pagination-container">
-            <span class="pagination-info" th:text="'Showing 1 to ' + ${staffList.size()} + ' of ' + ${staffList.size()} + ' entries'"></span>
+            <span class="pagination-info"
+                  th:text="'Showing ' + ${(currentPage * pageSize + 1)} + ' to ' + ${(currentPage * pageSize + #lists.size(staffList))} + ' of ' + ${totalStaff} + ' entries'"></span>
             <div class="pagination-buttons">
-                <button class="pagination-button">Previous</button>
-                <button class="pagination-button active">1</button>
-                <button class="pagination-button">Next</button>
+                <a th:href="@{/owner/staffsList(page=${currentPage - 1}, size=${pageSize}, search=${search}, status=${status})}"
+                   th:class="'pagination-button' + (${currentPage == 0} ? ' disabled' : '')"
+                   th:unless="${currentPage == 0}">Previous</a>
+                <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                    <a th:href="@{/owner/staffsList(page=${i}, size=${pageSize}, search=${search}, status=${status})}"
+                       th:class="'pagination-button' + (${i == currentPage} ? ' active' : '')"
+                       th:text="${i + 1}"></a>
+                </th:block>
+                <a th:href="@{/owner/staffsList(page=${currentPage + 1}, size=${pageSize}, search=${search}, status=${status})}"
+                   th:class="'pagination-button' + (${currentPage >= totalPages - 1} ? ' disabled' : '')"
+                   th:unless="${currentPage >= totalPages - 1}">Next</a>
             </div>
         </div>
     </div>
@@ -484,6 +467,15 @@
     if (typeof bootstrap === 'undefined') {
         console.error("Bootstrap JavaScript is not loaded. Please check if the Bootstrap script is loaded correctly.");
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Handle "Select All" checkbox
+        document.getElementById("selectAll").addEventListener("change", function () {
+            document.querySelectorAll(".staff-checkbox").forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    });
 
     // Populate Staff Detail Modal
     document.querySelectorAll(".view").forEach((button) => {

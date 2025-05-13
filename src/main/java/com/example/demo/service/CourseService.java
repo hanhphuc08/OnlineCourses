@@ -90,7 +90,15 @@ public class CourseService {
         logger.info("Lấy top {} khóa học bán chạy nhất", limit);
         return courseRepository.findTopCoursesByEnrollments(limit);
     }
- 
-	
+
+	public List<course> getCoursesPaginated(int page, int size, String search, String status) {
+		logger.info("Lấy danh sách khóa học với phân trang: page={}, size={}, search={}, status={}", page, size, search, status);
+		return courseRepository.findCoursesPaginated(page, size, search, status);
+	}
+
+	public long countCourses(String search, String status) {
+		logger.info("Đếm số khóa học: search={}, status={}", search, status);
+		return courseRepository.countCourses(search, status);
+	}
 }
 

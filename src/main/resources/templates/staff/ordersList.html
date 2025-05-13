@@ -207,6 +207,24 @@
         .main-content .orders-table .pagination-button.active:hover {
             background-color: #2c7ec4;
         }
+
+        .main-content .orders-table .status-completed {
+            background-color: #28a745;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .main-content .orders-table .status-cancel {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -236,20 +254,26 @@
         </ol>
 
         <!-- Filters -->
-        <form th:action="@{/staff/ordersList}" method="get" class="filters">
-            <div class="search-bar">
-                <input type="text" class="form-control" name="search" th:value="${search}" placeholder="Tìm kiếm đơn hàng" />
-            </div>
-            <div class="status-filter">
-                <select class="form-select" name="status">
-                    <option value="all" th:selected="${status == 'all'}">Tất cả trạng thái</option>
-                    <option value="PENDING" th:selected="${status == 'PENDING'}">Chưa phản hồi</option>
-                    <option value="CONFIRM" th:selected="${status == 'CONFIRM'}">Đã xác nhận</option>
-                    <option value="CANCEL" th:selected="${status == 'CANCEL'}">Đã hủy</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Lọc</button>
-        </form>
+        <div class="filters">
+            <form th:action="@{/staff/ordersList}" method="get" id="filterForm">
+                <div class="d-flex gap-3">
+                    <div class="search-bar">
+                        <input type="text" class="form-control" name="search"
+                               th:value="${search}" placeholder="Tìm kiếm đơn hàng" />
+                    </div>
+                    <div class="status-filter">
+                        <select class="form-select" name="status" onchange="this.form.submit()">
+                            <option value="all" th:selected="${status == 'all'}">Tất cả trạng thái</option>
+                            <option value="PENDING" th:selected="${status == 'PENDING'}">Chưa phản hồi</option>
+                            <option value="CONFIRM" th:selected="${status == 'CONFIRM'}">Đã xác nhận</option>
+                            <option value="CANCEL" th:selected="${status == 'CANCEL'}">Đã hủy</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" name="page" value="0" />
+                <input type="hidden" name="size" value="10" />
+            </form>
+        </div>
 
         <!-- Orders Table -->
         <div class="orders-table">
@@ -296,11 +320,20 @@
 
             <hr />
             <div class="pagination-container">
-                <span class="pagination-info" th:text="'Hiển thị ' + ${(currentPage * pageSize + 1)} + ' đến ' + ${#lists.size(orders) + (currentPage * pageSize)} + ' của ' + ${totalOrders} + ' đơn hàng'"></span>
+        <span class="pagination-info"
+              th:text="'Hiển thị ' + ${(currentPage * pageSize + 1)} + ' đến ' + ${(currentPage * pageSize + #lists.size(orders))} + ' của ' + ${totalOrders} + ' đơn hàng'"></span>
                 <div class="pagination-buttons">
-                    <a class="pagination-button" th:classappend="${currentPage == 0} ? 'disabled'" th:href="@{/staff/ordersList(page=${currentPage - 1},size=${pageSize},search=${search},status=${status})}">Trước</a>
-                    <a class="pagination-button" th:classappend="${currentPage == page} ? 'active'" th:href="@{/staff/ordersList(page=${page},size=${pageSize},search=${search},status=${status})}" th:each="page : ${#numbers.sequence(0, totalPages - 1)}" th:text="${page + 1}"></a>
-                    <a class="pagination-button" th:classappend="${currentPage == totalPages - 1} ? 'disabled'" th:href="@{/staff/ordersList(page=${currentPage + 1},size=${pageSize},search=${search},status=${status})}">Sau</a>
+                    <a th:href="@{/staff/ordersList(page=${currentPage - 1}, size=${pageSize}, search=${search}, status=${status})}"
+                       th:class="'pagination-button' + (${currentPage == 0} ? ' disabled' : '')"
+                       th:unless="${currentPage == 0}">Trước</a>
+                    <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                        <a th:href="@{/staff/ordersList(page=${i}, size=${pageSize}, search=${search}, status=${status})}"
+                           th:class="'pagination-button' + (${i == currentPage} ? ' active' : '')"
+                           th:text="${i + 1}"></a>
+                    </th:block>
+                    <a th:href="@{/staff/ordersList(page=${currentPage + 1}, size=${pageSize}, search=${search}, status=${status})}"
+                       th:class="'pagination-button' + (${currentPage >= totalPages - 1} ? ' disabled' : '')"
+                       th:unless="${currentPage >= totalPages - 1}">Sau</a>
                 </div>
             </div>
         </div>

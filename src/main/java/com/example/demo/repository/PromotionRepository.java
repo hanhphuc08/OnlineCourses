@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,5 +145,76 @@ public class PromotionRepository {
                 promotion.getUsageLimit(),
                 promotion.getUsageCount(),
                 promotion.getPromotionID());
+    }
+
+    public List<promotion> findPromotionsPaginated(int page, int size, String search, String status) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT p.*, c.Title as CourseTitle " +
+                        "FROM promotion p " +
+                        "LEFT JOIN course c ON p.CourseID = c.CourseID "
+        );
+
+        List<Object> params = new ArrayList<>();
+        boolean hasWhereClause = false;
+
+        // Thêm điều kiện tìm kiếm theo từ khóa (mã khuyến mãi hoặc tiêu đề khóa học)
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("(LOWER(p.Code) LIKE ? OR LOWER(c.Title) LIKE ?)");
+            params.add("%" + search.toLowerCase() + "%");
+            params.add("%" + search.toLowerCase() + "%");
+            hasWhereClause = true;
+        }
+
+        // Thêm điều kiện lọc theo trạng thái
+        if (status != null && !status.equals("all")) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("p.Status = ?");
+            params.add(status);
+            hasWhereClause = true;
+        }
+
+        // Thêm phân trang
+        sql.append(" ORDER BY p.CreateAt DESC LIMIT ? OFFSET ?");
+        params.add(size);
+        params.add(page * size);
+
+        try {
+            return jdbcTemplate.query(sql.toString(), params.toArray(), this::mapRowToPromotion);
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching paginated promotions: " + e.getMessage());
+        }
+    }
+
+    public long countPromotions(String search, String status) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) " +
+                        "FROM promotion p " +
+                        "LEFT JOIN course c ON p.CourseID = c.CourseID "
+        );
+
+        List<Object> params = new ArrayList<>();
+        boolean hasWhereClause = false;
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("(LOWER(p.Code) LIKE ? OR LOWER(c.Title) LIKE ?)");
+            params.add("%" + search.toLowerCase() + "%");
+            params.add("%" + search.toLowerCase() + "%");
+            hasWhereClause = true;
+        }
+
+        if (status != null && !status.equals("all")) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("p.Status = ?");
+            params.add(status);
+        }
+
+        try {
+            Long count = jdbcTemplate.queryForObject(sql.toString(), params.toArray(), Long.class);
+            return count != null ? count : 0;
+        } catch (Exception e) {
+            throw new RuntimeException("Error counting promotions: " + e.getMessage());
+        }
     }
 }

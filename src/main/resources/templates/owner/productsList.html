@@ -274,16 +274,23 @@
 
         <!-- Filters -->
         <div class="filters">
-            <div class="search-bar">
-                <input type="text" class="form-control" placeholder="Search Course" />
-            </div>
-            <div class="status-filter">
-                <select class="form-select">
-                    <option selected>Status</option>
-                    <option value="active">Active</option>
-                    <option value="disabled">Disabled</option>
-                </select>
-            </div>
+            <form th:action="@{/owner/productsList}" method="get" id="filterForm">
+                <div class="d-flex gap-3">
+                    <div class="search-bar">
+                        <input type="text" class="form-control" name="search"
+                               th:value="${search}" placeholder="Search Course" />
+                    </div>
+                    <div class="status-filter">
+                        <select class="form-select" name="status" onchange="this.form.submit()">
+                            <option value="all" th:selected="${status == 'all'}">All Status</option>
+                            <option value="active" th:selected="${status == 'active'}">Active</option>
+                            <option value="inactive" th:selected="${status == 'inactive'}">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" name="page" value="0" />
+                <input type="hidden" name="size" value="10" />
+            </form>
         </div>
 
         <!-- Courses Table -->
@@ -300,28 +307,28 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:if="${courses.isEmpty}">
+                <tr th:if="${!hasCourses}">
                     <td colspan="6">No courses available.</td>
                 </tr>
                 <tr th:each="course : ${courses}"
                     th:attr="data-courseid=${course.courseID},
-             data-image=${course.image},
-             data-title=${course.title},
-             data-description=${course.description},
-             data-prices=${course.prices},
-             data-status=${course.status.name()},
-             data-quantity=${course.quantity},
-             data-createat=${#temporals.format(course.createAt, 'dd/MM/yyyy')},
-             data-duration=${course.duration != null ? #temporals.format(course.duration, 'dd/MM/yyyy') : 'Không có'},
-             data-categoryid=${course.category?.categoryID},
-             data-categoryname=${course.category?.categoryName != null ? course.category.categoryName : 'Không có danh mục'}">
+                     data-image=${course.image},
+                     data-title=${course.title},
+                     data-description=${course.description},
+                     data-prices=${course.prices},
+                     data-status=${course.status.name()},
+                     data-quantity=${course.quantity},
+                     data-createat=${#temporals.format(course.createAt, 'dd/MM/yyyy')},
+                     data-duration=${course.duration != null ? #temporals.format(course.duration, 'dd/MM/yyyy') : 'Không có'},
+                     data-categoryid=${course.category?.categoryID},
+                     data-categoryname=${course.category?.categoryName != null ? course.category.categoryName : 'Không có danh mục'}">
                     <td><input type="checkbox" class="course-checkbox" /></td>
                     <td><img th:src="${course.image} ?: '/images/default-course.jpg'" class="course-image" alt="Course Image" /></td>
                     <td th:text="${course.title}"></td>
                     <td th:text="${course.formattedPrice}"></td>
                     <td>
-                        <span th:class="${course.status.name() == 'ACTIVE'} ? 'status-active' : 'status-disabled'"
-                              th:text="${course.status.name() == 'ACTIVE'} ? 'Active' : 'Inactive'"></span>
+                <span th:class="${course.status.name() == 'ACTIVE'} ? 'status-active' : 'status-disabled'"
+                      th:text="${course.status.name() == 'ACTIVE'} ? 'Active' : 'Inactive'"></span>
                     </td>
                     <td class="actions">
                         <div class="actions-item">
@@ -339,12 +346,20 @@
 
             <hr />
             <div class="pagination-container">
-                <span class="pagination-info">Showing 1 to 10 of 14 entries</span>
+        <span class="pagination-info"
+              th:text="'Showing ' + ${(currentPage * pageSize + 1)} + ' to ' + ${(currentPage * pageSize + #lists.size(courses))} + ' of ' + ${totalCourses} + ' entries'"></span>
                 <div class="pagination-buttons">
-                    <button class="pagination-button" id="prevPage">Previous</button>
-                    <button class="pagination-button active" data-page="1">1</button>
-                    <button class="pagination-button" data-page="2">2</button>
-                    <button class="pagination-button" id="nextPage">Next</button>
+                    <a th:href="@{/owner/productsList(page=${currentPage - 1}, size=${pageSize}, search=${search}, status=${status})}"
+                       th:class="'pagination-button' + (${currentPage == 0} ? ' disabled' : '')"
+                       th:unless="${currentPage == 0}">Previous</a>
+                    <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                        <a th:href="@{/owner/productsList(page=${i}, size=${pageSize}, search=${search}, status=${status})}"
+                           th:class="'pagination-button' + (${i == currentPage} ? ' active' : '')"
+                           th:text="${i + 1}"></a>
+                    </th:block>
+                    <a th:href="@{/owner/productsList(page=${currentPage + 1}, size=${pageSize}, search=${search}, status=${status})}"
+                       th:class="'pagination-button' + (${currentPage >= totalPages - 1} ? ' disabled' : '')"
+                       th:unless="${currentPage >= totalPages - 1}">Next</a>
                 </div>
             </div>
         </div>

@@ -315,7 +315,77 @@ public class CourseRepository {
             throw new RuntimeException("Lỗi khi lấy top khóa học bán chạy: " + e.getMessage());
         }
     }
-    
-    
+
+    public List<course> findCoursesPaginated(int page, int size, String search, String status) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, cat.CreateDate, cat.UpdateDate " +
+                        "FROM course c " +
+                        "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID "
+        );
+
+        List<Object> params = new ArrayList<>();
+        boolean hasWhereClause = false;
+
+        // Thêm điều kiện tìm kiếm theo từ khóa
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("(LOWER(c.Title) LIKE ? OR LOWER(c.Description) LIKE ?)");
+            params.add("%" + search.toLowerCase() + "%");
+            params.add("%" + search.toLowerCase() + "%");
+            hasWhereClause = true;
+        }
+
+        // Thêm điều kiện lọc theo trạng thái
+        if (status != null && !status.equals("all")) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("c.Status = ?");
+            params.add(status.toUpperCase());
+            hasWhereClause = true;
+        }
+
+        // Thêm phân trang
+        sql.append(" ORDER BY c.CreateAt DESC LIMIT ? OFFSET ?");
+        params.add(size);
+        params.add(page * size);
+
+        try {
+            logger.info("Executing query: {}", sql.toString());
+            return jdbcTemplate.query(sql.toString(), params.toArray(), this::mapRowToCourse);
+        } catch (Exception e) {
+            logger.error("Error fetching paginated courses: {}", e.getMessage());
+            throw new RuntimeException("Error fetching paginated courses: " + e.getMessage());
+        }
+    }
+
+    // Thêm phương thức countCourses để đếm tổng số khóa học với bộ lọc
+    public long countCourses(String search, String status) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM course c ");
+
+        List<Object> params = new ArrayList<>();
+        boolean hasWhereClause = false;
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("(LOWER(c.Title) LIKE ? OR LOWER(c.Description) LIKE ?)");
+            params.add("%" + search.toLowerCase() + "%");
+            params.add("%" + search.toLowerCase() + "%");
+            hasWhereClause = true;
+        }
+
+        if (status != null && !status.equals("all")) {
+            sql.append(hasWhereClause ? " AND " : " WHERE ");
+            sql.append("c.Status = ?");
+            params.add(status.toUpperCase());
+        }
+
+        try {
+            Long count = jdbcTemplate.queryForObject(sql.toString(), params.toArray(), Long.class);
+            logger.info("Counted {} courses", count);
+            return count != null ? count : 0;
+        } catch (Exception e) {
+            logger.error("Error counting courses: {}", e.getMessage());
+            throw new RuntimeException("Error counting courses: " + e.getMessage());
+        }
+    }
     
 }

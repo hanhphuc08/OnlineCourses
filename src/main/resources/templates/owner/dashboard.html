@@ -347,7 +347,7 @@
             <div class="content">
                 <h2>Welcome back! P2TS</h2>
                 <p>Trao quyền cho tương lai của bạn với các khóa học trực tuyến tốt nhất.</p>
-                <a th:href="@{/courses/new}" class="btn btn-primary">Create courses</a>
+                <a th:href="@{/owner/addProducts}" class="btn btn-primary">Create courses</a>
             </div>
         </div>
 
@@ -356,22 +356,22 @@
             <h4>Thống kê nhanh</h4>
             <div class="row">
                 <div class="col-md-4 col-sm-6 mb-3">
-                    <div class="quick-stats-card courses">
+                    <a th:href="@{/owner/productsList}" class="quick-stats-card courses">
                         <div class="icon">
                             <i class="fas fa-book"></i>
                         </div>
                         <h3 th:text="${#numbers.formatInteger(totalCourses, 0, 'COMMA')}">0</h3>
                         <p>Tổng số khóa học</p>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-4 col-sm-6 mb-3">
-                    <div class="quick-stats-card students">
+                    <a th:href="@{/owner/customer}" class="quick-stats-card students">
                         <div class="icon">
                             <i class="fas fa-user-graduate"></i>
                         </div>
                         <h3 th:text="${#numbers.formatInteger(totalStudents, 0, 'COMMA')}">0</h3>
                         <p>Số lượng học viên</p>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-4 col-sm-6 mb-3">
                     <div class="quick-stats-card reviews">
@@ -383,13 +383,13 @@
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-6 mb-3">
-                    <div class="quick-stats-card active-courses">
+                    <a th:href="@{/owner/productsList(status='ACTIVE')}" class="quick-stats-card active-courses">
                         <div class="icon">
                             <i class="fas fa-book-open"></i>
                         </div>
                         <h3 th:text="${#numbers.formatInteger(activeCourses, 0, 'COMMA')}">0</h3>
                         <p>Khóa học đang hoạt động</p>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-4 col-sm-6 mb-3">
                     <div class="quick-stats-card pending-orders">
