@@ -854,7 +854,6 @@ public class OwnerController {
                 logger.error("Email is required");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is required");
             }
-            // Validate email format
             if (!newUser.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
                 logger.error("Invalid email format: {}", newUser.getEmail());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email format");
@@ -863,7 +862,6 @@ public class OwnerController {
                 logger.error("Phone number is required");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Phone number is required");
             }
-            // Validate phone number format
             if (!newUser.getPhoneNumber().matches("^\\+?\\d{10,15}$")) {
                 logger.error("Invalid phone number format: {}", newUser.getPhoneNumber());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid phone number format (must be 10-15 digits, optionally starting with +)");
@@ -881,7 +879,7 @@ public class OwnerController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password is required");
             }
 
-            // Check if email or phone number already exists
+            // Check if email already exists
             try {
                 userService.findByEmailOrPhone(newUser.getEmail());
                 logger.error("Email already registered: {}", newUser.getEmail());
@@ -890,13 +888,13 @@ public class OwnerController {
                 // Email not found, continue
             }
 
-            try {
-                userService.findByEmailOrPhone(newUser.getPhoneNumber());
-                logger.error("Phone number already registered: {}", newUser.getPhoneNumber());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Phone number already registered");
-            } catch (Exception e) {
-                // Phone number not found, continue
-            }
+            // Log password before trimming
+            logger.info("Raw password before trimming: '{}'", newUser.getPassword());
+
+            // Trim password to remove any leading/trailing spaces
+            String trimmedPassword = newUser.getPassword().trim();
+            newUser.setPassword(trimmedPassword);
+            logger.info("Password after trimming: '{}'", newUser.getPassword());
 
             // Set default role to Staff
             role staffRole = new role();
@@ -906,17 +904,16 @@ public class OwnerController {
             // Set default status to Active (1)
             newUser.setStatus(1);
 
-            // Encode password
-            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-
-            // Save new user
+            // Save new user (encoding will be handled in UserService.registerUser)
             userService.registerUser(newUser);
             logger.info("Staff added successfully: email={}", newUser.getEmail());
             return ResponseEntity.ok("Staff added successfully");
         } catch (Exception e) {
             logger.error("Error adding staff: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error adding staff: " + e.getMessage());
+            String errorMessage = e.getMessage().contains("Số điện thoại đã được sử dụng")
+                    ? e.getMessage()
+                    : "Không thể thêm nhân viên: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
     }
 

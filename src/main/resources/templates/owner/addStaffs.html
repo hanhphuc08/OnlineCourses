@@ -17,58 +17,53 @@
             background-color: #f5f7fa;
         }
 
-        /* Ensure custom-sidebar applies to imported fragments */
         .custom-sidebar {
             /* This class is used as a namespace for sidebar and header styles */
         }
 
-        /* Main Content */
         .main-content {
             margin-left: 280px;
             padding: 20px;
         }
 
-        /* Staff Header */
-        .main-content .staff-header {
+        .staff-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
 
-        .main-content .staff-header h2 {
+        .staff-header h2 {
             font-size: 24px;
             font-weight: 600;
             color: #343a40;
         }
 
-        .main-content .staff-header .btn-back {
+        .staff-header .btn-back {
             background-color: #3494e6;
             border-color: #3494e6;
             color: #fff;
         }
 
-        .main-content .staff-header .btn-back:hover {
+        .staff-header .btn-back:hover {
             background-color: #2c7ec4;
             border-color: #2c7ec4;
         }
 
-        /* Breadcrumb */
-        .main-content .breadcrumb {
+        .breadcrumb {
             margin-bottom: 20px;
         }
 
-        .main-content .breadcrumb-item a {
+        .breadcrumb-item a {
             color: #3494e6;
             text-decoration: none;
         }
 
-        .main-content .breadcrumb-item a:hover {
+        .breadcrumb-item a:hover {
             text-decoration: underline;
         }
 
-        /* Form Section */
-        .main-content .form-section {
+        .form-section {
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -76,40 +71,44 @@
             margin-bottom: 20px;
         }
 
-        .main-content .form-section h5 {
+        .form-section h5 {
             font-size: 18px;
             font-weight: 600;
             color: #343a40;
             margin-bottom: 15px;
         }
 
-        .main-content .form-section .btn-save {
+        .form-section .btn-save {
             background-color: #3494e6;
             border-color: #3494e6;
             color: #fff;
         }
 
-        .main-content .form-section .btn-save:hover {
+        .form-section .btn-save:hover {
             background-color: #2c7ec4;
             border-color: #2c7ec4;
         }
 
-        .main-content .form-section .btn-cancel {
+        .form-section .btn-cancel {
             background-color: #6c757d;
             border-color: #6c757d;
             color: #fff;
             margin-right: 10px;
         }
 
-        .main-content .form-section .btn-cancel:hover {
+        .form-section .btn-cancel:hover {
             background-color: #5a6268;
             border-color: #5a6268;
         }
 
-        .main-content .form-section .button-group {
+        .form-section .button-group {
             display: flex;
             justify-content: flex-end;
             margin-top: 20px;
+        }
+
+        .alert {
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -146,6 +145,7 @@
     <!-- Form Section -->
     <div class="form-section">
         <h5>Add New Staff</h5>
+        <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
         <form id="addStaffForm" th:action="@{/owner/staff/add}" th:method="POST">
             <div class="mb-3">
                 <label for="staffName" class="form-label">Name</label>
@@ -195,18 +195,21 @@
 
             const email = document.getElementById("staffEmail").value;
             const phone = document.getElementById("staffPhone").value;
+            const errorMessageDiv = document.getElementById("error-message");
 
             // Validation for email
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailPattern.test(email)) {
-                alert("Please enter a valid email address (e.g., example@domain.com).");
+                errorMessageDiv.textContent = "Please enter a valid email address (e.g., example@domain.com).";
+                errorMessageDiv.classList.remove("d-none");
                 return;
             }
 
             // Validation for phone number (only digits, optionally starting with +)
             const phonePattern = /^\+?\d{10,15}$/;
             if (!phonePattern.test(phone)) {
-                alert("Please enter a valid phone number (10-15 digits, optionally starting with +).");
+                errorMessageDiv.textContent = "Please enter a valid phone number (10-15 digits, optionally starting with +).";
+                errorMessageDiv.classList.remove("d-none");
                 return;
             }
 
@@ -223,17 +226,19 @@
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error("Failed to add staff");
+                        return response.text().then(text => { throw new Error(text); });
                     }
                     return response.text();
                 })
                 .then(data => {
+                    errorMessageDiv.classList.add("d-none");
                     alert("Staff added successfully!");
                     window.location.href = "/owner/staffsList";
                 })
                 .catch(error => {
                     console.error("Error:", error);
-                    alert("Failed to add staff: " + error.message);
+                    errorMessageDiv.textContent = error.message;
+                    errorMessageDiv.classList.remove("d-none");
                 });
         });
     });

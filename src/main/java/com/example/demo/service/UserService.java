@@ -114,7 +114,7 @@ public class UserService implements UserDetailsService {
 
     public users registerUser(users user) {
         logger.info("Registering new user: {}", user.getEmail());
-        
+
         // Validate required fields
         if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
             throw new RuntimeException("Email is required");
@@ -129,12 +129,15 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("Phone number is required");
         }
 
-        // Check if user already exists
+        // Check if email already exists
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
-        if (userRepository.findByPhoneNumber(user.getPhoneNumber()).isPresent()) {
-            throw new RuntimeException("Phone number already exists");
+
+        // Check if phone number already exists for the same role
+        Optional<users> existingUser = userRepository.findByPhoneNumber(user.getPhoneNumber());
+        if (existingUser.isPresent() && existingUser.get().getRole().getRoleID().equals(user.getRole().getRoleID())) {
+            throw new RuntimeException("Số điện thoại đã được sử dụng. Vui lòng chọn số khác.");
         }
 
         // Set default role for new user
@@ -146,10 +149,10 @@ public class UserService implements UserDetailsService {
 
         // Encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
+
         // Set creation date
         user.setCreateDate(LocalDateTime.now());
-        
+
         try {
             users savedUser = userRepository.save(user);
             logger.info("Successfully registered user: {}", savedUser.getEmail());
