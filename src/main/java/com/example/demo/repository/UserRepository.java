@@ -239,6 +239,33 @@ public class UserRepository {
             return new ArrayList<>();
         }
     }
+    public List<users> findAllStaffByRoleAndStatus(String roleId, Integer status) {
+        String sql = "SELECT u.*, r.RoleName FROM users u JOIN roles r ON u.RoleID = r.RoleID WHERE r.RoleID = ?";
+        List<Object> params = new ArrayList<>();
+        params.add(roleId);
+        
+        if (status != null) {
+            sql += " AND u.Status = ?";
+            params.add(status);
+        }
+        
+        sql += " ORDER BY u.UserID";
+        
+        try {
+            logger.info("Executing query to find staff with roleID: {} and status: {}", roleId, status == null ? "all" : status);
+            List<users> users = jdbcTemplate.query(sql, params.toArray(), userRowMapper);
+            logger.info("Found {} staff with roleID: {} and status: {}", users.size(), roleId, status == null ? "all" : status);
+            if (users.isEmpty()) {
+                logger.warn("No staff found with roleID: {} and status: {}. Checking query and data...", roleId, status == null ? "all" : status);
+            } else {
+                users.forEach(user -> logger.info("Staff: {}, Role: {}, Status: {}", user.getEmail(), user.getRole().getRoleID(), user.getStatus()));
+            }
+            return users;
+        } catch (Exception e) {
+            logger.error("Error finding staff by roleID {} and status {}: {}", roleId, status == null ? "all" : status, e.getMessage());
+            return new ArrayList<>();
+        }
+    }
     
     public long countAllStudents() {
         String sql = "SELECT COUNT(*) FROM users WHERE RoleID = 'CUSTOMER'";

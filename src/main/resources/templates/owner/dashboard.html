@@ -312,6 +312,21 @@
         .main-content .recent-orders .btn-reply:not(.replied):hover {
             background-color: #2c7ec4;
         }
+        
+        .quick-stats-card {
+    display: block; /* Đảm bảo thẻ a hiển thị như khối */
+    text-decoration: none; /* Loại bỏ gạch chân mặc định của liên kết */
+    color: inherit; /* Giữ màu chữ giống các thẻ khác */
+    padding: 15px;
+    border-radius: 8px;
+    background: #ff9999; /* Màu nền ví dụ */
+    transition: background 0.2s;
+}
+
+.quick-stats-card:hover {
+    background: #e9ecef; /* Hiệu ứng hover */
+    cursor: pointer; /* Con trỏ chuột khi hover */
+}
     </style>
 </head>
 <body>
@@ -385,7 +400,16 @@
                         <p>Đơn hàng đang chờ xử lý</p>
                     </div>
                 </div>
-            </div>
+				<div class="col-md-4 col-sm-6 mb-3">
+            <a href="https://sandbox.vnpayment.vn/merchantv2/" target="_blank" class="quick-stats-card revenue">
+                <div class="icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Doanh thu</h3>
+                <p>Thống kê doanh thu</p>
+            </a>
+        </div>
+			</div>
         </div>
 
         <!-- Top Courses -->

@@ -126,7 +126,7 @@ public class OwnerController {
         }
 
         try {
-            List<course> courseList = courseService.getAllCourses();
+            List<course> courseList = courseService.getAllCourses1();
             List<category> categories = categoryRepository.findAllCategories();
             model.addAttribute("courses", courseList);
             model.addAttribute("categories", categories);

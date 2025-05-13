@@ -376,6 +376,18 @@ public class UserService implements UserDetailsService {
         return staffList;
     }
     
+    public List<users> findAllStaffByStatus(Integer status) {
+        logger.info("Fetching staff members with role Staff and status: {}", status == null ? "all" : status);
+        List<users> staffList = userRepository.findAllStaffByRoleAndStatus("Staff", status);
+        logger.info("Found {} staff members", staffList.size());
+        if (staffList.isEmpty()) {
+            logger.warn("No staff members found with status: {}", status == null ? "all" : status);
+        } else {
+            staffList.forEach(user -> logger.info("Staff: {}, Role: {}, Status: {}", user.getEmail(), user.getRole().getRoleID(), user.getStatus()));
+        }
+        return staffList;
+    }
+    
     public long countAllStudents() {
         logger.info("Đếm tổng số học viên");
         return userRepository.countAllStudents();

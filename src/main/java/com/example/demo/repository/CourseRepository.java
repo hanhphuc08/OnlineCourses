@@ -97,6 +97,20 @@ public class CourseRepository {
             throw new RuntimeException("Error fetching courses: " + e.getMessage());
         }
     }
+    
+    public List<course> findAllCourses1() {
+        String sql = "SELECT c.*, cat.CategoryID, cat.CategoryName, cat.Description, cat.CreateDate, cat.UpdateDate " +
+                "FROM course c " +
+                "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID ";
+        try {
+            List<course> courses = jdbcTemplate.query(sql, this::mapRowToCourse);
+            System.out.println("CourseRepository: Fetched " + courses.size() + " courses");
+            return courses;
+        } catch (Exception e) {
+            System.err.println("CourseRepository: Error fetching courses: " + e.getMessage());
+            throw new RuntimeException("Error fetching courses: " + e.getMessage());
+        }
+    }
 
     // Get courses by CategoryID with their categories
     public List<course> findCoursesByCategoryId(int categoryId) {
@@ -127,7 +141,7 @@ public class CourseRepository {
         String sql = "SELECT c.*, cat.* " +
                 "FROM course c " +
                 "LEFT JOIN category cat ON c.CategoryID = cat.CategoryID " +
-                "WHERE c.CourseID = ? AND c.Status = 'ACTIVE'";
+                "WHERE c.CourseID = ?";
 
         try {
             course courses = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {

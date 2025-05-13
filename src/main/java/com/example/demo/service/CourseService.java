@@ -32,9 +32,15 @@ public class CourseService {
 
 	public List<course> getAllCourses() {
 		List<course> courses = courseRepository.findAllCourses();
-		courses.forEach(course -> logger.info("Course ID: {}, Status: {}", course.getCourseID(), course.getStatus()));
 		return courses;
 	}
+	
+	
+	public List<course> getAllCourses1() {
+		List<course> courses = courseRepository.findAllCourses1();
+		return courses;
+	}
+	
 
 	public void updateCourse(course course) {
 		if (course.getCourseID() <= 0) {
