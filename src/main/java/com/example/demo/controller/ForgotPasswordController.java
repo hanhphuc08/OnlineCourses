@@ -4,6 +4,7 @@ import com.example.demo.model.users;
 import com.example.demo.service.UserService;
 import com.example.demo.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +26,8 @@ public class ForgotPasswordController {
         return "commons/forgotpassword";
     }
 
-    @PostMapping("/forgot-password")
-    public String processForgotPassword(@RequestParam("email") String email, 
-                                      Model model, 
-                                      RedirectAttributes redirectAttributes) {
+    @PostMapping("/api/auth/forgot-password")
+    public ResponseEntity<String> processForgotPassword(@RequestParam("email") String email) {
         try {
             users user = userService.findByEmailOrPhone(email);
             
@@ -38,59 +37,41 @@ public class ForgotPasswordController {
                 
                 try {
                     emailService.sendResetPasswordEmail(user.getEmail(), resetCode);
-                    redirectAttributes.addFlashAttribute("email", email);
-                    redirectAttributes.addFlashAttribute("success", "Mã xác nhận đã được gửi đến email của bạn.");
-                    return "redirect:/reset-password";
+                    return ResponseEntity.ok("success:Mã xác nhận đã được gửi đến email của bạn.");
                 } catch (Exception e) {
-                    redirectAttributes.addFlashAttribute("alert", "Không thể gửi email. Vui lòng thử lại sau.");
-                    return "redirect:/forgot-password";
+                    return ResponseEntity.badRequest().body("error:Không thể gửi email. Vui lòng thử lại sau.");
                 }
             } else {
-                redirectAttributes.addFlashAttribute("alert", "Email hoặc số điện thoại không tồn tại trong hệ thống.");
-                return "redirect:/forgot-password";
+                return ResponseEntity.badRequest().body("error:Email hoặc số điện thoại không tồn tại trong hệ thống.");
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("alert", "Có lỗi xảy ra. Vui lòng thử lại sau.");
-            return "redirect:/forgot-password";
+            return ResponseEntity.badRequest().body("error:Có lỗi xảy ra. Vui lòng thử lại sau.");
         }
     }
 
     @GetMapping("/reset-password")
-    public String showResetPasswordForm(Model model) {
-        if (!model.containsAttribute("email")) {
-            return "redirect:/forgot-password";
-        }
+    public String showResetPasswordForm() {
         return "commons/reset-password";
     }
 
-    @PostMapping("/reset-password")
-    public String processResetPassword(@RequestParam("email") String email,
+    @PostMapping("/api/auth/reset-password")
+    public ResponseEntity<String> processResetPassword(@RequestParam("email") String email,
                                      @RequestParam("resetCode") String resetCode,
                                      @RequestParam("newPassword") String newPassword,
-                                     @RequestParam("confirmPassword") String confirmPassword,
-                                     Model model,
-                                     RedirectAttributes redirectAttributes) {
+                                     @RequestParam("confirmPassword") String confirmPassword) {
         try {
-            // Kiểm tra mật khẩu khớp nhau
             if (!newPassword.equals(confirmPassword)) {
-                model.addAttribute("alert", "Mật khẩu xác nhận không khớp.");
-                model.addAttribute("email", email);
-                return "commons/reset-password";
+                return ResponseEntity.badRequest().body("error:Mật khẩu xác nhận không khớp.");
             }
 
             if (!userService.verifyResetCode(email, resetCode)) {
-                model.addAttribute("alert", "Mã xác nhận không đúng hoặc đã hết hạn (mã chỉ có hiệu lực trong 1 phút).");
-                model.addAttribute("email", email);
-                return "commons/reset-password";
+                return ResponseEntity.badRequest().body("error:Mã xác nhận không đúng hoặc đã hết hạn (mã chỉ có hiệu lực trong 1 phút).");
             }
 
             userService.resetPassword(email, newPassword);
-            redirectAttributes.addFlashAttribute("success", "Mật khẩu đã được đặt lại thành công. Vui lòng đăng nhập lại.");
-            return "redirect:/login";
+            return ResponseEntity.ok("success:Mật khẩu đã được đặt lại thành công. Vui lòng đăng nhập lại.");
         } catch (Exception e) {
-            model.addAttribute("alert", "Có lỗi xảy ra. Vui lòng thử lại sau.");
-            model.addAttribute("email", email);
-            return "commons/reset-password";
+            return ResponseEntity.badRequest().body("error:Có lỗi xảy ra. Vui lòng thử lại sau.");
         }
     }
 } 

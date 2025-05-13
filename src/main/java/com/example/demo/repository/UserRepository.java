@@ -135,8 +135,8 @@ public class UserRepository {
             if (user.getUserID() == 0) {
                 logger.info("Creating new user: {}", user.getEmail());
                 // Insert new user
-                String sql = "INSERT INTO users (Email, PhoneNumber, Fullname, Address, Gender, Password, RoleID, EmailCode, CreateDate, UpdateDate) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO users (Email, PhoneNumber, Fullname, Address, Gender, Password, RoleID, EmailCode, CreateDate, UpdateDate, Status) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 jdbcTemplate.update(sql,
                     user.getEmail(),
                     user.getPhoneNumber(),
@@ -147,7 +147,8 @@ public class UserRepository {
                     user.getRole() != null ? user.getRole().getRoleID() : null,
                     user.getEmailCode(),
                     LocalDateTime.now(),
-                    LocalDateTime.now()
+                    LocalDateTime.now(),
+                    user.getStatus()
                 );
                 
                 // Get the newly inserted user's ID
@@ -163,7 +164,7 @@ public class UserRepository {
                 logger.info("Updating existing user: {}", user.getEmail());
                 // Update existing user
                 String sql = "UPDATE users SET Email = ?, PhoneNumber = ?, Fullname = ?, Address = ?, Gender = ?, " +
-                            "Password = ?, RoleID = ?, EmailCode = ?, UpdateDate = ? WHERE UserID = ?";
+                            "Password = ?, RoleID = ?, EmailCode = ?, UpdateDate = ?, Status = ? WHERE UserID = ?";
                 jdbcTemplate.update(sql,
                     user.getEmail(),
                     user.getPhoneNumber(),
@@ -174,6 +175,7 @@ public class UserRepository {
                     user.getRole() != null ? user.getRole().getRoleID() : null,
                     user.getEmailCode(),
                     LocalDateTime.now(),
+                    user.getStatus(),
                     user.getUserID()
                 );
                 
@@ -431,6 +433,22 @@ public class UserRepository {
         } catch (Exception e) {
             logger.error("Error counting staff: {}", e.getMessage());
             throw new RuntimeException("Error counting staff: " + e.getMessage());
+        }
+    }
+
+    public void deleteById(int userId) {
+        String sql = "DELETE FROM users WHERE UserID = ?";
+        try {
+            int rows = jdbcTemplate.update(sql, userId);
+            if (rows > 0) {
+                logger.info("Successfully deleted user with ID: {}", userId);
+            } else {
+                logger.warn("No user found with ID: {}", userId);
+                throw new RuntimeException("No user found with ID: " + userId);
+            }
+        } catch (Exception e) {
+            logger.error("Error deleting user with ID {}: {}", userId, e.getMessage());
+            throw new RuntimeException("Failed to delete user: " + e.getMessage());
         }
     }
 } 

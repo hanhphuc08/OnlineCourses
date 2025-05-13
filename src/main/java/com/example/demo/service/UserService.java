@@ -117,54 +117,28 @@ public class UserService implements UserDetailsService {
     }
 
     public users registerUser(users user) {
-        logger.info("Registering new user: {}", user.getEmail());
-
-        // Validate required fields
-        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
-            throw new RuntimeException("Email is required");
-        }
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            throw new RuntimeException("Password is required");
-        }
-        if (user.getFullname() == null || user.getFullname().trim().isEmpty()) {
-            throw new RuntimeException("Full name is required");
-        }
-        if (user.getPhoneNumber() == null || user.getPhoneNumber().trim().isEmpty()) {
-            throw new RuntimeException("Phone number is required");
+        try {
+            // Check if user exists
+            findByEmailOrPhone(user.getEmail());
+            throw new RuntimeException("Email đã được sử dụng");
+        } catch (UsernameNotFoundException e) {
+            // Email not found, continue
         }
 
-        // Check if email already exists
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
-        }
-
-        // Check if phone number already exists for the same role
-        Optional<users> existingUser = userRepository.findByPhoneNumber(user.getPhoneNumber());
-        if (existingUser.isPresent() && existingUser.get().getRole().getRoleID().equals(user.getRole().getRoleID())) {
-            throw new RuntimeException("Số điện thoại đã được sử dụng. Vui lòng chọn số khác.");
-        }
-
-        // Set default role for new user
-        if (user.getRole() == null) {
-            role defaultRole = new role();
-            defaultRole.setRoleID("CUSTOMER");
-            user.setRole(defaultRole);
+        try {
+            findByEmailOrPhone(user.getPhoneNumber());
+            throw new RuntimeException("Số điện thoại đã được sử dụng");
+        } catch (UsernameNotFoundException e) {
+            // Phone number not found, continue
         }
 
         // Encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Set creation date
-        user.setCreateDate(LocalDateTime.now());
-
-        try {
-            users savedUser = userRepository.save(user);
-            logger.info("Successfully registered user: {}", savedUser.getEmail());
-            return savedUser;
-        } catch (Exception e) {
-            logger.error("Failed to register user: {}", e.getMessage());
-            throw new RuntimeException("Failed to register user: " + e.getMessage());
-        }
+        // Save user
+        users savedUser = userRepository.save(user);
+        logger.info("Successfully registered user: {}", savedUser.getEmail());
+        return savedUser;
     }
 
     public users authenticateUser(String emailOrPhone, String password) {
@@ -176,13 +150,21 @@ public class UserService implements UserDetailsService {
                 logger.error("Invalid password for user: {}", emailOrPhone);
                 throw new UsernameNotFoundException("Invalid credentials");
             }
+
+            if (user.getStatus() != 1) {
+                logger.error("Inactive account attempt for user: {}", emailOrPhone);
+                throw new UsernameNotFoundException("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin để được hỗ trợ.");
+            }
             
             logger.info("User {} authenticated successfully with role {}", 
                 emailOrPhone, 
                 user.getRole() != null ? user.getRole().getRoleID() : "no role");
             
-            return user;
+            throw new RuntimeException("Đăng nhập thành công! Chào mừng bạn quay trở lại.");
         } catch (Exception e) {
+            if (e.getMessage().equals("Đăng nhập thành công! Chào mừng bạn quay trở lại.")) {
+                throw e;
+            }
             logger.error("Authentication failed for user {}: {}", emailOrPhone, e.getMessage());
             throw new UsernameNotFoundException("Invalid credentials");
         }
@@ -215,7 +197,24 @@ public class UserService implements UserDetailsService {
     }
     
     public users saveUser(users user) {
-        // Check if user already exists
+        // Nếu user đã có ID, đây là cập nhật
+        if (user.getUserID() != 0) {
+            // Cập nhật thời gian
+            user.setUpdateDate(LocalDateTime.now());
+            try {
+                // Lưu user vào database
+                users savedUser = userRepository.save(user);
+                logger.info("Successfully updated user: {} with role: {}", 
+                    savedUser.getEmail(), 
+                    savedUser.getRole() != null ? savedUser.getRole().getRoleID() : "no role");
+                return savedUser;
+            } catch (Exception e) {
+                logger.error("Failed to update user: {}", e.getMessage());
+                throw new RuntimeException("Failed to update user: " + e.getMessage());
+            }
+        }
+
+        // Nếu là user mới, kiểm tra email và phone đã tồn tại chưa
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             logger.error("Email already exists: {}", user.getEmail());
             throw new RuntimeException("Email already exists");
@@ -236,7 +235,7 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("Password is required");
         }
 
-        
+        // Set default role if not set
         if (user.getRole() == null) {
             role customerRole = new role();
             customerRole.setRoleID("Customer");
@@ -288,7 +287,7 @@ public class UserService implements UserDetailsService {
         try {
             // Save user to database
             users savedUser = userRepository.save(user);
-            logger.info("Successfully saved user: {} with role: {}", 
+            logger.info("Successfully saved new user: {} with role: {}", 
                 savedUser.getEmail(), 
                 savedUser.getRole() != null ? savedUser.getRole().getRoleID() : "no role");
             return savedUser;
@@ -353,6 +352,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setUpdateDate(LocalDateTime.now());
         userRepository.save(user);
+        throw new RuntimeException("Đổi mật khẩu thành công! Vui lòng đăng nhập lại với mật khẩu mới.");
     }
 
     public List<users> findAllCustomers() {
@@ -397,6 +397,7 @@ public class UserService implements UserDetailsService {
         return userRepository.countAllStudents();
     }
 
+
     public List<users> getCustomersPaginated(int page, int size, String search, Integer status) {
         logger.info("Lấy danh sách khách hàng với phân trang: page={}, size={}, search={}, status={}", page, size, search, status);
         List<users> customers = userRepository.findCustomersPaginated(page, size, search, status);
@@ -422,5 +423,25 @@ public class UserService implements UserDetailsService {
     public long countStaff(String search, Integer status) {
         logger.info("Đếm số nhân viên: search={}, status={}", search, status);
         return userRepository.countStaff(search, status);
+    }
+    public String generateVerificationCode() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder code = new StringBuilder();
+        java.util.Random random = new java.util.Random();
+        for (int i = 0; i < 6; i++) {
+            code.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return code.toString();
+    }
+
+    public void deleteUser(int userId) {
+        logger.info("Deleting user with ID: {}", userId);
+        try {
+            userRepository.deleteById(userId);
+            logger.info("Successfully deleted user with ID: {}", userId);
+        } catch (Exception e) {
+            logger.error("Error deleting user with ID {}: {}", userId, e.getMessage());
+            throw new RuntimeException("Failed to delete user: " + e.getMessage());
+        }
     }
 } 

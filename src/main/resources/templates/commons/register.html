@@ -7,8 +7,10 @@
     <title>Online Course - Đăng ký</title>
 
     <!-- Google fonts-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;700&amp;display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;800&amp;display=swap">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;800&display=swap" rel="stylesheet">
 
     <!-- CSS files -->
     <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
@@ -32,52 +34,60 @@
         </div>
     </div>
 
-    <section class="hero pt-1">
+    <section class="hero pt-8">
         <div class="container-fluid">
             <div class="row d-flex justify-content-center align-items-center">
-
                 <!-- Form đăng ký -->
-                <div class="col-xl-5 col-lg-6 col-md-8">
+                <div class="col-xl-5 col-lg-7 col-md-8">
                     <div class="product shadow-custom">
-                        <div class="px-4 py-4 text-black">
-                            <form th:action="@{/api/auth/register}" method="post" id="registerForm">
+                        <div class="px-4 py-5 text-black">
+                            <form id="registerForm" th:action="@{/register}" method="post">
                                 <!-- Header -->
-                                <div class="text-center mb-3">
-                                    <div class="d-flex align-items-center justify-content-center mb-2">
+                                <div class="text-center mb-4">
+                                    <div class="d-flex align-items-center justify-content-center mb-3">
                                         <i class="fa fa-user-plus fa-2x me-3 text-color-custom"></i>
-                                        <h3 class="h4 text-uppercase mb-0">Đăng ký</h3>
+                                        <h3 class="h4 text-uppercase mb-0">Đăng ký tài khoản</h3>
                                     </div>
-                                    <h5 class="text-muted text-sm">Tạo tài khoản mới</h5>
+                                    <h5 class="text-muted text-sm">Tạo tài khoản để bắt đầu học tập</h5>
                                 </div>
 
                                 <!-- Alert messages -->
-                                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-                                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                                <div th:if="${alert}" class="alert alert-danger" role="alert">
+                                    <span th:text="${alert}"></span>
+                                </div>
+
+                                <div th:if="${success}" class="alert alert-success" role="alert">
+                                    <span th:text="${success}"></span>
+                                </div>
 
                                 <!-- Form inputs -->
-                                <div class="form-outline mb-2">
-                                    <label class="form-label">Họ và tên</label>
-                                    <input type="text" name="fullname" class="form-control border-radius-custom" required />
-                                </div>
-
-                                <div class="form-outline mb-2">
+                                <div class="form-outline mb-4">
                                     <label class="form-label">Email</label>
-                                    <input type="email" name="email" class="form-control border-radius-custom" required />
+                                    <input type="email" name="email" id="email" 
+                                        class="form-control border-radius-custom" 
+                                        placeholder="Nhập email của bạn"
+                                        required>
                                 </div>
 
-                                <div class="form-outline mb-2">
+                                <div class="form-outline mb-4">
                                     <label class="form-label">Số điện thoại</label>
-                                    <input type="tel" name="phoneNumber" class="form-control border-radius-custom" required />
+                                    <input type="tel" name="phoneNumber" id="phoneNumber" 
+                                        class="form-control border-radius-custom" 
+                                        placeholder="Nhập số điện thoại của bạn"
+                                        required>
                                 </div>
 
-                                <div class="form-outline mb-2">
-                                    <label class="form-label">Địa chỉ</label>
-                                    <input type="text" name="address" class="form-control border-radius-custom" required />
+                                <div class="form-outline mb-4">
+                                    <label class="form-label">Họ và tên</label>
+                                    <input type="text" name="fullname" id="fullname" 
+                                        class="form-control border-radius-custom" 
+                                        placeholder="Nhập họ và tên của bạn"
+                                        required>
                                 </div>
 
-                                <div class="form-outline mb-2">
+                                <div class="form-outline mb-4">
                                     <label class="form-label">Giới tính</label>
-                                    <select name="gender" class="form-control border-radius-custom" required>
+                                    <select name="gender" id="gender" class="form-control border-radius-custom" required>
                                         <option value="">Chọn giới tính</option>
                                         <option value="MALE">Nam</option>
                                         <option value="FEMALE">Nữ</option>
@@ -85,41 +95,40 @@
                                     </select>
                                 </div>
 
-                                <div class="form-outline mb-2">
+                                <div class="form-outline mb-4">
                                     <label class="form-label">Mật khẩu</label>
-                                    <input type="password" name="password" class="form-control border-radius-custom" required />
+                                    <input type="password" name="password" id="password" 
+                                        class="form-control border-radius-custom" 
+                                        placeholder="Nhập mật khẩu"
+                                        required>
                                 </div>
 
-                                <div class="form-outline mb-3">
-                                    <label class="form-label">Nhập lại mật khẩu</label>
-                                    <input type="password" name="password-confirm" class="form-control border-radius-custom" required />
+                                <div class="form-outline mb-4">
+                                    <label class="form-label">Xác nhận mật khẩu</label>
+                                    <input type="password" name="confirmPassword" id="confirmPassword" 
+                                        class="form-control border-radius-custom" 
+                                        placeholder="Nhập lại mật khẩu"
+                                        required>
                                 </div>
 
                                 <!-- Submit button -->
-                                <div class="mb-3">
+                                <div class="mb-4">
                                     <button class="btn btn-cart28tech w-100 py-3 border-radius-custom" type="submit">
                                         Đăng ký
                                     </button>
                                 </div>
 
-                                <!-- Login link -->
+                                <!-- Back to login -->
                                 <div class="text-center">
                                     <p class="text-muted mb-0">
                                         Đã có tài khoản? 
                                         <a th:href="@{/login}" class="text-color-custom text-decoration-none">
-                                            Đăng nhập tại đây
+                                            Đăng nhập
                                         </a>
                                     </p>
                                 </div>
                             </form>
                         </div>
-                    </div>
-                </div>
-                 <!-- Hình ảnh bên trái -->
-                <div class="col-xl-4 col-lg-6 col-md-7 d-none d-md-block">
-                    <div class="left-image wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.3s">
-                        <img th:src="@{https://img.freepik.com/free-vector/sign-up-concept-illustration_114360-7965.jpg}"
-                            alt="register illustration" class="img-fluid">
                     </div>
                 </div>
             </div>
@@ -132,6 +141,79 @@
     <script th:src="@{/assets/js/wow.min.js}"></script>
     <script th:src="@{/assets/js/animation.js}"></script>
     <script th:src="@{/assets/js/custom.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Xử lý preloader
+            $(window).on('load', function() {
+                $('#js-preloader').addClass('loaded');
+                setTimeout(function() {
+                    $('#js-preloader').fadeOut('slow');
+                }, 500);
+            });
+
+            // Xử lý form đăng ký
+            $('#registerForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate password match
+                if ($('#password').val() !== $('#confirmPassword').val()) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: 'Mật khẩu xác nhận không khớp!'
+                    });
+                    return;
+                }
+
+                // Show loading
+                Swal.fire({
+                    title: 'Đang xử lý...',
+                    text: 'Vui lòng đợi trong giây lát',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Get form data
+                var formData = {
+                    email: $('#email').val(),
+                    phoneNumber: $('#phoneNumber').val(),
+                    fullname: $('#fullname').val(),
+                    password: $('#password').val(),
+                    gender: $('#gender').val()
+                };
+
+                // Send AJAX request
+                $.ajax({
+                    url: '/api/auth/register',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.startsWith("success:")) {
+                            const email = response.split(":")[1];
+                            window.location.replace("/verify-email?email=" + encodeURIComponent(email));
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: response
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: 'Có lỗi xảy ra. Vui lòng thử lại sau.'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>

@@ -15,6 +15,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/login").setViewName("commons/login");
         registry.addViewController("/profile").setViewName("commons/profile");
         registry.addViewController("/register").setViewName("commons/register");
+        registry.addViewController("/verify-email").setViewName("commons/verify-email");
+        registry.addViewController("/api/auth/verify-email").setViewName("commons/verify-email");
         registry.addViewController("/error").setViewName("error");
         registry.addViewController("/introduce").setViewName("commons/introduce");
         registry.addViewController("/schedule").setViewName("commons/schedule");

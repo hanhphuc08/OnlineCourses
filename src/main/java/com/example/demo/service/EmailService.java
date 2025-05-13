@@ -27,4 +27,21 @@ public class EmailService {
         
         emailSender.send(message);
     }
+
+    public void sendVerificationEmail(String to, String verificationCode) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("lamngocnhaky8@gmail.com");
+        message.setTo(to);
+        message.setSubject("Xác thực email - Online Course");
+        message.setText("Xin chào,\n\n"
+                + "Cảm ơn bạn đã đăng ký tài khoản tại Online Course.\n"
+                + "Mã xác thực của bạn là: " + verificationCode + "\n\n"
+                + "Vui lòng sử dụng mã này để xác thực email của bạn.\n"
+                + "Mã này sẽ hết hạn sau 1 phút.\n\n"
+                + "Nếu bạn không thực hiện đăng ký này, vui lòng bỏ qua email này.\n\n"
+                + "Trân trọng,\n"
+                + "Online Course Team");
+        
+        emailSender.send(message);
+    }
 } 

@@ -36,14 +36,20 @@ public class SecurityConfig {
         System.out.println("=== CONFIGURING SECURITY ===");
         
         http
-            .csrf().disable()
+            .csrf(csrf -> csrf.disable())
             .cors().configurationSource(corsConfigurationSource())
             .and()
             .authorizeHttpRequests(authorize -> {
                 System.out.println("Configuring authorization rules...");
                 authorize
                     .requestMatchers(
-                        "/api/auth/**",
+                        "/verify-email",
+                        "/verify-email/**",
+                        "/api/auth/verify-email",
+                        "/api/auth/resend-verification",
+                        "/api/auth/register",
+                        "/api/auth/login",
+                        "/api/auth/logout",
                         "/",
                         "/home",
                         "/assets/**",
@@ -61,7 +67,7 @@ public class SecurityConfig {
                         "/courses/**",
                         "/course/detail/**",
                         "/error",
-                            "/search/**"
+                        "/search/**"
                     ).permitAll()
                     .requestMatchers("/profile/**", "/course/cart/add/**", "/course/checkout/**", "/cart/**", "/checkout/vnpay-return").authenticated()
                     .requestMatchers("/staff/**").hasRole("Staff")

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Online Course - Xác thực Email</title>
+
+    <!-- Google fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@300;400;800&display=swap" rel="stylesheet">
+
+    <!-- CSS files -->
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/style.default.7acfaf01.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/custom.0a822280.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/templatemo-space-dynamic.css}">
+</head>
+
+<body>
+    <!-- SVG Sprite -->
+    <div th:insert="~{fragments/svg-sprite :: svg-sprite}"></div>
+
+    <!-- Preloader -->
+    <div id="js-preloader" class="js-preloader">
+        <div class="preloader-inner">
+            <span class="dot"></span>
+            <div class="dots">
+                <span></span> <span></span> <span></span>
+            </div>
+        </div>
+    </div>
+
+    <section class="hero pt-8">
+        <div class="container-fluid">
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-xl-5 col-lg-7 col-md-8">
+                    <div class="product shadow-custom">
+                        <div class="px-4 py-5 text-black">
+                            <!-- Header -->
+                            <div class="text-center mb-4">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <i class="fa fa-envelope fa-2x me-3 text-color-custom"></i>
+                                    <h3 class="h4 text-uppercase mb-0">Xác thực Email</h3>
+                                </div>
+                                <h5 class="text-muted text-sm">Vui lòng nhập mã xác thực đã được gửi đến email của bạn</h5>
+                            </div>
+
+                            <!-- Alert messages -->
+                            <div th:if="${alert}" class="alert alert-danger" role="alert">
+                                <span th:text="${alert}"></span>
+                            </div>
+
+                            <div th:if="${success}" class="alert alert-success" role="alert">
+                                <span th:text="${success}"></span>
+                            </div>
+
+                            <!-- Verification Form -->
+                            <form id="verificationForm" class="needs-validation" novalidate>
+                                <div class="form-group mb-4">
+                                    <label for="verificationCode" class="form-label">Mã xác thực</label>
+                                    <input type="text" class="form-control" id="verificationCode" name="code" required>
+                                    <div class="invalid-feedback">Vui lòng nhập mã xác thực</div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mb-3">Xác thực</button>
+                                <button type="button" id="resendCode" class="btn btn-outline-primary w-100">Gửi lại mã</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/assets/js/wow.min.js}"></script>
+    <script th:src="@{/assets/js/animation.js}"></script>
+    <script th:src="@{/assets/js/custom.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Xử lý preloader
+            $(window).on('load', function() {
+                $('#js-preloader').addClass('loaded');
+                setTimeout(function() {
+                    $('#js-preloader').fadeOut('slow');
+                }, 500);
+            });
+
+            // Lấy email từ URL parameter
+            const email = new URLSearchParams(window.location.search).get('email');
+
+            if (!email) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Không tìm thấy thông tin email!',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = '/register';
+                });
+                return;
+            }
+
+            // Xử lý form xác thực
+            $('#verificationForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const code = $('#verificationCode').val();
+                
+                $.ajax({
+                    url: '/api/auth/verify-email',
+                    type: 'POST',
+                    data: {
+                        email: email,
+                        code: code
+                    },
+                    success: function(response) {
+                        if (response.startsWith('success:')) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Email đã được xác thực thành công',
+                                confirmButtonText: 'Đăng nhập'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '/login';
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: response.split(':')[1]
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: xhr.responseText || 'Đã xảy ra lỗi khi xác thực'
+                        });
+                    }
+                });
+            });
+
+            // Xử lý gửi lại mã
+            $('#resendCode').on('click', function() {
+                $.ajax({
+                    url: '/api/auth/resend-verification',
+                    type: 'POST',
+                    data: { email: email },
+                    success: function(response) {
+                        if (response.startsWith('success:')) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Mã xác thực mới đã được gửi đến email của bạn'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: response.split(':')[1]
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: 'Đã xảy ra lỗi khi gửi lại mã xác thực'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
