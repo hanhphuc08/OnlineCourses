@@ -260,8 +260,9 @@ public class CheckoutController {
         try {
             user.setUserID(currentUser.getUserID());
             session.setAttribute("checkoutUser", user);
+            session.setAttribute("source", request.getParameter("source")); 
             order.setOrderStatus("TEMP");
-            
+
             String paymentUrl = checkoutService.createPaymentUrl(order, user, request);
             if (paymentUrl == null) {
                 logger.error("Không thể tạo URL thanh toán!");
@@ -291,22 +292,42 @@ public class CheckoutController {
                     session.setAttribute("error", "Phiên thanh toán không hợp lệ!");
                     return "redirect:/category?error=true";
                 }
+
+                // Lưu đơn hàng và hoàn tất quá trình thanh toán
                 order = checkoutService.completeCheckout(order, user, null, session);
                 checkoutService.confirmPayment(order.getOrderID(), -1);
                 session.setAttribute("notificationMessage", "Thanh toán thành công! Thông tin khóa học đã được gửi đến email của bạn.");
                 logger.info("Thanh toán thành công cho đơn hàng: {}", order.getOrderID());
+
+                // Xóa session
                 session.removeAttribute("checkoutOrder");
                 session.removeAttribute("checkoutUser");
                 session.removeAttribute("paymentUrl");
+                session.removeAttribute("tempOrderId");
+                session.removeAttribute("source");
                 return "redirect:/category?success=true";
             } else {
-                logger.warn("Thanh toán thất bại: Mã lỗi {}", vnp_ResponseCode);
-                session.setAttribute("error", "Thanh toán thất bại: Mã lỗi " + vnp_ResponseCode);
+                logger.warn("Thanh toán thất bại hoặc bị hủy: Mã lỗi {}", vnp_ResponseCode);
+                session.setAttribute("error", "Thanh toán thất bại hoặc bị hủy: Mã lỗi " + vnp_ResponseCode);
+
+                // Xóa session khi thất bại/hủy
+                session.removeAttribute("checkoutOrder");
+                session.removeAttribute("checkoutUser");
+                session.removeAttribute("paymentUrl");
+                session.removeAttribute("tempOrderId");
+                session.removeAttribute("source");
                 return "redirect:/category?error=true";
             }
         } catch (Exception e) {
             logger.error("Lỗi xử lý callback VNPAY: {}", e.getMessage(), e);
             session.setAttribute("error", "Lỗi xử lý callback VNPAY: " + e.getMessage());
+
+            // Xóa session khi có lỗi
+            session.removeAttribute("checkoutOrder");
+            session.removeAttribute("checkoutUser");
+            session.removeAttribute("paymentUrl");
+            session.removeAttribute("tempOrderId");
+            session.removeAttribute("source");
             return "redirect:/category?error=true";
         }
     }

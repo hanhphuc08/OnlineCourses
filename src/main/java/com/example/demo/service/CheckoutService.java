@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.controller.CheckoutController;
 import com.example.demo.model.cart;
@@ -55,6 +56,9 @@ public class CheckoutService {
     
     @Autowired
     private CourseRepository courseRepository;
+    
+    @Autowired
+    private EmailService emailService;
     
     public order prepareCheckout(int userId, HttpSession session) {
         List<cart> cartItems = cartRepository.findByUserId(userId);
@@ -116,6 +120,7 @@ public class CheckoutService {
         return "success:" + totalAmount;
     }
 
+    @Transactional
     public order completeCheckout(order order, users user, HttpServletRequest request, HttpSession session) {
     	
     	logger.info("Bắt đầu hoàn tất thanh toán cho userId: {}", user.getUserID());
@@ -150,13 +155,12 @@ public class CheckoutService {
             order.setOrderStatus("PENDING");
             order = orderRepository.save(order);
             logger.info("Đã lưu đơn hàng với OrderID: {}", order.getOrderID());
-            
+
             // Lưu mã giảm giá vào userPromotion
             if (order.getPromotionID() != null) {
                 promotionRepository.saveUserPromotion(order.getPromotionID(), user.getUserID());
                 logger.info("Lưu userPromotion cho PromotionID: {} và UserID: {}", order.getPromotionID(), user.getUserID());
             }
-            
 
             for (orderDetail detail : details) {
                 if (detail.getPromotionID() != null) {
@@ -181,7 +185,13 @@ public class CheckoutService {
             payment.setPaymentMethod(paymentMethod);
             payment = paymentRepository.save(payment);
             logger.info("Đã lưu payment với PaymentID: {}", payment.getPaymentID());
-
+            
+            try {
+                emailService.sendOrderConfirmationEmail(user, order);
+            } catch (Exception e) {
+                logger.error("Gửi email xác nhận thất bại cho userId {}: {}", user.getUserID(), e.getMessage(), e);
+            }
+            
             return order;
         } catch (Exception e) {
             logger.error("Lỗi khi lưu đơn hàng: {}", e.getMessage(), e);
