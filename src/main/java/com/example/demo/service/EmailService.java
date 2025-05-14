@@ -41,6 +41,7 @@ public class EmailService {
     }
 
 
+
     public void sendVerificationEmail(String to, String verificationCode) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("lamngocnhaky8@gmail.com");
@@ -57,6 +58,7 @@ public class EmailService {
         
         emailSender.send(message);
     }
+
     public void sendOrderConfirmationEmail(users user, order order) {
         try {
             MimeMessage message = emailSender.createMimeMessage();
