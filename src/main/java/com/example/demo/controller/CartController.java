@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.cart;
 import com.example.demo.model.course;
+import com.example.demo.model.courseStatus;
 import com.example.demo.model.users;
 import com.example.demo.repository.CartRepository;
 import com.example.demo.service.CartService;
@@ -57,6 +58,18 @@ public class CartController {
 
          
             List<cart> cartItems = cartRepository.findByUserId(userId);
+            boolean hasRemovedItems = false;
+            
+            for (cart cartItem : cartItems) {
+                course course = courseService.getCourseById(cartItem.getCourseID());
+                if (course != null && course.getStatus() == courseStatus.INACTIVE) {
+                    cartService.removeFromCart(cartItem.getCartID());
+                    hasRemovedItems = true;
+                    logger.info("Đã xóa khóa học không hoạt động ID {} khỏi giỏ hàng của user ID {}", cartItem.getCourseID(), userId);
+                }
+            }
+            
+            cartItems = cartRepository.findByUserId(userId);
             List<cart> enrichedCartItems = cartItems.stream().map(cart -> {
             	course course = courseService.getCourseById(cart.getCourseID());
                 if (course != null) {
@@ -156,12 +169,12 @@ public class CartController {
 	        }
 
 	        List<cart> cartItems = cartRepository.findByUserId(user.getUserID());
-	        double total = cartItems.stream()
-	                .mapToDouble(item -> {
-	                    course course = courseService.getCourseById(item.getCourseID());
-	                    return course != null ? course.getPrices().doubleValue() : 0.0;
-	                })
-	                .sum();
+            double total = cartItems.stream()
+                    .mapToDouble(item -> {
+                        course course = courseService.getCourseById(item.getCourseID());
+                        return course != null && course.getStatus() == courseStatus.ACTIVE ? course.getPrices().doubleValue() : 0.0;
+                    })
+                    .sum();
 
 	        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 	        return ResponseEntity.ok(currencyFormat.format(total));

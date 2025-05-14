@@ -211,14 +211,23 @@
 									<span>Thời hạn khóa học:</span>
 									<span th:text="${course.formattedDuration != null ? course.formattedDuration : 'Chưa có thông tin'}">Sau khi kết thúc kỳ thi THPT 2025</span>
 								</li>
-								<li class="d-flex justify-content-center align-items-center">
-                                    <button th:onclick="addToCart(event, [[${course.courseID}]])"
-                                            class="btn btn-warning mt-4 mb-4 mx-2 text-white">Thêm vào giỏ hàng</button>
-                                    <form th:action="@{/course/checkout/{id}(id=${course.courseID})}" method="post"
-                                          style="display: inline;">
-                                        <button type="submit" class="btn btn-success mt-4 mb-4 mx-2">Mua ngay</button>
-                                    </form>
-                                </li>
+								<li class="d-flex justify-content-center align-items-center"
+									th:if="${course != null and course.status != null and course.status == T(com.example.demo.model.courseStatus).ACTIVE}">
+									<button th:onclick="|addToCart(event, ${course.courseID})|"
+										class="btn btn-warning mt-4 mb-4 mx-2 text-white">Thêm
+										vào giỏ hàng</button>
+									<form
+										th:action="@{/course/checkout/{id}(id=${course.courseID})}"
+										method="post" style="display: inline;">
+										<button type="submit" class="btn btn-success mt-4 mb-4 mx-2">Mua
+											ngay</button>
+									</form>
+								</li>
+								<li class="d-flex justify-content-center align-items-center"
+									th:if="${course == null or course.status == null or course.status == T(com.example.demo.model.courseStatus).INACTIVE}">
+									<p class="text-muted">Khóa học hiện không hoạt động</p>
+								</li>
+								
 							</ul>
 						</div>
 					</div>

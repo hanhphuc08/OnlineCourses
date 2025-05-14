@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.course;
+import com.example.demo.model.courseStatus;
 import com.example.demo.model.order;
 import com.example.demo.model.orderDetail;
 import com.example.demo.model.users;
@@ -40,6 +41,7 @@ public class CourseController {
 	private UserService userService;
 	@Autowired
 	private CartRepository cartRepository;
+	 
 	
 	@GetMapping("/detail/{id}")
     public String getCourseById(@PathVariable("id") int courseId, Model model) {
@@ -48,6 +50,11 @@ public class CourseController {
             if(course == null) {
             	logger.warn("Course with ID {} not found", courseId);
                 return "error/404";
+            }
+            
+            if (course.getStatus() == null) {
+                logger.warn("Course status is null for course ID: {}", courseId);
+                course.setStatus(courseStatus.INACTIVE);
             }
             model.addAttribute("course", course);
             logger.info("Loaded course details for ID {}: {}", courseId, course.getTitle());
@@ -70,6 +77,14 @@ public class CourseController {
                     return ResponseEntity.badRequest().body("error: Khóa học không tồn tại!");
                 }
                 redirectAttributes.addFlashAttribute("error", "Khóa học không tồn tại!");
+                return "redirect:/course/detail/" + courseId;
+            }
+            if (course.getStatus() == courseStatus.INACTIVE) {
+                logger.warn("Cố gắng thêm khóa học không hoạt động ID {} vào giỏ hàng", courseId);
+                if (isAjax) {
+                    return ResponseEntity.badRequest().body("error: Khóa học hiện không hoạt động!");
+                }
+                redirectAttributes.addFlashAttribute("error", "Khóa học hiện không hoạt động!");
                 return "redirect:/course/detail/" + courseId;
             }
 
@@ -145,6 +160,11 @@ public class CourseController {
             if (course == null) {
                 logger.warn("Khóa học với ID {} không tồn tại", courseId);
                 redirectAttributes.addFlashAttribute("error", "Khóa học không tồn tại!");
+                return "redirect:/course/detail/" + courseId;
+            }
+            if (course.getStatus() == courseStatus.INACTIVE) {
+                logger.warn("Cố gắng thanh toán khóa học không hoạt động ID {}", courseId);
+                redirectAttributes.addFlashAttribute("error", "Khóa học hiện không hoạt động!");
                 return "redirect:/course/detail/" + courseId;
             }
 
