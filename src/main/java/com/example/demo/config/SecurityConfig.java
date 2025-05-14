@@ -67,6 +67,7 @@ public class SecurityConfig {
                         "/courses/**",
                         "/course/detail/**",
                         "/error",
+                            "/favicon.ico",
                         "/search/**"
                     ).permitAll()
                     .requestMatchers("/profile/**", "/course/cart/add/**", "/course/checkout/**", "/cart/**", "/checkout/vnpay-return").authenticated()
@@ -76,15 +77,24 @@ public class SecurityConfig {
                     .anyRequest().authenticated();
                 System.out.println("Authorization rules configured.");
             })
-            .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/api/auth/login")
-                .usernameParameter("emailOrPhone")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/")
-                .failureUrl("/login?error=true")
-                .permitAll()
-            )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/api/auth/login")
+                        .usernameParameter("emailOrPhone")
+                        .passwordParameter("password")
+                        .successHandler((request, response, authentication) -> {
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("{\"status\":\"success\",\"message\":\"Đăng nhập thành công! Chào mừng bạn quay trở lại.\"}");
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write("{\"status\":\"error\",\"message\":\"" + exception.getMessage() + "\"}");
+                        })
+                        .permitAll()
+                )
             .logout(logout -> logout
                 .logoutUrl("/api/auth/logout")
                 .logoutSuccessUrl("/")
@@ -136,7 +146,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
-        
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "x-requested-with"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

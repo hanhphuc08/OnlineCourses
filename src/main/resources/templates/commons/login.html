@@ -169,10 +169,13 @@
 						password: $('#password').val()
 					},
 					success: function(response) {
-						if (response.startsWith('success:')) {
+						// Parse phản hồi JSON
+						let data = typeof response === 'string' ? JSON.parse(response) : response;
+
+						if (data.status === 'success') {
 							Swal.fire({
 								title: 'Thành công!',
-								text: response.substring(8),
+								text: data.message,
 								icon: 'success',
 								confirmButtonText: 'OK'
 							}).then((result) => {
@@ -180,25 +183,31 @@
 									window.location.replace('/');
 								}
 							});
-						} else if (response.startsWith('error:')) {
+						} else if (data.status === 'error') {
 							Swal.fire({
 								title: 'Lỗi!',
-								text: response.substring(6),
+								text: data.message,
 								icon: 'error',
 								confirmButtonText: 'OK'
 							});
-						} else {
-							Swal.fire({
-								title: 'Thành công!',
-								text: 'Đăng nhập thành công! Chào mừng bạn quay trở lại.',
-								icon: 'success',
-								confirmButtonText: 'OK'
-							}).then((result) => {
-								if (result.isConfirmed) {
-									window.location.replace('/');
-								}
-							});
 						}
+					},
+					error: function(xhr) {
+						let errorMessage = 'Đã xảy ra lỗi khi đăng nhập';
+						try {
+							let data = JSON.parse(xhr.responseText);
+							if (data.status === 'error') {
+								errorMessage = data.message;
+							}
+						} catch (e) {
+							errorMessage = xhr.responseText || errorMessage;
+						}
+						Swal.fire({
+							title: 'Lỗi!',
+							text: errorMessage,
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
 					},
 					error: function(xhr) {
 						let errorMessage = 'Đã xảy ra lỗi khi đăng nhập';

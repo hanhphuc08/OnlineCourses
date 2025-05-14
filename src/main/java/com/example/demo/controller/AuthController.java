@@ -97,32 +97,31 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String emailOrPhone, 
-                       @RequestParam String password,
-                       RedirectAttributes redirectAttributes) {
+    public ResponseEntity<String> login(@RequestParam String emailOrPhone,
+                                        @RequestParam String password,
+                                        RedirectAttributes redirectAttributes) {
         try {
             if (emailOrPhone == null || password == null) {
-                return ResponseEntity.badRequest().body("error:Email/phone và mật khẩu không được để trống");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("{\"status\":\"error\",\"message\":\"Email/phone và mật khẩu không được để trống\"}");
             }
 
-            // Authenticate user
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(emailOrPhone, password)
+                    new UsernamePasswordAuthenticationToken(emailOrPhone, password)
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            
-            // Log role information
+
             users user = userService.findByEmailOrPhone(emailOrPhone);
-            logger.info("User {} logged in successfully with role: {}", 
-                emailOrPhone, 
-                user.getRole() != null ? user.getRole().getRoleID() : "no role");
-                
-            return ResponseEntity.ok("success:Đăng nhập thành công! Chào mừng bạn quay trở lại.");
-            
+            logger.info("User {} logged in successfully with role: {}",
+                    emailOrPhone,
+                    user.getRole() != null ? user.getRole().getRoleID() : "no role");
+
+            return ResponseEntity.ok("{\"status\":\"success\",\"message\":\"Đăng nhập thành công! Chào mừng bạn quay trở lại.\"}");
+
         } catch (Exception e) {
             logger.error("Login failed: ", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("error:Email/phone hoặc mật khẩu không đúng");
+                    .body("{\"status\":\"error\",\"message\":\"Email/phone hoặc mật khẩu không đúng\"}");
         }
     }
 
