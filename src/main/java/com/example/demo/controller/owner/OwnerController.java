@@ -12,10 +12,7 @@ import com.example.demo.model.*;
 
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.CourseRepository;
-import com.example.demo.service.CourseService;
-import com.example.demo.service.OrderService;
-import com.example.demo.service.PromotionService;
-import com.example.demo.service.UserService;
+import com.example.demo.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +59,8 @@ public class OwnerController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private CourseService courseService;
-    
+    @Autowired
+    private CategoryService categoryService;
     @Autowired
     private PromotionService promotionService;
     @Autowired
@@ -132,7 +130,7 @@ public class OwnerController {
 
         try {
             List<course> courseList = courseService.getCoursesPaginated(page, size, search, status);
-            List<category> categories = categoryRepository.findAllCategories();
+            List<category> categories = categoryService.getAllCategories();
             long totalCourses = courseService.countCourses(search, status);
             int totalPages = (int) Math.ceil((double) totalCourses / size);
 
@@ -244,8 +242,7 @@ public class OwnerController {
 
         try {
             model.addAttribute("course", new course());
-            model.addAttribute("categories", categoryRepository.findAllCategories());
-            model.addAttribute("isEdit", false);
+            model.addAttribute("categories", categoryService.getAllCategories());
             logger.info("Hiển thị form thêm khóa học");
         } catch (Exception e) {
             logger.error("Lỗi khi tải form thêm khóa học: {}", e.getMessage());
@@ -254,32 +251,6 @@ public class OwnerController {
         return "owner/addProducts";
     }
 
-    @GetMapping("/edit")
-    public String editCourseForm(@RequestParam("id") int id, Model model, Authentication authentication) {
-    	logger.info("Bắt đầu xử lý /owner/edit với CourseID: {}", id);
-        if (authentication == null || !authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_Owner"))) {
-            logger.warn("Không có quyền truy cập edit: {}", authentication != null ? authentication.getName() : "Chưa đăng nhập");
-            return "redirect:/login";
-        }
-
-        try {
-            course course = courseService.getCourseById(id);
-            if (course == null) {
-                logger.warn("Không tìm thấy khóa học với ID: {}", id);
-                model.addAttribute("error", "Không tìm thấy khóa học.");
-                return "owner/addProducts";
-            }
-            model.addAttribute("course", course);
-            model.addAttribute("categories", categoryRepository.findAllCategories());
-            model.addAttribute("isEdit", true);
-            logger.info("Hiển thị form chỉnh sửa khóa học: {}", id);
-        } catch (Exception e) {
-            logger.error("Lỗi khi tải form chỉnh sửa khóa học: {}", e.getMessage());
-            model.addAttribute("error", "Không thể tải form chỉnh sửa khóa học. Vui lòng thử lại sau.");
-        }
-        return "owner/addProducts";
-    }
 
     @GetMapping("/customer")
     public String getCustomers(
@@ -518,7 +489,7 @@ public class OwnerController {
     }
 
     @PostMapping("/course/add")
-    public String addCourse(
+    public ResponseEntity<?> addCourse(
             @RequestParam("title") String title,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam("prices") BigDecimal prices,
@@ -527,45 +498,38 @@ public class OwnerController {
             @RequestParam("categoryID") int categoryID,
             @RequestParam(value = "duration", required = false) String duration,
             @RequestParam("imageUrl") String imageUrl,
-            RedirectAttributes redirectAttributes,
             Authentication authentication) {
         logger.info("Bắt đầu xử lý /owner/course/add: title={}, categoryID={}", title, categoryID);
         if (authentication == null || !authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_Owner"))) {
             logger.warn("Không có quyền thêm khóa học: {}", authentication != null ? authentication.getName() : "Chưa đăng nhập");
-            return "redirect:/login";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Không có quyền thêm khóa học");
         }
 
         try {
             if (title == null || title.trim().isEmpty()) {
                 logger.error("Tiêu đề là bắt buộc");
-                redirectAttributes.addFlashAttribute("error", "Tiêu đề là bắt buộc");
-                return "redirect:/owner/addProducts";
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tiêu đề là bắt buộc");
             }
             if (prices == null || prices.doubleValue() < 0) {
                 logger.error("Giá phải không âm: {}", prices);
-                redirectAttributes.addFlashAttribute("error", "Giá phải không âm");
-                return "redirect:/owner/addProducts";
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Giá phải không âm");
             }
             if (quantity < 0) {
                 logger.error("Số lượng phải không âm: {}", quantity);
-                redirectAttributes.addFlashAttribute("error", "Số lượng phải không âm");
-                return "redirect:/owner/addProducts";
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Số lượng phải không âm");
             }
             if (status == null || (!status.equals("ACTIVE") && !status.equals("INACTIVE"))) {
                 logger.error("Trạng thái không hợp lệ: {}", status);
-                redirectAttributes.addFlashAttribute("error", "Trạng thái phải là ACTIVE hoặc INACTIVE");
-                return "redirect:/owner/addProducts";
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Trạng thái phải là ACTIVE hoặc INACTIVE");
             }
             if (categoryID <= 0) {
                 logger.error("ID danh mục không hợp lệ: {}", categoryID);
-                redirectAttributes.addFlashAttribute("error", "ID danh mục không hợp lệ");
-                return "redirect:/owner/addProducts";
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID danh mục không hợp lệ");
             }
             if (imageUrl == null || imageUrl.trim().isEmpty()) {
                 logger.error("URL hình ảnh là bắt buộc");
-                redirectAttributes.addFlashAttribute("error", "URL hình ảnh là bắt buộc");
-                return "redirect:/owner/addProducts";
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("URL hình ảnh là bắt buộc");
             }
 
             course course = new course();
@@ -581,11 +545,15 @@ public class OwnerController {
                 try {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     LocalDateTime durationDate = LocalDate.parse(duration, formatter).atStartOfDay();
+                    LocalDateTime today = LocalDateTime.now().toLocalDate().atStartOfDay();
+                    if (durationDate.isBefore(today)) {
+                        logger.error("Thời lượng không hợp lệ: phải từ ngày hiện tại trở đi, duration={}", duration);
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Thời lượng phải từ ngày hiện tại trở đi!");
+                    }
                     course.setDuration(durationDate);
                 } catch (Exception e) {
                     logger.error("Định dạng thời lượng không hợp lệ: {}", duration);
-                    redirectAttributes.addFlashAttribute("error", "Định dạng thời lượng không hợp lệ. Sử dụng yyyy-MM-dd");
-                    return "redirect:/owner/addProducts";
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Định dạng thời lượng không hợp lệ. Sử dụng yyyy-MM-dd");
                 }
             } else {
                 course.setDuration(null);
@@ -597,13 +565,11 @@ public class OwnerController {
 
             courseService.addCourse(course);
             logger.info("Thêm khóa học thành công: title={}", title);
-            redirectAttributes.addFlashAttribute("success", "Thêm khóa học thành công!");
+            return ResponseEntity.ok("Thêm khóa học thành công!");
         } catch (Exception e) {
             logger.error("Lỗi khi thêm khóa học: {}", e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Không thể thêm khóa học. Vui lòng thử lại sau.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể thêm khóa học: " + e.getMessage());
         }
-
-        return "redirect:/owner/productsList";
     }
 
 

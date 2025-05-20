@@ -223,11 +223,10 @@ body {
 		</ol>
 
 		<!-- Form -->
-		<form th:action="${isEdit} ? @{/owner/course/edit} : @{/owner/course/add}" 
-              method="post" 
+        <form th:action="@{/owner/course/add}"
+              method="post"
               th:object="${course}"
               id="addCourseForm">
-            <input th:if="${isEdit}" type="hidden" name="courseID" th:value="${course.courseID}"/>
 
             <!-- Course Information -->
             <div class="form-section">
@@ -291,15 +290,14 @@ body {
                 <h5>Hình ảnh khóa học</h5>
                 <div class="form-group">
                     <label for="imageUrl">URL hình ảnh</label>
-                    <input type="text" class="form-control" id="imageUrl" name="imageUrl" 
-                           th:value="${course.image}" placeholder="Nhập URL hình ảnh" th:required="${!isEdit}" />
+                    <input type="text" class="form-control" id="imageUrl" name="imageUrl"
+                           th:value="${course.image}" placeholder="Nhập URL hình ảnh" required />
                 </div>
             </div>
 
             <!-- Submit Button -->
             <div class="submit-section">
-                <button type="submit" class="btn btn-primary" 
-                        th:text="${isEdit} ? 'Cập nhật khóa học' : 'Thêm khóa học'"></button>
+                <button type="submit" class="btn btn-primary">Thêm khóa học</button>
             </div>
         </form>
 	</div>
@@ -346,30 +344,59 @@ body {
         injectSvgSprite("https://demo.bootstrapious.com/sell/1-2-0/icons/orion-svg-sprite.svg");
     </script>
     <script th:inline="javascript">
-        // Hiển thị thông báo SweetAlert2 khi có success hoặc error từ server
         document.addEventListener("DOMContentLoaded", function () {
-            const successMessage = /*[[${success} ? ${success} : null]]*/ null;
-            const errorMessage = /*[[${error} ? ${error} : null]]*/ null;
-            if (successMessage) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Thành công',
-                    text: successMessage,
-                    confirmButtonText: 'OK',
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-            }
-            if (errorMessage) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi',
-                    text: errorMessage,
-                    confirmButtonText: 'OK'
-                });
-            }
+            const form = document.getElementById("addCourseForm");
+            const submitButton = form.querySelector("button[type='submit']");
+            let isSubmitting = false;
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+                if (isSubmitting) {
+                    console.log("Yêu cầu đang xử lý, bỏ qua submit");
+                    return;
+                }
+                isSubmitting = true;
+                submitButton.disabled = true;
+                submitButton.innerHTML = "Đang lưu...";
+
+                const formData = new FormData(form);
+
+                fetch("/owner/course/add", {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => {
+                                throw new Error(`HTTP ${response.status}: ${text}`);
+                            });
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: data,
+                            confirmButtonText: 'OK',
+                            timer: 3000,
+                            timerProgressBar: true
+                        }).then(() => {
+                            window.location.href = "/owner/productsList";
+                        });
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: error.message,
+                            confirmButtonText: 'OK'
+                        });
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = "Thêm khóa học";
+                        isSubmitting = false;
+                    });
+            });
         });
     </script>
-
 </body>
 </html>
