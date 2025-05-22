@@ -125,11 +125,9 @@ public class CheckoutService {
     	
     	logger.info("Bắt đầu hoàn tất thanh toán cho userId: {}", user.getUserID());
         try {
-            // Cập nhật hồ sơ người dùng
             userRepository.updateUserProfile(user.getUserID(), user.getFullname(), user.getEmail(), user.getPhoneNumber());
             logger.info("Cập nhật hồ sơ người dùng thành công cho userId: {}", user.getUserID());
 
-            // Kiểm tra orderDetails
             List<orderDetail> details = order.getOrderDetails();
             if (details == null || details.isEmpty()) {
                 logger.error("Danh sách orderDetails rỗng hoặc null");
@@ -140,7 +138,7 @@ public class CheckoutService {
                     logger.error("orderDetail không hợp lệ: CourseID = {}, Price = {}", detail.getCourseID(), detail.getPrice());
                     throw new RuntimeException("Chi tiết đơn hàng không hợp lệ!");
                 }
-                // Kiểm tra số lượng khóa học
+  
                 course course = courseRepository.findById(detail.getCourseID());
                 if (course == null) {
                     throw new RuntimeException("Khóa học không tồn tại: " + detail.getCourseID());
@@ -154,9 +152,8 @@ public class CheckoutService {
             // Lưu đơn hàng
             order.setOrderStatus("PENDING");
             order = orderRepository.save(order);
-            logger.info("Đã lưu đơn hàng với OrderID: {}", order.getOrderID());
+         
 
-            // Lưu mã giảm giá vào userPromotion
             if (order.getPromotionID() != null) {
                 promotionRepository.saveUserPromotion(order.getPromotionID(), user.getUserID());
                 logger.info("Lưu userPromotion cho PromotionID: {} và UserID: {}", order.getPromotionID(), user.getUserID());
@@ -171,7 +168,6 @@ public class CheckoutService {
                 logger.info("Giảm số lượng khóa học CourseID: {}", detail.getCourseID());
             }
 
-            // Tạo thanh toán
             payment payment = new payment();
             payment.setOrderID(order.getOrderID());
             payment.setCreateDate(LocalDateTime.now());

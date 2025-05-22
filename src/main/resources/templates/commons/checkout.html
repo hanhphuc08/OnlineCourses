@@ -973,7 +973,6 @@
             const couponCode = document.getElementById("coupon").value;
             const courseSelect = document.getElementById("courseSelect");
             const courseId = courseSelect ? courseSelect.value : /*[[${order.orderDetails.size() > 0 ? order.orderDetails[0].courseID : 0}]]*/ 0;
-            console.log("Applying coupon:", couponCode, "for courseId:", courseId);
             if (courseId === 0) {
                 Swal.fire({
                     icon: 'error',

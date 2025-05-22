@@ -214,7 +214,7 @@ public class AuthController {
                 emailService.sendVerificationEmail(savedUser.getEmail(), verificationCode);
                 return ResponseEntity.ok("success:Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.");
             } catch (Exception e) {
-                // If email sending fails, delete the user and show error
+             
                 userService.deleteUser(savedUser.getUserID());
                 return ResponseEntity.badRequest().body("error:Không thể gửi email xác thực. Vui lòng thử lại sau.");
             }

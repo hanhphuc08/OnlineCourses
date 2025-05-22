@@ -68,21 +68,17 @@ public class CheckoutController {
         users user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với email: " + email));
         try {
-            logger.info("Chuẩn bị checkout cho userId: {}", user.getUserID());
             order order;
-
-            // Nếu source=cart, xóa checkoutOrder và tạo từ giỏ hàng
             if ("cart".equals(source)) {
                 session.removeAttribute("checkoutOrder");
                 List<cart> cartItems = cartRepository.findByUserId(user.getUserID());
-                logger.info("Số lượng cartItems: {}", cartItems.size());
+
                 if (cartItems.isEmpty()) {
                     logger.warn("Giỏ hàng trống cho userId: {}", user.getUserID());
                     session.setAttribute("error", "Giỏ hàng của bạn trống!");
                     return "redirect:/cart";
                 }
 
-                // Làm giàu cartItems với thông tin course
                 List<cart> enrichedCartItems = cartItems.stream().map(cart -> {
                     course course = courseService.getCourseById(cart.getCourseID());
                     if (course != null) {
@@ -93,9 +89,8 @@ public class CheckoutController {
                     return cart;
                 }).collect(Collectors.toList());
 
-                // Kiểm tra nếu có cartItem thiếu course
                 if (enrichedCartItems.stream().anyMatch(cart -> cart.getCourse() == null)) {
-                    logger.error("Một hoặc nhiều khóa học không hợp lệ trong giỏ hàng của userId: {}", user.getUserID());
+                    
                     throw new RuntimeException("Dữ liệu khóa học không hợp lệ!");
                 }
 
@@ -105,6 +100,7 @@ public class CheckoutController {
                 order.setOrderStatus("PENDING");
 
                 BigDecimal totalAmount = BigDecimal.ZERO;
+                
                 List<orderDetail> orderDetails = new ArrayList<>();
                 for (cart cart : enrichedCartItems) {
                     orderDetail detail = new orderDetail();
@@ -114,33 +110,32 @@ public class CheckoutController {
                     orderDetails.add(detail);
                     totalAmount = totalAmount.add(cart.getCourse().getPrices().multiply(BigDecimal.valueOf(cart.getQuantity())));
                 }
+                
                 order.setOrderDetails(orderDetails);
                 order.setTotalAmount(totalAmount);
+                
                 session.setAttribute("checkoutOrder", order);
             } else {
-                // Sử dụng order từ "Mua Ngay" hoặc tạo mới nếu không có
                 order = (order) session.getAttribute("checkoutOrder");
                 if (order != null && "TEMP".equals(order.getOrderStatus())) {
-                    // Sử dụng order từ "Mua Ngay"
+             
                     List<orderDetail> orderDetails = order.getOrderDetails();
                     if (orderDetails == null || orderDetails.isEmpty()) {
-                        logger.warn("Đơn hàng trống cho userId: {}", user.getUserID());
+                        
                         session.setAttribute("error", "Đơn hàng của bạn trống!");
                         return "redirect:/category";
                     }
 
-                    // Enrich order details với thông tin course
                     for (orderDetail detail : orderDetails) {
                         course course = courseService.getCourseById(detail.getCourseID());
                         if (course != null) {
                             detail.setCourse(course);
                         } else {
-                            logger.warn("Khóa học với ID {} không tồn tại", detail.getCourseID());
                             throw new RuntimeException("Khóa học không hợp lệ!");
                         }
                     }
                 } else {
-                    // Nếu không có order hợp lệ, chuyển về giỏ hàng
+                   
                     logger.warn("Phiên thanh toán không hợp lệ cho userId: {}", user.getUserID());
                     session.setAttribute("error", "Phiên thanh toán không hợp lệ!");
                     return "redirect:/cart";
@@ -185,7 +180,7 @@ public class CheckoutController {
 		try {
 			course course = courseService.getCourseById(courseId);
 			if(course == null) {
-				logger.warn("Khóa học với ID {} không tồn tại", courseId);
+				
                 session.setAttribute("error", "Khóa học không tồn tại!");
                 return "redirect:/category";
 			}
@@ -253,11 +248,13 @@ public class CheckoutController {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với email: " + email));
         order order = (order) session.getAttribute("checkoutOrder");
         if (order == null) {
+        	
             logger.warn("Phiên thanh toán không hợp lệ cho email: {}", email);
             session.setAttribute("error", "Phiên thanh toán không hợp lệ!");
             return "redirect:/cart";
         }
         try {
+        	
             user.setUserID(currentUser.getUserID());
             session.setAttribute("checkoutUser", user);
             session.setAttribute("source", request.getParameter("source")); 
@@ -265,14 +262,15 @@ public class CheckoutController {
 
             String paymentUrl = checkoutService.createPaymentUrl(order, user, request);
             if (paymentUrl == null) {
-                logger.error("Không thể tạo URL thanh toán!");
+            	
                 throw new RuntimeException("Không thể tạo URL thanh toán!");
             }
             session.setAttribute("paymentUrl", paymentUrl);
-            logger.info("Chuyển hướng đến trang VNPAY: {}", paymentUrl);
+            
             return "redirect:" + paymentUrl;
         } catch (Exception e) {
-            logger.error("Lỗi khi tiến hành thanh toán: {}", e.getMessage(), e);
+           
+        	
             session.setAttribute("error", "Lỗi khi tiến hành thanh toán: " + e.getMessage());
             return "redirect:/checkout";
         }
@@ -293,7 +291,6 @@ public class CheckoutController {
                     return "redirect:/category?error=true";
                 }
 
-                // Lưu đơn hàng và hoàn tất quá trình thanh toán
                 order = checkoutService.completeCheckout(order, user, null, session);
                 checkoutService.confirmPayment(order.getOrderID(), -1);
                 session.setAttribute("notificationMessage", "Thanh toán thành công! Thông tin khóa học đã được gửi đến email của bạn.");
@@ -310,7 +307,6 @@ public class CheckoutController {
                 logger.warn("Thanh toán thất bại hoặc bị hủy: Mã lỗi {}", vnp_ResponseCode);
                 session.setAttribute("error", "Thanh toán thất bại hoặc bị hủy: Mã lỗi " + vnp_ResponseCode);
 
-                // Xóa session khi thất bại/hủy
                 session.removeAttribute("checkoutOrder");
                 session.removeAttribute("checkoutUser");
                 session.removeAttribute("paymentUrl");
@@ -321,8 +317,7 @@ public class CheckoutController {
         } catch (Exception e) {
             logger.error("Lỗi xử lý callback VNPAY: {}", e.getMessage(), e);
             session.setAttribute("error", "Lỗi xử lý callback VNPAY: " + e.getMessage());
-
-            // Xóa session khi có lỗi
+            
             session.removeAttribute("checkoutOrder");
             session.removeAttribute("checkoutUser");
             session.removeAttribute("paymentUrl");

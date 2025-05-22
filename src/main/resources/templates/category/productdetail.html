@@ -289,7 +289,6 @@
 
     function buyNow(event, courseId) {
         event.preventDefault();
-        // Submit form for checkout
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = `/course/checkout/${courseId}`;
