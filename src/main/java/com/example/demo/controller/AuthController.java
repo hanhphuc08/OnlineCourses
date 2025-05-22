@@ -83,7 +83,7 @@ public class AuthController {
             users savedUser = userService.registerUser(user);
             
             try {
-                emailService.sendVerificationEmail(savedUser.getEmail(), verificationCode);
+                emailService.sendVerification(savedUser.getEmail(), verificationCode);
                 return ResponseEntity.ok("success:" + savedUser.getEmail());
             } catch (Exception e) {
                 userService.deleteUser(savedUser.getUserID());
@@ -211,7 +211,7 @@ public class AuthController {
             user.setEmailCode(verificationCode);
             users savedUser = userService.registerUser(user);
             try {
-                emailService.sendVerificationEmail(savedUser.getEmail(), verificationCode);
+                emailService.sendVerification(savedUser.getEmail(), verificationCode);
                 return ResponseEntity.ok("success:Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.");
             } catch (Exception e) {
              
@@ -279,7 +279,7 @@ public class AuthController {
             user.setUpdateDate(LocalDateTime.now());
             userService.saveUser(user);
             try {
-                emailService.sendVerificationEmail(user.getEmail(), verificationCode);
+                emailService.sendVerification(user.getEmail(), verificationCode);
                 return ResponseEntity.ok("success:Mã xác thực mới đã được gửi đến email của bạn.");
             } catch (Exception e) {
                 return ResponseEntity.badRequest().body("error:Không thể gửi email xác thực. Vui lòng thử lại sau.");

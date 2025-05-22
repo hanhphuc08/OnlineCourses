@@ -36,7 +36,7 @@ public class ForgotPasswordController {
                 userService.saveResetCode(user, resetCode);
                 
                 try {
-                    emailService.sendResetPasswordEmail(user.getEmail(), resetCode);
+                    emailService.sendResetPassword(user.getEmail(), resetCode);
                     return ResponseEntity.ok("success:Mã xác nhận đã được gửi đến email của bạn.");
                 } catch (Exception e) {
                     return ResponseEntity.badRequest().body("error:Không thể gửi email. Vui lòng thử lại sau.");

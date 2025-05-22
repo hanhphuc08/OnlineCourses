@@ -28,6 +28,13 @@ import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.PaymentRepository;
 import com.example.demo.repository.PromotionRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.checkoutCommand.CheckoutInvoker;
+import com.example.demo.service.checkoutCommand.SaveOrderCommand;
+import com.example.demo.service.checkoutCommand.SavePaymentCommand;
+import com.example.demo.service.checkoutCommand.SavePromotionCommand;
+import com.example.demo.service.checkoutCommand.SendConfirmationEmailCommand;
+import com.example.demo.service.checkoutCommand.UpdateInventoryCommand;
+import com.example.demo.service.checkoutCommand.UpdateUserProfileCommand;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -123,76 +130,88 @@ public class CheckoutService {
     @Transactional
     public order completeCheckout(order order, users user, HttpServletRequest request, HttpSession session) {
     	
-    	logger.info("Bắt đầu hoàn tất thanh toán cho userId: {}", user.getUserID());
-        try {
-            userRepository.updateUserProfile(user.getUserID(), user.getFullname(), user.getEmail(), user.getPhoneNumber());
-            logger.info("Cập nhật hồ sơ người dùng thành công cho userId: {}", user.getUserID());
-
-            List<orderDetail> details = order.getOrderDetails();
-            if (details == null || details.isEmpty()) {
-                logger.error("Danh sách orderDetails rỗng hoặc null");
-                throw new RuntimeException("Không có chi tiết đơn hàng để lưu!");
-            }
-            for (orderDetail detail : details) {
-                if (detail.getCourseID() == 0 || detail.getPrice() == null) {
-                    logger.error("orderDetail không hợp lệ: CourseID = {}, Price = {}", detail.getCourseID(), detail.getPrice());
-                    throw new RuntimeException("Chi tiết đơn hàng không hợp lệ!");
-                }
-  
-                course course = courseRepository.findById(detail.getCourseID());
-                if (course == null) {
-                    throw new RuntimeException("Khóa học không tồn tại: " + detail.getCourseID());
-                }
-                if (course.getQuantity() <= 0) {
-                    logger.error("Khóa học {} đã hết hàng", detail.getCourseID());
-                    throw new RuntimeException("Khóa học " + course.getTitle() + " đã hết hàng!");
-                }
-            }
-
-            // Lưu đơn hàng
-            order.setOrderStatus("PENDING");
-            order = orderRepository.save(order);
-         
-
-            if (order.getPromotionID() != null) {
-                promotionRepository.saveUserPromotion(order.getPromotionID(), user.getUserID());
-                logger.info("Lưu userPromotion cho PromotionID: {} và UserID: {}", order.getPromotionID(), user.getUserID());
-            }
-
-            for (orderDetail detail : details) {
-                if (detail.getPromotionID() != null) {
-                    promotionRepository.saveUserPromotion(detail.getPromotionID(), user.getUserID());
-                    logger.info("Lưu userPromotion cho PromotionID: {} và UserID: {}", detail.getPromotionID(), user.getUserID());
-                }
-                courseRepository.decrementQuantity(detail.getCourseID());
-                logger.info("Giảm số lượng khóa học CourseID: {}", detail.getCourseID());
-            }
-
-            payment payment = new payment();
-            payment.setOrderID(order.getOrderID());
-            payment.setCreateDate(LocalDateTime.now());
-            payment.setPaymentStatus("Completed");
-            payment.setCurrency("VND");
-            payment.setAmount(order.getTotalAmount());
-            paymentMethod paymentMethod = new paymentMethod();
-            paymentMethod.setMethodType("EWallet");
-            paymentMethod.seteWalletProvider("VNPAY");
-            paymentMethod.seteWalletTransactionID(System.currentTimeMillis());
-            payment.setPaymentMethod(paymentMethod);
-            payment = paymentRepository.save(payment);
-            logger.info("Đã lưu payment với PaymentID: {}", payment.getPaymentID());
-            
-            try {
-                emailService.sendOrderConfirmationEmail(user, order);
-            } catch (Exception e) {
-                logger.error("Gửi email xác nhận thất bại cho userId {}: {}", user.getUserID(), e.getMessage(), e);
-            }
-            
-            return order;
-        } catch (Exception e) {
-            logger.error("Lỗi khi lưu đơn hàng: {}", e.getMessage(), e);
-            throw new RuntimeException("Lỗi khi lưu đơn hàng: " + e.getMessage());
+		/*
+		 * logger.info("Bắt đầu hoàn tất thanh toán cho userId: {}", user.getUserID());
+		 * try { userRepository.updateUserProfile(user.getUserID(), user.getFullname(),
+		 * user.getEmail(), user.getPhoneNumber());
+		 * logger.info("Cập nhật hồ sơ người dùng thành công cho userId: {}",
+		 * user.getUserID());
+		 * 
+		 * List<orderDetail> details = order.getOrderDetails(); if (details == null ||
+		 * details.isEmpty()) { logger.error("Danh sách orderDetails rỗng hoặc null");
+		 * throw new RuntimeException("Không có chi tiết đơn hàng để lưu!"); } for
+		 * (orderDetail detail : details) { if (detail.getCourseID() == 0 ||
+		 * detail.getPrice() == null) {
+		 * logger.error("orderDetail không hợp lệ: CourseID = {}, Price = {}",
+		 * detail.getCourseID(), detail.getPrice()); throw new
+		 * RuntimeException("Chi tiết đơn hàng không hợp lệ!"); }
+		 * 
+		 * course course = courseRepository.findById(detail.getCourseID()); if (course
+		 * == null) { throw new RuntimeException("Khóa học không tồn tại: " +
+		 * detail.getCourseID()); } if (course.getQuantity() <= 0) {
+		 * logger.error("Khóa học {} đã hết hàng", detail.getCourseID()); throw new
+		 * RuntimeException("Khóa học " + course.getTitle() + " đã hết hàng!"); } }
+		 * 
+		 * // Lưu đơn hàng order.setOrderStatus("PENDING"); order =
+		 * orderRepository.save(order);
+		 * 
+		 * 
+		 * if (order.getPromotionID() != null) {
+		 * promotionRepository.saveUserPromotion(order.getPromotionID(),
+		 * user.getUserID());
+		 * logger.info("Lưu userPromotion cho PromotionID: {} và UserID: {}",
+		 * order.getPromotionID(), user.getUserID()); }
+		 * 
+		 * for (orderDetail detail : details) { if (detail.getPromotionID() != null) {
+		 * promotionRepository.saveUserPromotion(detail.getPromotionID(),
+		 * user.getUserID());
+		 * logger.info("Lưu userPromotion cho PromotionID: {} và UserID: {}",
+		 * detail.getPromotionID(), user.getUserID()); }
+		 * courseRepository.decrementQuantity(detail.getCourseID());
+		 * logger.info("Giảm số lượng khóa học CourseID: {}", detail.getCourseID()); }
+		 * 
+		 * payment payment = new payment(); payment.setOrderID(order.getOrderID());
+		 * payment.setCreateDate(LocalDateTime.now());
+		 * payment.setPaymentStatus("Completed"); payment.setCurrency("VND");
+		 * payment.setAmount(order.getTotalAmount()); paymentMethod paymentMethod = new
+		 * paymentMethod(); paymentMethod.setMethodType("EWallet");
+		 * paymentMethod.seteWalletProvider("VNPAY");
+		 * paymentMethod.seteWalletTransactionID(System.currentTimeMillis());
+		 * payment.setPaymentMethod(paymentMethod); payment =
+		 * paymentRepository.save(payment);
+		 * logger.info("Đã lưu payment với PaymentID: {}", payment.getPaymentID());
+		 * 
+		 * try { emailService.sendOrderConfirmation(user, order); } catch (Exception e)
+		 * { logger.error("Gửi email xác nhận thất bại cho userId {}: {}",
+		 * user.getUserID(), e.getMessage(), e); }
+		 * 
+		 * return order; } catch (Exception e) {
+		 * logger.error("Lỗi khi lưu đơn hàng: {}", e.getMessage(), e); throw new
+		 * RuntimeException("Lỗi khi lưu đơn hàng: " + e.getMessage()); }
+		 */
+    	
+        if (user.getUserID() != order.getUserID()) {
+        	
+            throw new RuntimeException("Bạn không có quyền thực hiện thanh toán cho đơn hàng này!");
         }
+
+        if (order.getOrderDetails() == null || order.getOrderDetails().isEmpty()) {
+            throw new RuntimeException("Không có chi tiết đơn hàng để lưu!");
+        }
+        
+    	CheckoutInvoker invoker = new CheckoutInvoker();
+
+        invoker.addCommand(new UpdateUserProfileCommand(userRepository));
+        
+        invoker.addCommand(new SaveOrderCommand(orderRepository));
+        invoker.addCommand(new UpdateInventoryCommand(courseRepository));
+        invoker.addCommand(new SavePaymentCommand(paymentRepository));
+        invoker.addCommand(new SavePromotionCommand(promotionRepository));
+        invoker.addCommand(new SendConfirmationEmailCommand(emailService));
+        
+        invoker.executeAll(order, user);
+
+        return order;
     }
 
     public void confirmPayment(int orderId, int userId) {
